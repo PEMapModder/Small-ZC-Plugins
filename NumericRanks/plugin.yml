@@ -1,0 +1,7 @@
+name: NumericRanks
+main: pemapmodder\numranks\Main
+load: POSTWORLD
+author: PEMapModder
+api: [1.0.0]
+version: 5.0
+prefix: NumRanks
