@@ -1,0 +1,7 @@
+name: WorldGen
+description: Generates worlds with an exclusive style
+api: [1.0.0]
+version: 0
+load: STARTUP
+main: WorldGenPro\Loader
+author: PEMapModder
