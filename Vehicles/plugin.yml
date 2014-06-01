@@ -4,3 +4,16 @@ version: 0
 api: [1.0.0]
 load: POSTWORLD
 main: pemapmodder\vehicles\Main
+commands:
+  vehicle:
+    aliases: [ride]
+    description: Ride a vehicle
+    usage: /vehicle <type> [args ...]
+    permission: vehicles.cmd
+permissions:
+  vehicles.cmd:
+    description: Allow using /vehicle
+    default: op
+  vehicles.others:
+    description: Allow setting others'vehicles
+    default: op
