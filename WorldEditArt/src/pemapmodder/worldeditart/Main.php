@@ -9,7 +9,7 @@ use pocketmine\plugin\PluginBase;
 use pemapmodder\worldeditart\utils\spaces\Space;
 
 class Main extends PluginBase{
-	/** @var Space[] $sels */
+	/** @var Space[] $sels indexed with player entity IDs */
 	private $sels = [];
 	public function onEnable(){
 		//// permission ////
