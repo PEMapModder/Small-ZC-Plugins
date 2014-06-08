@@ -3,6 +3,7 @@
 namespace pemapmodder\worldeditart\utils\spaces;
 
 use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 
 class SphereSpace extends Space{
 	public function __construct(Position $centre, $radius){
@@ -21,6 +22,21 @@ class SphereSpace extends Space{
 				}
 			}
 		}
+		return $out;
 	}
-
+	public function getBlockList(){
+		$out = [];
+		foreach($this->getPosList() as $pos){
+			$out[] = $this->centre->getLevel()->getBlock($pos);
+		}
+		return $out;
+	}
+	public function isInside(Vector3 $v){
+		$out = true;
+		$out = ($out and $v->distance($this->centre) <= $this->radius);
+		if($v instanceof Position){
+			$out = ($out and $v->getLevel()->getName() === $this->centre->getLevel()->getName());
+		}
+		return $out;
+	}
 }

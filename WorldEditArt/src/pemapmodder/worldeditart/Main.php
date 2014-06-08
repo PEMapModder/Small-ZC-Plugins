@@ -12,6 +12,7 @@ use pemapmodder\worldeditart\utils\spaces\Space;
 class Main extends PluginBase{
 	/** @var Space[] $sels indexed with player entity IDs */
 	private $sels = [];
+	private $macros = [];
 	public function onEnable(){
 		//// permission ////
 		$wea = DefaultPermissions::registerPermission(new Permission("wea", "Allow using WorldEditArt commands", Permission::DEFAULT_OP));
@@ -56,6 +57,5 @@ class Main extends PluginBase{
 
 	}
 	public function macroCmd($cmd, array $args, Player $player){
-
 	}
 }
