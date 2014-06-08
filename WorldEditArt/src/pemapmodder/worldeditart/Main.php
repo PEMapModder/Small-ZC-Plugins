@@ -5,6 +5,7 @@ namespace pemapmodder\worldeditart;
 use pemapmodder\worldeditart\utils\MyPluginCommand;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pemapmodder\worldeditart\utils\spaces\Space;
 
@@ -44,5 +45,17 @@ class Main extends PluginBase{
 		$cmd->setDescription("Record/run a macro");
 		$cmd->setPermission("wea.macro");
 		$this->getServer()->getCommandMap()->register("wea", $cmd);
+	}
+	public function cutCmd($cmd, array $args, Player $player){
+
+	}
+	public function copyCmd($cmd, array $args, Player $player){
+
+	}
+	public function pasteCmd($cmd, array $args, Player $player){
+
+	}
+	public function macroCmd($cmd, array $args, Player $player){
+
 	}
 }

@@ -13,15 +13,46 @@ class MyPluginCommand extends Command implements PluginIdentifiableCommand{
 	const IN_GAME = 2;
 	const NO_SEL = 3;
 	const NO_PLAYER = 4;
+	const ANY = 0;
+	const CONSOLE_ONLY = 1;
+	const IN_GAME_ONLY = 2;
+	private $state = self::ANY;
 	public function __construct($name, Plugin $plugin, callable $exe){
 		$this->exe = $exe;
 		$this->plugin = $plugin;
+		$class = new \ReflectionClass($exe[0]);
+		$method = $class->getMethod($exe[1]);
+		if(isset($method->getParameters()[2])){
+			if($method->getParameters()[2]->getDeclaringClass()->getName() === "pocketmine\\Player"){
+				$this->setState(self::IN_GAME_ONLY);
+			}
+			elseif($method->getParameters()[2]->getDeclaringClass()->getName() === "pocketmine\\command\\ConsoleCommandSender"){
+				$this->setState(self::CONSOLE_ONLY);
+			}
+		}
+	}
+	public function setState($state){
+		$this->state = $state;
+	}
+	public function isInGameOnly(){
+		return $this->state === self::IN_GAME_ONLY;
+	}
+	public function isOnConsoleOnly(){
+		return $this->state === self::CONSOLE_ONLY;
 	}
 	public function getPlugin(){
 		return $this->plugin;
 	}
 	public function execute(CommandSender $issuer, $lbl, array $args){
-		$data = call_user_func($this->exe, $this->getName(), $args, $issuer);
+		if($this->isInGameOnly()){
+			$data = self::IN_GAME;
+		}
+		elseif($this->isOnConsoleOnly()){
+			$data = self::CONSOLE;
+		}
+		else{
+			$data = call_user_func($this->exe, $this->getName(), $args, $issuer);
+		}
 		switch(true){
 			case is_bool($data):
 				if($data === false){
