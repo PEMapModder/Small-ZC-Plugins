@@ -1,0 +1,6 @@
+name: PocketEnchant
+description: Enchantment in Pocket Edition!
+api: [1.0.0]
+version: alpha 0
+main: pemapmodder\pocketenchant\Main
+load: POSTWORLD

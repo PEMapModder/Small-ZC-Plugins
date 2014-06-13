@@ -2,20 +2,21 @@
 
 namespace pemapmodder\invgui;
 
+use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor as CmdExe;
-use pocketmine\command\CommandSender as Isr;
 use pocketmine\command\PluginCommand as Cmd;
 use pocketmine\event\Event;
-use pocketmine\event\EventExecutor as EvtExe;
+use pocketmine\plugin\EventExecutor as EvtExe;
 use pocketmine\event\EventPriority as EvtPrty;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
 use pocketmine\network\protocol\ContainerSetContentPacket;
+use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat as Font;
 
-class Main extends pocketmine\plugin\PluginBase implements CmdExe, Listener, EvtExe{
+class Main extends PluginBase implements CmdExe, Listener, EvtExe{
 	public static $inst = false;
 	public $sessions = array();
 	public $guiMap = false;
@@ -45,7 +46,7 @@ class Main extends pocketmine\plugin\PluginBase implements CmdExe, Listener, Evt
 		}
 		if($ia === "off"){
 			$this->sessions[$isr->getName()] = false;
-			$isr->sendInventory();
+			$isr->getInventory()->sendContents($isr);
 			$isr->sendMessage("Your InvGui status is now OFF.");
 			return true;
 		}
