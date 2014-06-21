@@ -28,7 +28,7 @@ class Main extends PluginBase implements Listener{
 		$ips = explode(PHP_EOL, file_get_contents($file)); // I HATE the annoying EOL difference. Why can't everyone just use the same one?
 		if(!in_array($ip = $p->getAddress(), $ips)){
 			$ips[] = $ip;
-			sort($ips);
+			sort($ips, SORT_STRING); // don't sort_natural
 		}
 	}
 	public function onCommand(Issuer $issuer, Cmd $cmd, $alias, array $args){
