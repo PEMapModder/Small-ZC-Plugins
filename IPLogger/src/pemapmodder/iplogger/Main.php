@@ -55,7 +55,11 @@ class Main extends PluginBase implements Listener{
 			return true;
 		}
 		$issuer->sendMessage("IP log of $name:");
-		$issuer->sendMessage(str_replace(PHP_EOL, "\n", file_get_contents($path)));
+		$msg = str_replace(PHP_EOL, ", ", file_get_contents($path));
+		if(substr($msg, -2) === ", "){
+			$msg = substr($msg, 0, -2);
+		}
+		$issuer->sendMessage($msg);
 		return true;
 	}
 	public function getPlayerFile(Player $player){
