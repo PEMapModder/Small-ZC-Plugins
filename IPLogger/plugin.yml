@@ -1,0 +1,27 @@
+name: IPLogger
+main: pemapmodder\iplogger\Main
+version: 1
+api: [1.0.0]
+author: PEMapModder
+load: PostWorld
+prefix: IPLogger
+commands:
+ iplog:
+  aliases: [iphist, iplog, ipl, iph]
+  description: "View the IP log of yours or other players'"
+  usage: /iplog [player = yourself]
+  permission: iplogger.iplog
+permissions:
+ iplogger:
+  description: Allow using everything of IPLogger
+  default: false
+  children:
+   iplogger.iplog:
+    description: Allow using command /iplog
+    default: true
+   iplogger.self.read:
+    description: Allow reading self's IP log
+    default: true
+   iplogger.other.read:
+    description: Allow reading others' IP log
+    default: op
