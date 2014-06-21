@@ -1,12 +1,12 @@
 name: IPLogger
 main: pemapmodder\iplogger\Main
-version: 1.2
+version: "1.2"
 api: [1.0.0]
 author: PEMapModder
 load: PostWorld
 commands:
  iplog:
-  aliases: [iphist, iplog, ipl, iph]
+  aliases: [iphist, ipl, iph]
   description: "View the IP log of yours or other players'"
   usage: /iplog [player = yourself]
   permission: iplogger.iplog
