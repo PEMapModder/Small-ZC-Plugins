@@ -5,6 +5,7 @@ namespace pemapmodder\worldeditart;
 use pemapmodder\worldeditart\utils\Macro;
 use pemapmodder\worldeditart\utils\MyPluginCommand;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
+use pocketfactions\utils\subcommand\SubcommandMap;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -25,7 +26,7 @@ class Main extends PluginBase implements Listener{
 	/** @var Position[] */
 	private $anchors = [];
 
-	private $macros = [];
+	private $recordingMacros = [];
 
 	public function onEnable(){
 		// config file
@@ -37,10 +38,7 @@ class Main extends PluginBase implements Listener{
 		$this->registerCommands();
 	}
 	private function registerCommands(){
-		$macro = new MyPluginCommand("macro", $this, array($this, "onMacroCmd"));
-		$macro->setDescription("WorldEditArt macros managing");
-		$macro->setUsage("/macro <start|end|run|anchor|list> [macro name]");
-		$this->getServer()->getCommandMap()->registerAll("worldeditart", [$macro]);
+		$wea = new SubcommandMap("wea", $this, "WorldEditArt main command", "wea.cmd");
 	}
 	public function onJoin(PlayerJoinEvent $event){
 		$this->blockTouchSessions[$event->getPlayer()->getID()] = self::BTS_NOTHING;
@@ -51,6 +49,17 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 	public function onInteract(PlayerInteractEvent $event){
-
+		$p = $event->getPlayer();
+		switch($this->blockTouchSessions[$p->getID()]){
+			case "":
+				break;
+		}
+	}
+	/**
+	 * @param Player $player
+	 * @return Position|bool
+	 */
+	public function getSelectedPoint(Player $player){
+		return false; // TODO
 	}
 }
