@@ -2,7 +2,7 @@ name: SimpleMacros
 author: PEMapModder
 description: Make macros of commands and run them in a once!
 main: pemapmodder\simplemacros\Main
-version: alpha 0
+version: 0
 load: POSTWORLD
 api: [1.0.0]
 commands:

@@ -1,6 +1,6 @@
 <?php
 
-namespace pemapmodder\simplemacros\Main;
+namespace pemapmodder\simplemacros;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -94,7 +94,7 @@ class Main extends PluginBase implements Listener{
 				if(isset($this->paused[$id])){
 					unset($this->stack[$id]);
 				}
-				$sender->sendMessage("You have successfully saved maro $name.");
+				$sender->sendMessage("You have successfully saved macro $name.");
 				break;
 			case "start":
 				if(!$sender->hasPermission("simplemacros.record")){
