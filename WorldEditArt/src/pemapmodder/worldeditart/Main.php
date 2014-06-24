@@ -2,19 +2,14 @@
 
 namespace pemapmodder\worldeditart;
 
-use pemapmodder\worldeditart\utils\Macro;
-use pemapmodder\worldeditart\utils\MyPluginCommand;
-use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
-use pocketfactions\utils\subcommand\SubcommandMap;
+use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pemapmodder\worldeditart\utils\spaces\Space;
 
 class Main extends PluginBase implements Listener{
 	// block touch sessions
@@ -38,7 +33,7 @@ class Main extends PluginBase implements Listener{
 		$this->registerCommands();
 	}
 	private function registerCommands(){
-		$wea = new SubcommandMap("wea", $this, "WorldEditArt main command", "wea.cmd");
+		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea"]);
 	}
 	public function onJoin(PlayerJoinEvent $event){
 		$this->blockTouchSessions[$event->getPlayer()->getID()] = self::BTS_NOTHING;

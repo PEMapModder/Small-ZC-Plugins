@@ -18,11 +18,11 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	 * @param Main $main
 	 * @param string $desc
 	 * @param string $mainPerm
-	 * @param string[] $aliases
+	 * @param string[]|string $aliases
 	 */
-	public function __construct($name, Main $main, $desc, $mainPerm, array $aliases = []){
+	public function __construct($name, Main $main, $desc, $mainPerm, $aliases = []){
 		$this->main = $main;
-		parent::__construct($name, $desc, null, $aliases);
+		parent::__construct($name, $desc, null, (array) $aliases);
 		$this->setPermission($mainPerm);
 	}
 	public function registerSubcommand(Subcommand $subcmd){

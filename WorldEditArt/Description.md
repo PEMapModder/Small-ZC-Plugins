@@ -10,7 +10,9 @@ A cuboid can be selected by two selected points. Select the first point, run `/w
 
 A cylinder needs to be selected by a command. First, select the base of the cylinder. Then, run `/wea cylsel <height> <radius>` to select it. The cylinder will grow for <height> blocks towards the linear direction you are looking at (west, east, north, south, directly downwards and directly upwards) with a base radius of <radius> blocks.
 
-A sphere also needs to be selected by
+A sphere also needs to be selected by a command. First, select the centre point of the sphere. Then, run `/wea sphsel <radius>` to select it. A sphere centered at your selected point with <radius> blocks of radius will be selected.
+
+If you want to test how your selection is, use `/wea seltest <radius>`
 
 ## Macros
 If you have not heard of macros, here it is.
