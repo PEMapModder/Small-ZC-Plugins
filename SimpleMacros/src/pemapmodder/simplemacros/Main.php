@@ -54,16 +54,7 @@ class Main extends PluginBase implements Listener{
 		$this->atts[$event->getPlayer()->getID()] = $event->getPlayer()->addAttachment($this);
 	}
 	public function onQuit(PlayerQuitEvent $event){
-		if(isset($this->stack[$id = $event->getPlayer()->getID()])){
-			unset($this->stack[$id]); // avoid bugs if the entity ID gets reused
-			$this->getLogger()->alert($event->getPlayer()->getDisplayName()." left the game. His recording macro has been deleted.");
-		}
-		if(isset($this->paused[$id])){
-			unset($this->stack[$id]);
-		}
-		if(isset($this->atts[$id])){
-			unset($this->atts[$id]);
-		}
+		$this->finalizePlayer($event->getPlayer(), true);
 	}
 	public function onCommand(CommandSender $sender, Command $cmd, $alias, array $args){
 		if(!isset($args[0])) return false;
@@ -195,5 +186,28 @@ class Main extends PluginBase implements Listener{
 			return explode("\n", file_get_contents($path));
 		}
 		return false;
+	}
+	public function onDisable(){
+		foreach($this->getServer()->getOnlinePlayers() as $p){
+			$this->finalizePlayer($p, false);
+		}
+	}
+	public function finalizePlayer(Player $player, $isQuit){
+		if(isset($this->stack[$id = $player->getID()])){
+			unset($this->stack[$id]); // avoid bugs if the entity ID gets reused
+			if($isQuit){
+				$this->getLogger()->alert($player->getDisplayName()." has quit, so his recording macro has been discarded.");
+			}
+			else{
+				$this->getLogger()->alert("Discarding recording macro of ".$player->getDisplayName()." due to plugin disable.");
+				$player->sendMessage("Your recording macro has been discarded due to SimpleMacros being disabled.");
+			}
+		}
+		if(isset($this->paused[$id])){
+			unset($this->stack[$id]);
+		}
+		if(isset($this->atts[$id])){
+			unset($this->atts[$id]);
+		}
 	}
 }
