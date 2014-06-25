@@ -37,9 +37,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		}
 		$cmd = array_shift($args);
 		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $cmd !== "help"){
-			if($this->subcmds[$cmd]->hasPermission($issuer) and $issuer->hasPermission($this->getPermission() . "." . strtolower($this->subcmds[$cmd]->getName()))){
+			if($this->subcmds[$cmd]->hasPermission($issuer)){
 				$this->subcmds[$cmd]->run($args, $issuer);
-			}else{
+			}
+			else{
 				$issuer->sendMessage("You don't have permission to do this!");
 			}
 		}else{
@@ -66,9 +67,6 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		$out = [];
 		foreach($this->subcmds as $cmd){
 			if(!$cmd->hasPermission($sender)){
-				continue;
-			}
-			if(!$sender->hasPermission($this->getPermission().".".strtolower($cmd->getName()))){
 				continue;
 			}
 			$output = "";

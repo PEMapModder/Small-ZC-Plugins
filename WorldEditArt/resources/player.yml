@@ -1,0 +1,4 @@
+---
+wand-id: false
+wand-damage: false # false for default, true for any
+...

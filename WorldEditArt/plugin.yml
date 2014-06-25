@@ -4,3 +4,38 @@ version: 1.0
 api: [1.0.0]
 load: POSTWORLD
 main: pemapmodder\worldeditart
+permissions:
+  wea:
+    description: Allow using all WorldEditArt functions
+    children:
+      wea.cmd:
+        description: Allow using command /wea
+      wea.sel:
+        description: Allow making selections
+        children:
+          wea.sel.pt:
+            description: Allow making point selections
+            children:
+              wea.sel.pt.here:
+                description: Allow selecting a point by the player's self location
+              wea.sel.pt.cmd:
+                description: Allow using subcommand /wea wand plus selecting points using wands
+      wea.wand:
+        description: Allow using everything of /wea wand
+        children:
+          wea.wand.check:
+            description: Allow checking own wand
+          wea.wand.set:
+            description: Allow setting own wand
+            children:
+              wea.wand.set.hand:
+                description: Allow using subcommand /wea wand hand
+              wea.wand.set.named:
+                description: Allow using subcommand /wea wand <id|name>
+      wea.macro:
+        description: Allow using all features of macros
+        children:
+          wea.macro.record:
+            description: Allow recording macros
+          wea.macro.run:
+            description: Allow running macros

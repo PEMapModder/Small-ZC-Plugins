@@ -1,0 +1,6 @@
+---
+## Wands
+# The default wand item ID
+wand-id: 292
+# leave true for any damage values
+wand-damage: true

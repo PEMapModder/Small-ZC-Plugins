@@ -3,16 +3,16 @@ WorldEditArt
 WorldEditArt is a professional world editor that is very convenient for building. It includes the following features:
 
 ## Convenient coordinate selection
-You can define your own wand using `/wea wand <item>` or check it via `/wea wand`. If you touch a block with a wand, your selected position will be the touched block. You can also select your current standing/flying position by `/wea sel here`.
+You can define your own wand using `/wea wand <item>`, set to the current held item using `/wea wand hand` or check it via `/wea wand`. If you touch a block with a wand, your selected position will be the touched block. You can also select your current standing/flying position by `/wea sel here`.
 
 ##Cuboid/Cylinder/Sphere selection, replacing, editing and copying
-A cuboid can be selected by two selected points. Select the first point, run `/wea sel1`, select the second point, run `/wea sel2`, then you have the cuboid block selected. You can change any of the points by selecting it again. You can select the second point first; it doesn't matter. It can also be selected by a command. First, select the starting point of the cuboid. Then run the command `/wea cubsel <diagonal>`. A line will grow for <diagonal> blocks towards the direction you are looking at, and the smallest right cuboid that can fit the line will be selected.
+A cuboid can be selected by two selected points. Select the first point, run `/wea sel 1`, select the second point, run `/wea sel 2`, then you have the cuboid block selected. You can change any of the points by selecting it again. You can select the second point first; it doesn't matter. It can also be selected by a command. First, select the starting point of the cuboid. Then run the command `/wea sel cub <diagonal>`. A line will grow for <diagonal> blocks towards the direction you are looking at, and the smallest right cuboid that can fit the line will be selected.
 
-A cylinder needs to be selected by a command. First, select the base of the cylinder. Then, run `/wea cylsel <height> <radius>` to select it. The cylinder will grow for <height> blocks towards the linear direction you are looking at (west, east, north, south, directly downwards and directly upwards) with a base radius of <radius> blocks.
+A cylinder needs to be selected by a command. First, select the base of the cylinder. Then, run `/wea sel cyl <height> <radius>` to select it. The cylinder will grow for <height> blocks towards the linear direction you are looking at (west, east, north, south, directly downwards and directly upwards) with a base radius of <radius> blocks.
 
-A sphere also needs to be selected by a command. First, select the centre point of the sphere. Then, run `/wea sphsel <radius>` to select it. A sphere centered at your selected point with <radius> blocks of radius will be selected.
+A sphere also needs to be selected by a command. First, select the centre point of the sphere. Then, run `/wea sel sph <radius>` to select it. A sphere centered at your selected point with <radius> blocks of radius will be selected.
 
-If you want to test how your selection is, use `/wea seltest <radius>`
+If you want to test how your selection is, use `/wea sel test <radius>`
 
 ## Macros
 If you have not heard of macros, here it is.

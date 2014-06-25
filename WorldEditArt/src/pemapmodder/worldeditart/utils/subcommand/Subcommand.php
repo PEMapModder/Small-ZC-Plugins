@@ -17,19 +17,16 @@ abstract class Subcommand{
 	const WRONG_USE = false;
 	const NO_PLAYER = 3;
 	const NO_SELECTION = 4;
-	/** @var string */
-	protected $name;
+	protected $main;
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
 	/**
 	 * @param Main $main
-	 * @param $name
 	 * @param string $callable
 	 * @param string $permCheck
 	 */
-	public function __construct(Main $main, $name, $callable = "onRun", $permCheck = "checkPermission"){
+	public function __construct(Main $main, $callable = "onRun", $permCheck = "checkPermission"){
 		$this->main = $main;
-		$this->name = $name;
 		$rc = new \ReflectionClass($this);
 		$this->callable = $callable;
 		$this->permCheck = $permCheck;
@@ -95,9 +92,7 @@ abstract class Subcommand{
 		}
 		return;
 	} // I made these functions final to avoid accidental override
-	public final function getName(){
-		return $this->name;
-	}
+	public abstract function getName();
 	public final function getMain(){
 		return $this->main;
 	}
