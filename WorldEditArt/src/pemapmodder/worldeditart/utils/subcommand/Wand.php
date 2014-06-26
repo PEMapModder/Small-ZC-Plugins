@@ -41,7 +41,7 @@ class Wand extends Subcommand{
 		if(!$player->hasPermission("wea.wand.set.named")){
 			return self::NO_PERM;
 		}
-		$name = implode("_", $args);
+		$name = strtoupper(implode("_", $args));
 		if(is_numeric(str_replace(":", "", $name))){
 			$tokens = explode(":", $name);
 			$damage = true;

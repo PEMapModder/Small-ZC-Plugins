@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\spaces;
 
+use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
@@ -38,5 +39,8 @@ class SphereSpace extends Space{
 			$out = ($out and $v->getLevel()->getName() === $this->centre->getLevel()->getName());
 		}
 		return $out;
+	}
+	public function __toString(){
+		return "a sphere centered at ".Main::posToStr($this->centre)." of radius {$this->radius}";
 	}
 }

@@ -4,6 +4,7 @@ version: 1.0
 api: [1.0.0]
 load: POSTWORLD
 main: pemapmodder\worldeditart
+description: A powerful and advanced world editor
 permissions:
   wea:
     description: Allow using all WorldEditArt functions
@@ -18,8 +19,45 @@ permissions:
             children:
               wea.sel.pt.here:
                 description: Allow selecting a point by the player's self location
-              wea.sel.pt.cmd:
-                description: Allow using subcommand /wea wand plus selecting points using wands
+              wea.sel.pt.wand:
+                description: Allow using subcommand plus selecting points using wands
+              wea.sel.cubpts:
+                description: Allow making cuboid selections by /wea sel <1|2>
+              wea.sel.cub:
+                description: Allow making cuboid selections by /wea sel cub
+              wea.sel.cyl:
+                description: Allow making cylinder selections
+              wea.sel.sph:
+                description: Allow making sphere selections
+              wea.sel.check:
+                description: Allow checking the player's current selection
+      wea.set:
+        description: Allow using everything of /wea set
+        children:
+          wea.set.sphere:
+            description: Allow setting the blocks in a selected sphere
+          wea.set.cylinder:
+            description: Allow setting the blocks in a selected cylinder
+          wea.set.cuboid:
+            description: Allow setting the blocks in a selected cuboid
+      wea.replace:
+        description: Allow using everything of /wea replace
+        children:
+          wea.replace.sphere:
+            description: Allow replacing the blocks in a selected sphere
+          wea.replace.cylinder:
+            description: Allow replacing the blocks in a selected cylinder
+          wea.replace.cuboid:
+            description: Allow replacing the blocks in a selected cuboid
+      wea.test:
+        description: Allow using everything of /wea test
+        children:
+          wea.test.sphere:
+            description: Allow testing sphere selections
+          wea.test.cylinder:
+            description: Allow testing cylinder selections
+          wea.test.cuboid:
+            description: Allow testing cuboid selections
       wea.wand:
         description: Allow using everything of /wea wand
         children:

@@ -4,3 +4,8 @@
 wand-id: 292
 # leave true for any damage values
 wand-damage: true
+
+## Version compatibility
+## Changing these value could lead to dangerous crashes.
+# If PocketMine and MCPE are updated such that the world maximum height is no longer 127, change this. This value is NOT to increase the world height. It is only an in-case support in case MCPE now supports higher worlds but this plugin is not yet updated.
+maximum world height: 127

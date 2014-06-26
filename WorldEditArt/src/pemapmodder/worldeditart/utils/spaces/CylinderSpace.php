@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\spaces;
 
+use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
@@ -94,5 +95,41 @@ class CylinderSpace extends Space{
 			$out = ($out and $v->getLevel()->getName() === $this->base->getLevel()->getName());
 		}
 		return $out;
+	}
+	public function __toString(){
+		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".Main::posToStr($this->base)." with {$this->height} blocks long";
+	}
+	public function axisToStr($axis){
+		if($axis === self::X){
+			return "X";
+		}
+		if($axis === self::Y){
+			return "Y";
+		}
+		return "Z";
+	}
+	public static function getVector($yaw, $pitch){
+		$oldYawRef = $yaw;
+		if($pitch > 45){ // >= or > ?
+			return "y-";
+		}
+		if($pitch < -45){
+			return "y+";
+		}
+		$yaw += 45;
+		$yaw %= 360;
+		$yaw = (int) ($yaw / 90);
+		switch($yaw){
+			case 0:
+				return "z+";
+			case 1:
+				return "x-";
+			case 2:
+				return "z-";
+			case 3:
+				return "x+";
+		}
+		trigger_error("Yaw could not be parsed correctly as a vector in WorldEditArt [pemapmodder\\worldeditart\\utils\\spaces\\CylinderSpace::getVector($oldYawRef, $pitch)", E_USER_WARNING);
+		return false;
 	}
 }

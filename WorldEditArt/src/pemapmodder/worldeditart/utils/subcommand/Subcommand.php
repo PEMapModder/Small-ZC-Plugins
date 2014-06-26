@@ -3,6 +3,7 @@
 namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\level\Position;
@@ -13,10 +14,14 @@ abstract class Subcommand{
 	const CONSOLE = 1;
 	const PLAYER = 2;
 	const SELECTED = 3;
+	const SEL_SPACE = 4;
 	const NO_PERM = true;
 	const WRONG_USE = false;
 	const NO_PLAYER = 3;
 	const NO_SELECTION = 4;
+	const NO_SELECTED_POINT = 5;
+	const NO_BLOCK = 6;
+	const NO_ITEM = 7;
 	protected $main;
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
@@ -46,6 +51,9 @@ abstract class Subcommand{
 						case "pocketmine\\level\\Position":
 							$this->issuer = self::SELECTED;
 							break;
+						case "pemapmodder\\worldeditart\\utils\\spaces\\Space":
+							$this->issuer = self::SEL_SPACE;
+							break;
 					}
 				}
 			}
@@ -55,6 +63,7 @@ abstract class Subcommand{
 			return;
 		}
 	}
+	// I made these functions final to avoid accidental override
 	public final function run(array $args, CommandSender $sender){
 		if($this->issuer === self::CONSOLE and !($sender instanceof ConsoleCommandSender)){
 			$sender->sendMessage("Please run this command in-game.");
@@ -66,7 +75,21 @@ abstract class Subcommand{
 		}
 		if($this->issuer === self::SELECTED){
 			$p = $this->main->getSelectedPoint($sender);
-			$result = call_user_func(array($this, $this->callable), $args, $p, $sender);
+			if($p instanceof Position){
+				$result = call_user_func(array($this, $this->callable), $args, $p, $sender);
+			}
+			else{
+				$result = self::NO_SELECTED_POINT;
+			}
+		}
+		elseif($this->issuer === self::SEL_SPACE){
+			$space = $this->main->getSelection($sender);
+			if($space instanceof Space){
+				$result = call_user_func(array($this, $this->callable), $args, $space, $sender);
+			}
+			else{
+				$result = self::NO_SELECTION;
+			}
 		}
 		else{
 			$result = call_user_func(array($this, $this->callable), $args, $sender);
@@ -75,27 +98,35 @@ abstract class Subcommand{
 			$sender->sendMessage($result);
 			return;
 		}
-		if($result === self::WRONG_USE){
-			$sender->sendMessage("Usage: {$this->getUsage()}");
-			return;
-		}
 		switch($result){
+			case self::WRONG_USE:
+				$sender->sendMessage("Usage: {$this->getUsage()}");
+				break;
+			case self::NO_PERM:
+				$sender->sendMessage("You don't have permission to do this!");
+				break;
 			case self::NO_PLAYER:
 				$sender->sendMessage("Player not found!");
 				break;
 			case self::NO_SELECTION:
 				$sender->sendMessage("You must make a selection first!");
 				break;
-			case self::NO_PERM:
-				$sender->sendMessage("You don't have permission to do this!");
+			case self::NO_SELECTED_POINT:
+				$sender->sendMessage("You must select a point first!");
+				break;
+			case self::NO_BLOCK:
+				$sender->sendMessage("Block not found!");
+				break;
+			case self::NO_ITEM:
+				$sender->sendMessage("Item not found!");
 				break;
 		}
 		return;
-	} // I made these functions final to avoid accidental override
-	public abstract function getName();
+	}
 	public final function getMain(){
 		return $this->main;
 	}
+	public abstract function getName();
 	public abstract function getDescription();
 	public abstract function getUsage();
 	/**
@@ -109,9 +140,15 @@ abstract class Subcommand{
 		}
 		if($this->issuer === self::SELECTED){
 			if(!($sender instanceof Player) or !(($p = $this->main->getSelectedPoint($sender)) instanceof Position)){
-				return false;
+				return true;
 			}
 			return call_user_func($callable, $p, $sender);
+		}
+		if($this->issuer === self::SEL_SPACE){
+			if(!($sender instanceof Player) or !(($space = $this->main->getSelection($sender)) instanceof Space)){
+				return true;
+			}
+			return call_user_func($callable, $space, $sender);
 		}
 		return call_user_func($callable, $sender);
 	}
