@@ -15,16 +15,29 @@ A sphere also needs to be selected by a command. First, select the centre point 
 If you want to test how your selection is, use `/wea test <block>`
 
 ### Copying/cutting selections
+After selecting a space, you may want to copy it or move it to another place. This is when you want to use the clipboard. After making a space selection, run the command `/wea copy` or `/wea cut`. Your clipboard, which will be reset every time you rejoin, will contain a copy of the current blocks at that space. Then you can do anything to that area, but these actions won't affect your clipboard. Select a point and run the command `/wea paste` to paste the copied content.
 
+If you want to copy with the anchor at a specific point, use `/wea cut|copy -a` instead. It will copy with the anchor at your selected point instead of your current location.
 
 ### Global clipboard
+Global clipboards are saved after the server restarts, and can be used by all users with the permission to run the paste command.
+
+Global clipboards can be copied to as the same way as normal clipboards except that you have to put `-g <name>` at the end of command. Examples:
+
+```
+/wea copy -g mycopy
+/wea cut -a -g copy2
+/wea copy -g -a pasteII
+```
+
+To paste them, use `/wea paste -g <name>`.
 
 ## Macros
 If you have not heard of macros, here it is.
 
 A macro is like a robot that watches what you have done and do that again for you when you ask it to. When you start recording a macro, all blocks that you place, relative to your _anchor_, will be recorded. When you run the macro at another anchor, it can repeat all you have done before, relative to the new anchor. For example, if you place a block above your anchor, when you run the macro at another anchor, the same block will be placed above the anchor. Therefore, it is useful for running spleef manually, for example.
 
-With this plugin, if you want to use macros, first you have to set an anchor by `/wea macro anchor` after a selecting a block. If you want your current location to be the anchor instead, use `/wea macro anchor me`. Then, you can start recording the macro using `/wea macro start <name>`. Stop and save the macro using `/wea macro stop`. The macro will be saved into plugins/WorldEditart/macros/<name>.mcr in a compact format. (which means you can read it or edit it without a hex editor unless you are an ASCII expert) If the macro already exists or another operator is recording it when you start, you will be required to choose another name. Later, (optionally after choosing another anchor) you can use `/wea macro run <name>` to run the macro again. Note that "later" refers to any time after the macro has been saved, which includes after a server restart.
+With this plugin, if you want to use macros, first you have to set an anchor by `/wea anchor` after a selecting a block. If you want your current location to be the anchor instead, use `/wea anchor me`. Then, you can start recording the macro using `/wea macro start <name>`. Stop and save the macro using `/wea macro stop`. The macro will be saved into plugins/WorldEditArt/macros/<name>.mcr in a compact binary format. (which means you cannot read it or edit it without a hex editor unless you are an ASCII expert) If the macro already exists or another operator is recording it when you start, you will be required to choose another name. Later, (optionally after choosing another anchor) you can use `/wea macro run <name>` to run the macro again. Note that "later" refers to any time after the macro has been saved, which includes after a server restart.
 
 Documentation
 ===
@@ -41,5 +54,17 @@ for each block place/break ->
     int The target block's z delta from the anchor
 ```
 
-## Global Clipboard File Format
-Global clipboard
+## Global Clipboard Clip File Format
+Saved in the GZIP format, the decompressed version is like this:
+
+```
+long the number of boards in this clip
+-> for each copied block:
+    long X
+    short Y
+    long Z
+    byte Block ID
+    byte Block damage
+    short Length of metadata
+    mixed Metadata
+```
