@@ -10,6 +10,17 @@ class SphereSpace extends Space{
 	public function __construct(Position $centre, $radius){
 		$this->centre = $centre;
 		$this->radius = $radius;
+		$y = $centre->y;
+		$y = [$y + $radius, $y - $radius];
+		$maxY = max($y);
+		$minY = min($y);
+		$maxHeight = 127;
+		if(defined("pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			$maxHeight = \pemapmodder\worldeditart\MAX_WORLD_HEIGHT; // **** PhpStorm
+		}
+		if($maxY > $maxHeight or $minY < 0){
+			throw new SelectionExceedWorldException("SphereSpace");
+		}
 	}
 	public function getPosList(){
 		$out = [];

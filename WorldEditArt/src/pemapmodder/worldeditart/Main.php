@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart;
 
-use pemapmodder\worldeditart\utils\RecordingMacro;
+use pemapmodder\worldeditart\utils\macro\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\Anchor;
 use pemapmodder\worldeditart\utils\subcommand\Macro;
@@ -35,11 +35,17 @@ class Main extends PluginBase implements Listener{
 	/** @var Position[] */
 	private $anchors = [];
 	private $macros = [];
+	public function onLoad(){
+		$this->saveDefaultConfig();
+		$maxHeight = $this->getConfig()->get("maximum world height");
+		if(!defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			define($path, $maxHeight);
+		}
+	}
 	public function onEnable(){
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder()."players/");
 		$this->saveDefaultConfig();
-		$this->getConfig(); // just to load it
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->registerCommands();
 	}
@@ -83,7 +89,7 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
-		if($this->isWand($p, $event->getItem())){
+		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
 			$this->setSelectedPoint($p, $event->getBlock());
 		}
 	}
@@ -114,6 +120,9 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function getRecordingMacro(Player $player){
 		return isset($this->macros[$player->getID()]) ? $this->macros[$player->getID()]:false;
+	}
+	public function setRecordingMacro(Player $player, RecordingMacro $macro){
+		$this->macros[$player->getID()] = $macro;
 	}
 	/**
 	 * @param Player $player

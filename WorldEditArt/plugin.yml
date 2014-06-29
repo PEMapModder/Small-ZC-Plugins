@@ -21,16 +21,19 @@ permissions:
                 description: Allow selecting a point by the player's self location
               wea.sel.pt.wand:
                 description: Allow using subcommand plus selecting points using wands
-              wea.sel.cubpts:
-                description: Allow making cuboid selections by /wea sel <1|2>
-              wea.sel.cub:
-                description: Allow making cuboid selections by /wea sel cub
-              wea.sel.cyl:
-                description: Allow making cylinder selections
-              wea.sel.sph:
-                description: Allow making sphere selections
-              wea.sel.check:
-                description: Allow checking the player's current selection
+          wea.sel.cub:
+            description: Allow making cuboid selectiosn by any methods
+            children:
+              wea.sel.cub.selpts:
+                description: Allow making cuboid selections by /wea sel <s1|s2> (using current selected point)
+              wea.sel.cub.here:
+                description: Allow making cuboid selections by /wea sel <1|2> (using current position)
+              wea.sel.cub.dir:
+                description: Allow making cuboid selections by /wea sel cub (directional selection)
+          wea.sel.cyl:
+            description: Allow making cylinder selections by /wea sel cyl
+          wea.sel.sph:
+            description: Allow making sphere selections by /wea sel sph
       wea.set:
         description: Allow using everything of /wea set
         children:

@@ -39,6 +39,9 @@ A macro is like a robot that watches what you have done and do that again for yo
 
 With this plugin, if you want to use macros, first you have to set an anchor by `/wea anchor` after a selecting a block. If you want your current location to be the anchor instead, use `/wea anchor me`. Then, you can start recording the macro using `/wea macro start <name>`. Stop and save the macro using `/wea macro stop`. The macro will be saved into plugins/WorldEditArt/macros/<name>.mcr in a compact binary format. (which means you cannot read it or edit it without a hex editor unless you are an ASCII expert) If the macro already exists or another operator is recording it when you start, you will be required to choose another name. Later, (optionally after choosing another anchor) you can use `/wea macro run <name>` to run the macro again. Note that "later" refers to any time after the macro has been saved, which includes after a server restart.
 
+### Why would I want to use macros?
+Sometimes, you don't always want to copy full selections. You may just want to copy a few blocks, but these blocks are not together. For example, you built a Herobrine statue. You want to copy another next to it, but if you use the cuboid clipboard, the clipboard will also copy some blocks at the ceiling. This is when you want to use macros, where only the blocks you build (the blocks recorded in the macro) will be copied.
+
 Documentation
 ===
 ## .mcr File Format
@@ -46,18 +49,23 @@ Documentation
 
 Macros are saved as **/plugins/WorldEditArt/macros/<macro name>.mcr**. They are saved in the GZIP compression format. The following is a documentation of the decompressed version of these files:
 ```
+byte Length of the author's name
+string The author's name
 long The number of block places/breaks in this macro
-for each block place/break ->
-    byte Type of action: 0 for place, 1 for break
-    int The target block's x delta from the anchor
+-> for each block place/break:
+    byte Block ID
+    byte Placed block damage
+    long The target block's x delta from the anchor
     short The target block's y delta from the anchor
-    int The target block's z delta from the anchor
+    long The target block's z delta from the anchor
 ```
 
 ## Global Clipboard Clip File Format
 Saved in the GZIP format, the decompressed version is like this:
 
 ```
+byte Length of the author name
+string The author's name
 long the number of boards in this clip
 -> for each copied block:
     long X
@@ -65,6 +73,4 @@ long the number of boards in this clip
     long Z
     byte Block ID
     byte Block damage
-    short Length of metadata
-    mixed Metadata
 ```

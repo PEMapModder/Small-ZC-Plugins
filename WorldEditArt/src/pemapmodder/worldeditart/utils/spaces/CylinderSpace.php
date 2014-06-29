@@ -15,10 +15,27 @@ class CylinderSpace extends Space{
 	/** @var int */
 	private $axis;
 	public function __construct($axis, $radius, Position $base, $height){
-		$this->base = $base;
+		$this->base = $base->floor();
 		$this->height = $height;
 		$this->radius = $radius;
 		$this->axis = $axis % 3;
+		if($this->axis === self::Y){
+			$y = [$this->base->getY(), $this->base->getY() + $height];
+			$maxY = max($y);
+			$minY = min($y);
+		}
+		else{
+			$y = [$this->base->getY() + $radius, $this->base->getY() - $radius];
+			$maxY = max($y);
+			$minY = min($y);
+		}
+		$maxHeight = 127;
+		if(defined("pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			$maxHeight = \pemapmodder\worldeditart\MAX_WORLD_HEIGHT; // **** PhpStorm
+		}
+		if($maxY > $maxHeight or $minY < 0){
+			throw new SelectionExceedWorldException("CylinderSpace");
+		}
 	}
 	public function getPosList(){
 		$out = [];
@@ -111,23 +128,23 @@ class CylinderSpace extends Space{
 	public static function getVector($yaw, $pitch){
 		$oldYawRef = $yaw;
 		if($pitch > 45){ // >= or > ?
-			return "y-";
+			return [self::Y, true];
 		}
 		if($pitch < -45){
-			return "y+";
+			return [self::Y, false];
 		}
 		$yaw += 45;
 		$yaw %= 360;
 		$yaw = (int) ($yaw / 90);
 		switch($yaw){
 			case 0:
-				return "z+";
+				return [self::Z, false];
 			case 1:
-				return "x-";
+				return [self::X, true];
 			case 2:
-				return "z-";
+				return [self::Z, true];
 			case 3:
-				return "x+";
+				return [self::X, false];
 		}
 		trigger_error("Yaw could not be parsed correctly as a vector in WorldEditArt [pemapmodder\\worldeditart\\utils\\spaces\\CylinderSpace::getVector($oldYawRef, $pitch)", E_USER_WARNING);
 		return false;

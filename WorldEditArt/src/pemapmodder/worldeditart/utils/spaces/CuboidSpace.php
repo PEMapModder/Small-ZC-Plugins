@@ -69,6 +69,13 @@ class CuboidSpace extends Space{
 			max($this->raw0->getFloorZ(), $this->raw1->getFloorZ()),
 			$this->raw1->getLevel()
 		);
+		$maxHeight = 127;
+		if(defined("pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			$maxHeight = \pemapmodder\worldeditart\MAX_WORLD_HEIGHT; // **** PhpStorm
+		}
+		if($this->baked1->getFloorY() > $maxHeight or $this->baked0->getFloorY() < 0){
+			throw new SelectionExceedWorldException("CuboidSpace");
+		}
 	}
 	public function get0(){
 		$this->bake();
