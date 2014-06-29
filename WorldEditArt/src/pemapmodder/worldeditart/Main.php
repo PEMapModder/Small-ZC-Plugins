@@ -85,7 +85,7 @@ class Main extends PluginBase implements Listener{
 		return false;
 	}
 	public function setSelectedPoint(Player $player, Position $pos){
-		$this->selectedPoints[$player->getID()] = $pos;
+		$this->selectedPoints[$player->getID()] = clone $pos;
 	}
 	public function getPlayerWand(Player $player, &$isDamageLimited){
 		$id = false;
@@ -143,7 +143,7 @@ class Main extends PluginBase implements Listener{
 		return false;
 	}
 	public function setSelection(Player $player, Space $space){
-		$this->selections[$player->getID()] = $space;
+		$this->selections[$player->getID()] = clone $space;
 	}
 	/**
 	 * @param Player $player
@@ -160,7 +160,7 @@ class Main extends PluginBase implements Listener{
 		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
 	}
 	public function setAnchor(Player $player, Position $anchor){
-		$this->anchors[$player->getID()] = $anchor;
+		$this->anchors[$player->getID()] = clone $anchor;
 	}
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
