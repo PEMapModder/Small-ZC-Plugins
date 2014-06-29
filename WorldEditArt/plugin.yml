@@ -77,3 +77,15 @@ permissions:
             description: Allow recording macros
           wea.macro.run:
             description: Allow running macros
+      wea.anchor:
+        description: Allow managing everything about the player's own anchor
+        children:
+          wea.anchor.view:
+            description: Allow viewing own anchor
+          wea.anchor.set:
+            description: Allow setting own anchor via all methods
+            children:
+              wea.anchor.set.here:
+                description: Allow setting own anchor by current position
+              wea.anchor.set.sel:
+                description: Allow setting own anchor by the player's selected point

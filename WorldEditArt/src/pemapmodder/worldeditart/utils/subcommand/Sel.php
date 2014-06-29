@@ -53,7 +53,7 @@ class Sel extends Subcommand{
 					$current = $this->getMain()->getSelectedPoint($player);
 				}
 				$end = $current->add($player->getDirectionVector()->multiply($distance));
-				$this->setSelection($player, $current, $end);
+				$this->setSelection($player, $current, new Position($end->getX(), $end->getY(), $end->getZ(), $current->getLevel()));
 				return "";
 			case "cyl":
 				break;

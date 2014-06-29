@@ -22,6 +22,7 @@ abstract class Subcommand{
 	const NO_SELECTED_POINT = 5;
 	const NO_BLOCK = 6;
 	const NO_ITEM = 7;
+	const NO_ANCHOR = 8;
 	protected $main;
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
@@ -119,6 +120,9 @@ abstract class Subcommand{
 				break;
 			case self::NO_ITEM:
 				$sender->sendMessage("Item not found!");
+				break;
+			case self::NO_ANCHOR:
+				$sender->sendMessage("You don't have an anchor set!");
 				break;
 		}
 		return;

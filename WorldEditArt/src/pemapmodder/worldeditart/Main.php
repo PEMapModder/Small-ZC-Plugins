@@ -3,8 +3,12 @@
 namespace pemapmodder\worldeditart;
 
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\subcommand\Anchor;
 use pemapmodder\worldeditart\utils\subcommand\Macro;
+use pemapmodder\worldeditart\utils\subcommand\Sel;
+use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
+use pemapmodder\worldeditart\utils\subcommand\Test;
 use pemapmodder\worldeditart\utils\subcommand\Wand;
 use pocketmine\block\Block;
 use pocketmine\event\Listener;
@@ -28,6 +32,7 @@ class Main extends PluginBase implements Listener{
 	private $selectedPoints = [];
 	/** @var utils\spaces\Space[] */
 	private $selections = [];
+	private $anchors = [];
 	public function onEnable(){
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder()."players/");
@@ -45,7 +50,11 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w"]); // I expect them to use fallback prefix if they use /w
 		$wea->registerAll([
+			new Anchor($this),
 			new Macro($this),
+			new Sel($this),
+			new Set($this),
+			new Test($this),
 			new Wand($this),
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
@@ -146,6 +155,12 @@ class Main extends PluginBase implements Listener{
 	public function scheduleMustEndEvent(PluginTask $task, $delay){
 		$id = $this->getServer()->getScheduler()->scheduleDelayedTask($task, $delay)->getTaskId();
 		$this->mustEnds[$id] = $task;
+	}
+	public function getAnchor(Player $player){
+		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
+	}
+	public function setAnchor(Player $player, Position $anchor){
+		$this->anchors[$player->getID()] = $anchor;
 	}
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
