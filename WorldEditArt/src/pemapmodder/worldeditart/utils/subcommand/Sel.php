@@ -30,6 +30,7 @@ class Sel extends Subcommand{
 				$pos = new Position($player->getX(), $player->getY(), $player->getZ(), $player->getLevel());
 				$this->getMain()->setSelectedPoint($player, $pos);
 				return "You have selected ".$this->posToStr($pos).".";
+
 			case "1":
 				if(!$player->hasPermission("wea.sel.cubpts")){
 					return self::NO_PERM;

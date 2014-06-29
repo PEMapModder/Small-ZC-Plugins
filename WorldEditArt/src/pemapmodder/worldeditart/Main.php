@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart;
 
+use pemapmodder\worldeditart\utils\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\Anchor;
 use pemapmodder\worldeditart\utils\subcommand\Macro;
@@ -11,6 +12,8 @@ use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pemapmodder\worldeditart\utils\subcommand\Test;
 use pemapmodder\worldeditart\utils\subcommand\Wand;
 use pocketmine\block\Block;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -23,16 +26,15 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\PluginTask;
 
 class Main extends PluginBase implements Listener{
-	const W_NOTHING = 0;
 	/** @var PluginTask[] */
 	private $mustEnds;
-	/** @var int[] $wandSessions */
-	private $wandSessions = [];
 	/** @var Position[] $selectedPoints */
 	private $selectedPoints = [];
 	/** @var utils\spaces\Space[] */
 	private $selections = [];
+	/** @var Position[] */
 	private $anchors = [];
+	private $macros = [];
 	public function onEnable(){
 		@mkdir($this->getDataFolder());
 		@mkdir($this->getDataFolder()."players/");
@@ -60,19 +62,58 @@ class Main extends PluginBase implements Listener{
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
 	public function onJoin(PlayerJoinEvent $event){
-		$this->wandSessions[$event->getPlayer()->getID()] = self::W_NOTHING;
+
 	}
 	public function onQuit(PlayerQuitEvent $event){
-		if(isset($this->wandSessions[$k = $event->getPlayer()->getID()])){
-			unset($this->wandSessions[$k]);
+		$i = $event->getPlayer()->getID();
+		if(isset($this->selectedPoints[$i])){
+			unset($this->selectedPoints[$i]);
+		}
+		if(isset($this->selections[$i])){
+			unset($this->selections[$i]);
+		}
+		if(isset($this->anchors[$i])){
+			unset($this->anchors[$i]);
 		}
 	}
+	/**
+	 * @param PlayerInteractEvent $event
+	 * @priority MONITOR
+	 * @ignoreCancelled true
+	 */
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
-		switch($this->wandSessions[$p->getID()]){
-			case self::W_NOTHING:
-				return;
+		if($this->isWand($p, $event->getItem())){
+			$this->setSelectedPoint($p, $event->getBlock());
 		}
+	}
+	public function onBlockPlace(BlockPlaceEvent $event){
+		$this->onBlockTouched($event->getPlayer(), $event->getBlock(), false);
+	}
+	/**
+	 * @param BlockBreakEvent $event
+	 * @priority MONITOR
+	 * @ignoreCancelled true
+	 */
+	public function onBlockBreak(BlockBreakEvent $event){
+		$this->onBlockTouched($event->getPlayer(), $event->getBlock(), true);
+	}
+	/**
+	 * @param Player $player
+	 * @param Block $block
+	 * @param bool $isBreak
+	 */
+	public function onBlockTouched(Player $player, Block $block, $isBreak){
+		if(($macro = $this->getRecordingMacro($player)) instanceof RecordingMacro){
+			$macro->addLog($block, $block, $isBreak);
+		}
+	}
+	/**
+	 * @param Player $player
+	 * @return RecordingMacro|bool
+	 */
+	public function getRecordingMacro(Player $player){
+		return isset($this->macros[$player->getID()]) ? $this->macros[$player->getID()]:false;
 	}
 	/**
 	 * @param Player $player
