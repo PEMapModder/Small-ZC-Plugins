@@ -3,3 +3,4 @@ author: PEMapModder
 version: 2.0
 api: [1.0.0]
 main: pemapmodder\dst\Main
+load: STARTUP
