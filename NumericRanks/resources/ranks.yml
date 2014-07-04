@@ -1,0 +1,11 @@
+---
+# the default rank
+default: player
+# the permission index for each rank
+watched: -50
+player: 0
+vip: 50
+trusted: 100
+admin: 150
+owner: 200
+...
