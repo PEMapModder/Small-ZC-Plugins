@@ -26,8 +26,9 @@ Global clipboards can be copied to as the same way as normal clipboards except t
 
 ```
 /wea copy -g mycopy
-/wea cut -a -g copy2
-/wea copy -g -a pasteII
+/wea cut -a -g copy 2
+/wea copy -g -a paste II (This command may not work as you expect. Instead, it will create a global clip named "-a paste II" without using reference point as anchor)
+/wea copy -g clip B -a (Neither will this work as expected. Instead, it will create a global clip named "clip B -a" without anchor reference point)
 ```
 
 To paste them, use `/wea paste -g <name>`.
@@ -60,7 +61,7 @@ long The number of block places/breaks in this macro
     long The target block's z delta from the anchor
 ```
 
-## Global Clipboard Clip File Format
+## Global Clipboard Clip File Format (.clp)
 Saved in the GZIP format, the decompressed version is like this:
 
 ```
@@ -68,9 +69,9 @@ byte Length of the author name
 string The author's name
 long the number of boards in this clip
 -> for each copied block:
-    long X
-    short Y
-    long Z
+    long X delta
+    short Y delta
+    long Z delta
     byte Block ID
     byte Block damage
 ```

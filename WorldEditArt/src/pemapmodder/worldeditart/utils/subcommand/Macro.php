@@ -50,7 +50,11 @@ class Macro extends Subcommand{
 				if(file_exists($this->getMain()->getDataFolder()."macros/$name.mcr")){
 					return "Macro $name already exists!";
 				}
-				$macro->saveTo(fopen($this->getMain()->getDataFolder()."macros/$name.mcr", "rb"));
+				$res = fopen($this->getMain()->getDataFolder()."macros/$name.mcr", "wb");
+				if(!is_resource($res)){
+					return "Failed to open output stream for \"$name.mcr\". Check if \"$name\" is a valid filename.";
+				}
+				$macro->saveTo($res);
 				return "Macro $name has been saved.";
 			case "pause":
 				$macro = $this->getMain()->getRecordingMacro($player);

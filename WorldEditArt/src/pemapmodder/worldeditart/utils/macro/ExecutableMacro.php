@@ -9,6 +9,7 @@ class ExecutableMacro{
 	/** @var MacroOperation[] */
 	private $ops = [];
 	public function __construct($string){
+		$string = gzdecode($string);
 		$offset = 0;
 		$length = substr($string, 0, 1); $offset += 1;
 		$this->author = substr($string, $offset, $length); $offset += 8;

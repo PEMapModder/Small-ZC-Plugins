@@ -43,7 +43,7 @@ class RecordingMacro{
 		return $output;
 	}
 	public function saveTo($res, $close = true){
-		fwrite($res, "$this");
+		fwrite($res, gzencode("$this"));
 		if($close){
 			fclose($res);
 		}
