@@ -1,0 +1,32 @@
+name: LagFixer
+description: Get rid of invisible players and get your correct health
+api: [1.0.0]
+author: PEMapModder
+version: 1.0
+main: pemapmodder\lagfixer\LagFixer
+commands:
+  show:
+    description: Show invisible players
+    usage: /show <player> or /show -all
+    permission: lagfixer.show
+  realhealth:
+    aliases: [rh]
+    description: Correct your health
+    usage: /realhealth
+    permissions: lagfixer.realhealth
+permissions:
+  lagfixer:
+    description: Allows using everything of LagFixer
+    children:
+      lagfixer.show:
+        description: Allows using /show
+        children:
+          lagfixer.show.player:
+            default: true
+            description: Allows using /show <player>
+          lagfixer.show.all:
+            default: true
+            description: Allows using /show -all
+      lagfixer.realhealth:
+        description: Allows using /realhealth
+        default: true
