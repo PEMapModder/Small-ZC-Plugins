@@ -16,7 +16,7 @@ class Macro extends Subcommand{
 		return "Manage WorldEditArt macros";
 	}
 	public function getUsage(){
-		return "<start|end|pause|resume|run|help>"; // TODO
+		return "<start|end|pause|resume|run|help>";
 	}
 	public function checkPermission(Player $player){
 		if(!($this->getMain()->getAnchor($player) instanceof Position)){

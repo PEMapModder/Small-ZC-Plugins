@@ -1,0 +1,6 @@
+name: TidyInventory
+author: PEMapModder
+version: alpha 0
+api: [1.0.0]
+main: pemapmodder\tidyinventory\Main
+description: Tidies player's inventory by sorting items according to their functionalities
