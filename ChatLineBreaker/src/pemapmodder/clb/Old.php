@@ -125,7 +125,6 @@ class ChatLineBreaker extends PluginBase implements Listener{
 				$msgs = $this->getTesterMessage();
 				$output .= array_shift($msgs);
 				foreach($msgs as $key=>$value){
-
 					$this->api->schedule(40 * ($key + 1), array($issuer, "sendChat"), $value, false, "ChatLineBreaker"); // why did you add this 5th arg...
 				}
 				$this->testing[] = $issuer->CID;
