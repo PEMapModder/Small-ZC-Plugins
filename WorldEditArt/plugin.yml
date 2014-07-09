@@ -92,3 +92,28 @@ permissions:
                 description: Allow setting own anchor by current position
               wea.anchor.set.sel:
                 description: Allow setting own anchor by the player's selected point
+      wea.clipboard:
+        description: Allow doing all clipboard-related things
+        children:
+          wea.clipboard.copy:
+            description: Allow doing all kinds of copying
+            children:
+              wea.clipboard.copy.cuboid:
+                description: Allow copying cuboids
+              wea.clipboard.copy.cylinder:
+                description: Allow copying cylinders
+              wea.clipboard.copy.sphere:
+                description: Allow copying spheres
+          wea.clipboard.cut:
+            description: Allow doing all kinds of cutting
+            children:
+              wea.clipboard.cut.cuboid:
+                description: Allow cutting cuboids
+              wea.clipboard.cut.cylinder:
+                description: Allow cutting cylinders
+              wea.clipboard.cut.sphere:
+                description: Allow cutting spheres
+          wea.clipboard.paste:
+            description: Allow pasting
+          wea.clipboard.global:
+            description: Allow cutting/copying into the global clipboard

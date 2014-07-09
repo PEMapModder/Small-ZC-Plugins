@@ -24,10 +24,13 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\PluginTask;
+use pocketmine\utils\Binary;
 
 class Main extends PluginBase implements Listener{
 	/** @var PluginTask[] */
 	private $mustEnds;
+	/** @var array[] */
+	private $clips = [];
 	/** @var Position[] $selectedPoints */
 	private $selectedPoints = [];
 	/** @var utils\spaces\Space[] */
@@ -35,6 +38,7 @@ class Main extends PluginBase implements Listener{
 	/** @var Position[] */
 	private $anchors = [];
 	private $macros = [];
+	private $globalClipPath;
 	public function onLoad(){
 		$this->saveDefaultConfig();
 		$maxHeight = $this->getConfig()->get("maximum world height");
@@ -48,6 +52,7 @@ class Main extends PluginBase implements Listener{
 		$this->saveDefaultConfig();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->registerCommands();
+		@mkdir($this->globalClipPath = $this->getDataFolder()."clips/");
 	}
 	public function onDisable(){
 		/*foreach($this->mustEnds as $id => $task){
@@ -81,6 +86,9 @@ class Main extends PluginBase implements Listener{
 		if(isset($this->anchors[$i])){
 			unset($this->anchors[$i]);
 		}
+	}
+	public function getClip(Player $player){
+		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
 	}
 	/**
 	 * @param PlayerInteractEvent $event
@@ -211,6 +219,61 @@ class Main extends PluginBase implements Listener{
 	}
 	public function setAnchor(Player $player, Position $anchor){
 		$this->anchors[$player->getID()] = clone $anchor;
+	}
+	public function isGlobalClipCreated($name){
+		return is_file($this->globalClipPath.$name.".clp");
+	}
+	public function getGlobalClip($name){
+		if(!$this->isGlobalClipCreated($name)){
+			return false;
+		}
+		$res = gzopen($this->globalClipPath.$name.".clp", "rb");
+		if(!is_resource($res)){
+			return false;
+		}
+		$author = gzread($res, ord(gzread($res, 1)));
+		$cnt = Binary::readLong(gzread($res, 8), false);
+		/** @var Block[] $blocks */
+		$blocks = [];
+		for($i = 0; $i < $cnt and !gzeof($res); $i++){
+			$x = Binary::readLong(gzread($res, 8));
+			$y = Binary::readShort(gzread($res, 2));
+			$z = Binary::readLong(gzread($res, 8));
+			$id = ord(gzread($res, 1));
+			$damage = ord(gzread($res, 1));
+			$blocks[] = Block::get($id, $damage, new Position($x, $y, $z, $this->getServer()->getDefaultLevel())); // any placeholder level will do.
+		}
+		gzclose($res);
+		if(count($blocks) !== $cnt){
+			trigger_error("Global clip $name was corrupted", E_USER_WARNING);
+			return false;
+		}
+		return [
+			"author" => $author,
+			"blocks" => $blocks
+		];
+	}
+	public function saveGlobalClip($name, array $data){
+		$path = $this->globalClipPath.$name.".clp";
+		@unlink($path);
+		$res = gzopen($this->globalClipPath.$name.".clp", "wb");
+		if(!is_resource($res)){
+			return "Unable to open stream for \"$name.clp\". Check if \"$name\" is a valid filename.";
+		}
+		gzwrite($res, chr(strlen($data["author"])));
+		gzwrite($res, $data["author"]);
+		gzwrite($res, Binary::writeLong(count($data["blocks"])));
+		/** @var Block $block */
+		foreach($data["blocks"] as $block){
+			gzwrite($res, Binary::writeLong($block->getX()));
+			gzwrite($res, Binary::writeShort($block->getY()));
+			gzwrite($res, Binary::writeLong($block->getZ()));
+			gzwrite($res, chr($block->getID()));
+			gzwrite($res, chr($block->getDamage()));
+		}
+		gzclose($res);
+		$this->getLogger()->info("New clip \"$name\" has been created on the global clipboard as $name.clp.");
+		return true;
 	}
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";

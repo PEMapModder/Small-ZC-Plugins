@@ -63,6 +63,7 @@ class Main extends PluginBase implements Listener{
 			case "stop":
 				if(!isset($this->stack[$k])){
 					$sender->sendMessage("You don't have a recording macro to stop!");
+					break;
 				}
 				if(!isset($args[0])){
 					$sender->sendMessage("Usage: /macro stop <name>");
@@ -71,14 +72,22 @@ class Main extends PluginBase implements Listener{
 				}
 				if(strtolower($name = array_shift($args)) === "ng"){
 					$sender->sendMessage("This NG macro has been discarded.");
-					return true;
+					// continue to run: unset stack
 				}
-				if($this->getMacro($name) !== false){
-					$sender->sendMessage("There is already a macro called $name!");
-					$sender->sendMessage("Don't worry, this command will not be recorded.");
-					break;
+				else{
+					if($this->getMacro($name) !== false){
+						$sender->sendMessage("There is already a macro called \"$name\"!");
+						$sender->sendMessage("Don't worry, this command will not be recorded.");
+						break;
+					}
+					$success = $this->saveMacro($name, $this->stack[$k]);
+					if(!$success){
+						$sender->sendMessage("Unable to create file. Perhaps \"$name\" is not a valid filename?");
+						$sender->sendMessage("Don't worry, this command will not be recorded.");
+						break;
+					}
+					// continue to run: unset stack
 				}
-				$this->saveMacro($name, $this->stack[$k]);
 				if(isset($this->stack[$id = $k])){ // copied xD
 					unset($this->stack[$id]); // avoid bugs if the entity ID gets reused
 				}
@@ -179,7 +188,8 @@ class Main extends PluginBase implements Listener{
 		return true;
 	}
 	public function saveMacro($name, $lines){
-		file_put_contents($this->getDataFolder()."macros/$name.txt", $lines);
+		$success = file_put_contents($this->getDataFolder()."macros/$name.txt", $lines);
+		return ($success !== false);
 	}
 	public function getMacro($name){
 		if(is_file($path = $this->getDataFolder()."macros/$name.txt")){

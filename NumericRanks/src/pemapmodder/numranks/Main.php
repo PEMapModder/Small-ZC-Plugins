@@ -1,67 +1,74 @@
 <?php
 
-namespace pempamodder\numranks;
+namespace pemapmodder\numranks;
 
-use pocketmine\utils\Config;
 use pocketmine\event\Listener;
+use pocketmine\permission\Permission;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener{
-	const MAGIC_PREFIX = "\0xffNUMRANK";
-	const MAGIC_SUFFIX = "FINAL\0x00\0xff\0x00"; // these are necessary to ensure that the writing of database is not corrupted
-	public $ranks;
-	public $opts;
-	const S_CONFIG;
+	/** @var Config */
+	private $ranks, $genConfig, $perms;
+	private $tmpPermTree = [];
 	public function onEnable(){
+		@mkdir($this->getDataFolder());
+		@mkdir($this->getDataFolder()."players/");
+		$this->initConfigs();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-		$this->scheduler = new PluginTask($this);
-		$this->getServer()->getScheduler()->scheduleDelayedTask($this->scheduler, self::S_CONFIG);
 	}
-	public function onRun($ticks){
-		switch($ticks % 20){
-			case self::S_CONFIG:
-				$this->initConfigs();
-				
-				break;
+	public function initConfigs(){
+		// ranks
+		$df = $this->getDataFolder();
+		if(is_file($df."rank-names.yml")){
+			rename($df."ranks-names.yml", $df."ranks.yml");
 		}
+		if(is_file($df."rank-names.txt")){
+			rename($df."rank-names.txt", $df."ranks.txt");
+		}
+		if(!is_file($df."ranks.txt") and !is_file($df."ranks.yml")){
+			stream_copy_to_stream($this->getResource("ranks.yml"), fopen($df."ranks.yml", "wt"));
+		}
+		$this->ranks = new Config(is_file($df."ranks.txt") ? $df."ranks.txt":$df."ranks.yml", Config::YAML);
+		$this->genConfig = new Config(is_file($df."config.txt") ? $df."config.txt":$df."config.yml", Config::YAML);
+		$permissions = $this->getServer()->getPluginManager()->getDefaultPermissions(true);
+		var_dump($permissions);
+		if($this->getConfig()->get("recursive-mapping")){
+			$permissions = $this->getServer()->getPluginManager()->getPermissions();
+			$read = [];
+			$parents = [];
+			foreach($permissions as $perm){
+				foreach($perm->getChildren() as $child){
+					$key = array_search($child, $parents);
+					if($key !== false){
+						unset($parents[$key]);
+					}
+					if(!in_array($child, $read)){
+						$read[] = $child;
+					}
+				}
+				if(!in_array($perm->getName(), $read)){
+					$read[] = $perm->getName();
+					$parents[] = $perm->getName();
+				}
+			}
+			unset($read);
+		}
+		else{
+			$parents = [];
+			foreach($this->getServer()->getPluginManager()->getPermissions() as $perm){
+				if(strpos($perm->getName(), ".") === false){ // @shoghicp said I could assume children always have a period and parents always don't :P
+					$parents[] = $perm->getName();
+				}
+			}
+		}
+		var_dump($parents);
+		$data = [];
+		$this->fillPermTree($parents);
 	}
-	private function initConfigs(){
-		$this->opts = new Config($this->getDataFolder()."options.yml", Config::YAML, array(
-		));
-		$perms = $this->getServer()->getPluginManager()->getPermissions();
-	}
-	private function savePlayers($silent = false){
-		if(isset($this->currentTask) and $this->currentTask instanceof AsyncTask){
-			trigger_error("NumericRanks cannot start a new InputTask: an ".$this->getSimpleClass($this->currentTask)." is in progress.", E_USER_NOTICE);
-		}
-		if(!$silent){
-			$this->getLogger()->log("[INFO] NumericRanks player database loading-in-progress asynchronously.");
-		}
-		$this->currentTask = new OutputTask($silent, $this->playersPath);
-		$this->getServer()->getScheduler()->scheduleAsyncTask($this->currentTask);
-	}
-	private function loadPlayers($silent = false){
-		if(isset($this->currentTask) and $this->currentTask instanceof AsyncTask){
-			trigger_error("NumericRanks cannot start a new InputTask: an ".$this->getSimpleClass($this->currentTask)." is in progress.", E_USER_NOTICE);
-		}
-		if(!$silent){
-			$this->getLogger()->log("[INFO] NumericRanks player database loading-in-progress asynchronously.");
-		}
-		$this->currentTask = new InputTask($silent, $this->playersPath);
-		$this->getServer()->getScheduler()->scheduleAsyncTask($this->currentTask);
-	}
-	private function getSimpleClass($object){
-		if(is_array($object)){
-			return "Array";
-		}
-		if(!is_object($object)){
-			return (string) $object;
-		}
-		$class = get_class($object);
-		$slices = explode("\\", $class);
-		return array_slice($slices, -1)[0];
-	}
-	public static function get(){
-		return Server::getInstance()->getPluginManager()->getPlugin("NumericRanks");
+	private function fillPermTree($permissions, $path = ""){
+		eval("\$this->tmpPermTree".$path." = [];");
+		eval("\$this->tmpPermTree".$path."");
+
 	}
 }

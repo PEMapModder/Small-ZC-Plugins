@@ -1,0 +1,10 @@
+name: ChatLineBreaker
+version: 3.2
+api: [1.0.0]
+main: pemapmodder\clb\Main
+author: PEMapModder
+prefix: CLB
+commands:
+  clb:
+    usage: <cal|set|view|tog|help>
+    description: Calibrate/set/view your CLB settings; Toggle CLB

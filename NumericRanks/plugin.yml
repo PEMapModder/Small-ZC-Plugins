@@ -3,5 +3,5 @@ main: pemapmodder\numranks\Main
 load: POSTWORLD
 author: PEMapModder
 api: [1.0.0]
-version: 5.0
+version: 3.1
 prefix: NumRanks

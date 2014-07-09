@@ -1,0 +1,12 @@
+---
+# Set this to false if you don't want to be notified of players sending commands
+cmd-echo: true
+# The list of people to notify of players sending commands
+cmd-echo-list:
+- console # no players can login with this name, so this only refers to the real console
+# put player names here. e.g. the following line without the hash sign:
+#- PEMapModder
+# Set this to true to enable the buggy experimental slow method of mapping existing commands.
+# Only set this to true if you have private plugins that register permissions that are not named according to the conventions (parentname.myname)
+recursive-mapping: false
+...

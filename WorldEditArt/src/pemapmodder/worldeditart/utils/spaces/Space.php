@@ -13,7 +13,7 @@ abstract class Space{
 	/** @var Block[] */
 	protected $undoMap = [];
 	/**
-	 * @return \pocketmine\level\Position
+	 * @return \pocketmine\level\Position[]
 	 */
 	public abstract function getPosList();
 	/**
