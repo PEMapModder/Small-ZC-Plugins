@@ -50,10 +50,10 @@ class Main extends PluginBase implements Listener{
 		$this->registerCommands();
 	}
 	public function onDisable(){
-		foreach($this->mustEnds as $id => $task){
+		/*foreach($this->mustEnds as $id => $task){
 			$this->getServer()->getScheduler()->cancelTask($id);
 			$task->onRun(-1);
-		}
+		}*/
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w"]); // I expect them to use fallback prefix if they use /w
