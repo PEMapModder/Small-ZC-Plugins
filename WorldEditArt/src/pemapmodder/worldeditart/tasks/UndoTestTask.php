@@ -15,4 +15,7 @@ class UndoTestTask extends PluginTask{
 	public function onRun($ticks){
 		$this->space->undoLast();
 	}
+	public function onCancel(){
+		$this->onRun(0);
+	}
 }
