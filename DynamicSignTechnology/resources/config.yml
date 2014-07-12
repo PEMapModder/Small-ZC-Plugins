@@ -1,0 +1,4 @@
+---
+# every how many ticks should the database be checked. Note that modifying this value will cause bugs of some texts never showing up.
+ticks rate: 1
+...
