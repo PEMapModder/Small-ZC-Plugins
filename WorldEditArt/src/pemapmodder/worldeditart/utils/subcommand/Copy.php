@@ -78,7 +78,8 @@ class Copy extends Subcommand{
 		}
 		$data = [
 			"author" => $player->getName(),
-			"blocks" => $blocks
+			"blocks" => $blocks,
+			"yaw" => $player->yaw
 		];
 		if(is_string($global)){
 			if($this->getMain()->isGlobalClipCreated($global)){
@@ -88,6 +89,9 @@ class Copy extends Subcommand{
 			if($result !== true){
 				return "Cannot write to global clipboard. Reason: $result";
 			}
+		}
+		else{
+			$this->getMain()->setClip($player, $data);
 		}
 		return $this->onPostRun($blocks, $selection);
 	}

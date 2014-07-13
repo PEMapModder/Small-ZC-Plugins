@@ -114,6 +114,6 @@ permissions:
               wea.clipboard.cut.sphere:
                 description: Allow cutting spheres
           wea.clipboard.paste:
-            description: Allow pasting
+            description: Allow pastin
           wea.clipboard.global:
             description: Allow cutting/copying into the global clipboard

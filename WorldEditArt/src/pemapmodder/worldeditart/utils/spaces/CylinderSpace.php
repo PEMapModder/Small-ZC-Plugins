@@ -8,6 +8,7 @@ use pocketmine\math\Vector3;
 
 class CylinderSpace extends Space{
 	const X = 0, Y = 1, Z = 2;
+	const PLUS = false, MINUS = true;
 	/** @var Position*/
 	private $base;
 	/** @var int positive integers */
@@ -125,7 +126,13 @@ class CylinderSpace extends Space{
 		}
 		return "Z";
 	}
-	public static function getVector($yaw, $pitch){
+	/**
+	 * @param $yaw
+	 * @param int $pitch
+	 * @param bool $int
+	 * @return array|bool|int
+	 */
+	public static function getVector($yaw, $pitch = 0, $int = false){
 		$oldYawRef = $yaw;
 		if($pitch > 45){ // >= or > ?
 			return [self::Y, true];
@@ -136,6 +143,9 @@ class CylinderSpace extends Space{
 		$yaw += 45;
 		$yaw %= 360;
 		$yaw = (int) ($yaw / 90);
+		if($int){
+			return $yaw;
+		}
 		switch($yaw){
 			case 0:
 				return [self::Z, false];
@@ -146,7 +156,7 @@ class CylinderSpace extends Space{
 			case 3:
 				return [self::X, false];
 		}
-		trigger_error("Yaw could not be parsed correctly as a vector in WorldEditArt [pemapmodder\\worldeditart\\utils\\spaces\\CylinderSpace::getVector($oldYawRef, $pitch)", E_USER_WARNING);
+		trigger_error("Yaw could not be parsed correctly as a vector in WorldEditArt pemapmodder\\worldeditart\\utils\\spaces\\CylinderSpace::getVector($oldYawRef, $pitch)", E_USER_WARNING);
 		return false;
 	}
 }

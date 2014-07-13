@@ -90,6 +90,9 @@ class Main extends PluginBase implements Listener{
 	public function getClip(Player $player){
 		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
 	}
+	public function setClip(Player $player, array $data){
+		$this->clips[$player->getID()] = $data;
+	}
 	/**
 	 * @param PlayerInteractEvent $event
 	 * @priority MONITOR
@@ -243,6 +246,7 @@ class Main extends PluginBase implements Listener{
 			$damage = ord(gzread($res, 1));
 			$blocks[] = Block::get($id, $damage, new Position($x, $y, $z, $this->getServer()->getDefaultLevel())); // any placeholder level will do.
 		}
+		$yaw = Binary::readDouble(gzread($res, 8));
 		gzclose($res);
 		if(count($blocks) !== $cnt){
 			trigger_error("Global clip $name was corrupted", E_USER_WARNING);
@@ -250,7 +254,8 @@ class Main extends PluginBase implements Listener{
 		}
 		return [
 			"author" => $author,
-			"blocks" => $blocks
+			"blocks" => $blocks,
+			"yaw" => $yaw
 		];
 	}
 	public function saveGlobalClip($name, array $data){
@@ -271,6 +276,7 @@ class Main extends PluginBase implements Listener{
 			gzwrite($res, chr($block->getID()));
 			gzwrite($res, chr($block->getDamage()));
 		}
+		gzwrite($res, Binary::writeDouble($data["yaw"]));
 		gzclose($res);
 		$this->getLogger()->info("New clip \"$name\" has been created on the global clipboard as $name.clp.");
 		return true;
@@ -308,5 +314,14 @@ class Main extends PluginBase implements Listener{
 			return false;
 		}
 		return Block::get($id, $damage);
+	}
+	/**
+	 * @param Block[] $blocks
+	 * @param int $from
+	 * @param int $to
+	 * @return Block[]
+	 */
+	public static function rotateBlocks(array $blocks, $from, $to){
+
 	}
 }
