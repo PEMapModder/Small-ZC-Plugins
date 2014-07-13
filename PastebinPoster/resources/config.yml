@@ -1,0 +1,16 @@
+---
+# Please login at http://pastebin.com and find your API code at http://pastebin.com/api#1
+# After getting them, fill in the following values by replacing false into values inside "quotes".
+# You can leave username and password as false, but features may be limited if you don't enter them.
+# Member code can be fetched manually at http://pastebin.com/api/api_user_key.html if you feel uncomfortable to put your password into the config file.
+# If you leave it as non-text, PastebinPoster will fetch it when it is enabled (which will make the server lag for probably a second if it is run not at startup).
+# The value will then be overwritten by the value fetched. You don't need to worry about it changed.
+# e.g. api key: "01234567890abcdef01234567890abcdef"
+# e.g. username: "yourname"
+# e.g. password: "123456"
+# e.g. member code: false
+api key: false
+username: false
+password: false
+member code: false
+...

@@ -1,0 +1,11 @@
+name: PastebinPoster
+version: 0.0
+api: [1.0.0]
+main: pemapmodder\pastebinposter\Main
+author: PEMapModder
+commands:
+  pastebinposter:
+    description: Allows using all features of PastebinPoster
+    children:
+      pastebinposter.post:
+        description: Allows posting pastes to pastebin.com
