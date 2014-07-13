@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
+use pemapmodder\worldeditart\events\PasteEvent;
 use pemapmodder\worldeditart\Main;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pocketmine\level\Position;
@@ -49,6 +50,7 @@ class Paste extends Subcommand{
 			}
 		}
 		$cnt = 0;
+		$this->getMain()->getServer()->getPluginManager()->callEvent(new PasteEvent($player, $clip, $global !== false));
 		$player->sendMessage("Copying a clip of ".(count($clip["blocks"]))." block(s) authored by ".$clip["author"]." to ".Main::posToStr($ref)."..");
 		foreach($clip["blocks"] as $block){
 			if($ref->getLevel()->setBlock($block->add($ref), $block, true, false) !== false){
