@@ -13,4 +13,6 @@ api key: false
 username: false
 password: false
 member code: false
+# how many milliseconds (1/1000 second) to wait for response from pastebin.com before shutting down the connection?
+timeout: 3000
 ...

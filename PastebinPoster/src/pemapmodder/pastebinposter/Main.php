@@ -17,18 +17,19 @@ class Main extends PluginBase{
 	const EXPIRY_MONTH = "1M";
 	private $API_KEY;
 	private $MEMBER_CODE = false;
+	private $timeout;
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$key = $this->getConfig()->get("api key");
 		$username = $this->getConfig()->get("username");
 		$password = $this->getConfig()->get("password");
 		$memberCode = $this->getConfig()->get("member code");
+		$timeout = $this->getConfig()->get("timeout");
 		if(!is_string($key)){
 			$this->getLogger()->critical("Invalid API key. Please setup config.yml to use this plugin.");
 			$this->setEnabled(false); // I love seeing my plugins suicide :D
 		}
 		$this->API_KEY = $key;
-		$timeout = 3000;
 		if(!is_string($memberCode)){
 			if(is_string($username) and is_string($password)){
 				$this->getLogger()->info("Fetching your member code...");
@@ -64,12 +65,16 @@ class Main extends PluginBase{
 		else{
 			$this->MEMBER_CODE = $memberCode;
 		}
+		$this->timeout = $timeout;
 		$this->getLogger()->info("Successfully initialized.");
 	}
 	public function onDisable(){
 		$this->getLogger()->debug("disabled");
 	}
-	public function postPaste($content, $name = false, $expiry = self::EXPIRY_WEEK, $format = "text", $privacy = self::PRIVACY_UNLISTED, $timeout = 3000){
+	public function postPaste($content, $name = false, $expiry = self::EXPIRY_WEEK, $format = "text", $privacy = self::PRIVACY_UNLISTED, $timeout = false){
+		if($timeout === false){
+			$timeout = $this->timeout;
+		}
 		$post = "api_option=paste";
 		if(is_string($this->MEMBER_CODE)){
 			$post .= "&api_user_key=".$this->MEMBER_CODE;
