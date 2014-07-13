@@ -45,7 +45,7 @@ class Paste extends Subcommand{
 			$copyVector = CylinderSpace::getVector($clip["yaw"], true);
 			$curVector = CylinderSpace::getVector($player->yaw, true);
 			if($copyVector !== $curVector){
-				$clip["blocks"] = Main::rotateBlocks($clip["blocks"], $copyVector, $curVector);
+				$clip["blocks"] = Main::rotateBlocks($clip["blocks"], $copyVector, $curVector, $ref);
 			}
 		}
 		$cnt = 0;

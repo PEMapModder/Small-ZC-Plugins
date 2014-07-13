@@ -322,6 +322,27 @@ class Main extends PluginBase implements Listener{
 	 * @return Block[]
 	 */
 	public static function rotateBlocks(array $blocks, $from, $to){
-
+		while($from > $to){
+			$to += 4;
+		}
+		$diff = ($to - $from) % 4;
+		while($diff > 0){
+			$blocks = self::rotateBlocksByOne($blocks);
+			$diff--;
+		}
+		return $blocks;
+	}
+	/**
+	 * @param Block[] $blocks
+	 * @return Block[]
+	 */
+	private static function rotateBlocksByOne(array $blocks){
+		$out = [];
+		foreach($blocks as $key => $block){
+			$out[$key] = self::rotateBlockByOne($block);
+		}
+	}
+	private static function rotateBlockByOne(Block $block){
+		return Block::get($block->getID(), $block->getDamage(), new Position($block->getZ(), $block->getY(), -$block->getX(), $block->getLevel()));
 	}
 }
