@@ -4,8 +4,19 @@ api: [1.0.0]
 main: pemapmodder\pastebinposter\Main
 author: PEMapModder
 commands:
+  post:
+    description: Posts a paste to http://pastebin.com
+    usage: <duration> [privacy = public] <content ...>
+permissions:
   pastebinposter:
     description: Allows using all features of PastebinPoster
     children:
       pastebinposter.post:
-        description: Allows posting pastes to pastebin.com
+        description: Allows posting any pastes to pastebin.com
+        children:
+          pastebinposter.post.public:
+            description: Allows posting public posts to pastebin.com
+          pastebinposter.post.public:
+            description: Allows posting public posts to pastebin.com
+          pastebinposter.post.public:
+            description: Allows posting public posts to pastebin.com

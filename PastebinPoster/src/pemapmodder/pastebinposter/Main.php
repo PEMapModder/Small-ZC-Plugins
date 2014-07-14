@@ -2,6 +2,8 @@
 
 namespace pemapmodder\pastebinposter;
 
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase{
@@ -18,6 +20,7 @@ class Main extends PluginBase{
 	private $API_KEY;
 	private $MEMBER_CODE = false;
 	private $timeout;
+	private $callbacks = [];
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$key = $this->getConfig()->get("api key");
@@ -71,6 +74,13 @@ class Main extends PluginBase{
 	public function onDisable(){
 		$this->getLogger()->debug("disabled");
 	}
+	public function onCommand(CommandSender $issuer, Command $command, $alias, array $args){
+		switch($command->getName()){
+			case "post":
+
+				break;
+		}
+	}
 	public function postPaste($content, $name = false, $expiry = self::EXPIRY_WEEK, $format = "text", $privacy = self::PRIVACY_UNLISTED, $timeout = false){
 		if($timeout === false){
 			$timeout = $this->timeout;
@@ -90,7 +100,9 @@ class Main extends PluginBase{
 		$this->getServer()->getScheduler()->scheduleAsyncTask($task = new PostTask("http://pastebin.com/api/api_post.php", $post, $timeout, $this->getLogger()));
 		return spl_object_hash($task);
 	}
-	public function onCompletion($taskHash){
-
+	public function onCompletion($taskHash, $result){
+		if(isset($this->callbacks[$taskHash])){
+			call_user_func($this->callbacks[$taskHash], $result);
+		}
 	}
 }

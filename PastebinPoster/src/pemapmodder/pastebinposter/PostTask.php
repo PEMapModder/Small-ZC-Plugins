@@ -33,6 +33,6 @@ class PostTask extends AsyncTask{
 	public function onCompletion(Server $server){
 		/** @var Main $main */
 		$main = $server->getPluginManager()->getPlugin("PastebinPoster");
-		$main->onCompletion(spl_object_hash($this));
+		$main->onCompletion(spl_object_hash($this), $this->getResult());
 	}
 }
