@@ -54,6 +54,18 @@ abstract class Space{
 		$this->setBlocks(new Air, $test);
 	}
 	/**
+	 * Note: This method doesn't support /test since it is random.
+	 * @param Block $block
+	 * @param int $chance chance in percentage to replace.
+	 */
+	public function randomPlaces(Block $block, $chance){
+		foreach($this->getPosList() as $pos){
+			if(rand(1, 100) <= $chance){
+				$pos->getLevel()->setBlock($pos, $block, true, false);
+			}
+		}
+	}
+	/**
 	 * @param Block $orig
 	 * @param Block $new
 	 * @param bool $checkMeta
@@ -86,6 +98,23 @@ abstract class Space{
 			}
 		}
 		return $cnt;
+	}
+	/**
+	 * @param Block $from
+	 * @param Block $to
+	 * @param int $chance
+	 * @param bool $checkMeta
+	 */
+	public function randomReplaces(Block $from, Block $to, $chance, $checkMeta = true){
+		foreach($this->getPosList() as $pos){
+			if(mt_rand(1, 100) <= $chance){
+				$level = $pos->getLevel();
+				$block = $level->getBlock($pos);
+				if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
+					$level->setBlock($pos, $to, true, false);
+				}
+			}
+		}
 	}
 	public function undoLast(){
 		foreach($this->undoMap as $block){
