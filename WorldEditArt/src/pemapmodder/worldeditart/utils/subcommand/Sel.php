@@ -106,11 +106,11 @@ class Sel extends Subcommand{
 					return self::NO_PERM;
 				}
 				if(!isset($args[0]) or !is_numeric($args[0])){
-					return "Usage: /wea sel sph <radius> [-here]";
+					return "Usage: /wea sel sph <radius> [-here] [-r <percentage>]";
 				}
-				$radius = (int) $args[0];
+				$radius = (int) array_shift($args);
 				$sel = $this->getMain()->getSelectedPoint($player);
-				if(isset($args[1]) and $args[1] === "-here"){
+				if(isset($args[0]) and array_shift($args) === "-here"){
 					$sel = $player->getPosition();
 				}
 				$sel = new SphereSpace($sel, $radius);

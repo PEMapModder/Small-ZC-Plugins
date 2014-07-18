@@ -140,7 +140,7 @@ abstract class Subcommand{
 	public final function hasPermission(CommandSender $sender){
 		$callable = array($this, $this->permCheck);
 		if($this->issuer === self::CONSOLE and !($sender instanceof ConsoleCommandSender) or $this->issuer === self::PLAYER and !($sender instanceof Player)){
-			return false;
+			return false; // wrong command sender
 		}
 		if($this->issuer === self::SELECTED){
 			if(!($sender instanceof Player) or !(($p = $this->main->getSelectedPoint($sender)) instanceof Position)){

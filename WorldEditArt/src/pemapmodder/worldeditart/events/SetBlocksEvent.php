@@ -8,14 +8,15 @@ use pocketmine\Player;
 
 class SetBlocksEvent extends SpaceEditEvent{
 	public static $handlerList = null;
-	/**
-	 * @var Block $block
-	 */
+	/** @var Block */
 	private $block;
-	public function __construct(Space $space, Block $block, Player $player){
+	/** @var float|bool */
+	private $percentage;
+	public function __construct(Space $space, Block $block, Player $player, $percentage){
 		$this->player = $player;
 		$this->space = $space;
 		$this->block = $block;
+		$this->percentage = $percentage;
 	}
 	/**
 	 * @return Block
@@ -28,5 +29,17 @@ class SetBlocksEvent extends SpaceEditEvent{
 	 */
 	public function setBlock($block){
 		$this->block = $block;
+	}
+	/**
+	 * @return bool|float
+	 */
+	public function getPercentage(){
+		return $this->percentage;
+	}
+	/**
+	 * @param bool|float $percentage
+	 */
+	public function setPercentage($percentage){
+		$this->percentage = $percentage;
 	}
 }
