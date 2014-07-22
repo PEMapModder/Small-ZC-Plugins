@@ -13,7 +13,7 @@ class ConstructedLine{
 	public function __construct(Vector2 $passingPoint, $arg2){
 		$slope = $arg2;
 		if($arg2 instanceof Vector2){
-			$slope = ($arg2->y - $passingPoint->y) / ($arg2->x - $passingPoint->x);
+			$slope = self::getMathSlope($passingPoint, $arg2);
 		}
 		$this->slope = $slope;
 		$this->passingPoint = $passingPoint;
