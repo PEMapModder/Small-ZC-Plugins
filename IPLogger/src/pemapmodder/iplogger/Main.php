@@ -14,6 +14,8 @@ class Main extends PluginBase implements Listener{
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		@mkdir($this->getDataFolder());
+		$this->saveDefaultConfig();
+		$this->reloadConfig();
 		if(!is_dir($this->pdir = $this->getDataFolder()."players/")){
 			mkdir($this->pdir);
 			$this->getLogger()->debug("IPLogger folder generated at {$this->pdir}.");
@@ -24,9 +26,19 @@ class Main extends PluginBase implements Listener{
 	}
 	public function onJoin(PlayerJoinEvent $event){
 		$p = $event->getPlayer();
-		@touch($file = $this->getPlayerFile($p));
+		$isOld = is_file($file = $this->getPlayerFile($p));
+		@touch($file);
 		$ips = explode(PHP_EOL, file_get_contents($file)); // I HATE the annoying EOL difference. Why can't everyone just use the same one?
 		if(!in_array($ip = $p->getAddress(), $ips)){
+			if($isOld and $this->getConfig()->get("warn console when using new IP")){
+				$level = $this->getConfig()->get("warn level");
+				if(!defined("LogLevel::".strtoupper($level))){
+					$this->getLogger()->warning("Log level $level is undefined. Default (ALERT) will be used.");
+					$level = "ALERT";
+				}
+				$level = constant("LogLevel::".strtoupper($level));
+				$this->getLogger()->log($level, "Player ".$p->getName()." logged in with a new IP.");
+			}
 			$ips[] = $ip;
 			sort($ips, SORT_STRING); // don't sort_natural
 		}
