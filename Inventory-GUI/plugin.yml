@@ -1,6 +1,0 @@
-name: InventoryGUI
-author: PEMapModder
-version: alpha 0
-api: [1.0.0]
-load: STARTUP
-main: pemapmodder\invgui\Main
