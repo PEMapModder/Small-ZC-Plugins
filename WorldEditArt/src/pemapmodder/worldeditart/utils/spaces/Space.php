@@ -13,13 +13,33 @@ abstract class Space{
 	/** @var Block[] */
 	protected $undoMap = [];
 	/**
-	 * @return \pocketmine\level\Position[]
+	 * @return Position[]
 	 */
 	public abstract function getPosList();
 	/**
 	 * @return Block[]
 	 */
-	public abstract function getBlockList();
+	public function getBlockList(){
+		$out = [];
+		foreach($this->getPosList() as $pos){
+			$out[] = $pos->getLevel()->getBlock($pos);
+		}
+		return $out;
+	}
+	/**
+	 * @return Position[]
+	 */
+	public abstract function getMarginPosList();
+	/**
+	 * @return Block[]
+	 */
+	public function getMarginBlockList(){
+		$out = [];
+		foreach($this->getMarginPosList() as $pos){
+			$out[] = $pos->getLevel()->getBlock($pos);
+		}
+		return $out;
+	}
 	/**
 	 * @param Block $block
 	 * @param Player|bool $test

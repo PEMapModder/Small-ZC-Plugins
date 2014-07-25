@@ -70,8 +70,8 @@ class CuboidSpace extends Space{
 			$this->raw1->getLevel()
 		);
 		$maxHeight = 127;
-		if(defined("pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
-			$maxHeight = \pemapmodder\worldeditart\MAX_WORLD_HEIGHT; // **** PhpStorm
+		if(defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			$maxHeight = constant($path); // **** PhpStorm
 		}
 		if($this->baked1->getFloorY() > $maxHeight or $this->baked0->getFloorY() < 0){
 			throw new SelectionExceedWorldException("CuboidSpace");
@@ -106,6 +106,51 @@ class CuboidSpace extends Space{
 			}
 		}
 		return $blocks;
+	}
+	public function getMarginPosList(){
+		$out = [];
+		for($x = $this->baked0->x; $x <= $this->baked1->x; $x++){
+			for($y = $this->baked0->y; $y <= $this->baked1->y; $y++){
+				$out[] = new Position($x, $y, $this->baked0->z, $this->raw0->getLevel());
+				$out[] = new Position($x, $y, $this->baked1->z, $this->raw0->getLevel());
+			}
+		}
+		for($y = $this->baked0->y; $y <= $this->baked1->y; $y++){
+			for($z = $this->baked0->z + 1; $z < $this->baked1->z; $z++){
+				$out[] = new Position($this->baked0->x, $y, $z, $this->raw0->getLevel());
+				$out[] = new Position($this->baked1->x, $y, $z, $this->raw0->getLevel());
+			}
+		}
+		for($x = $this->baked0->x + 1; $x < $this->baked1->x; $x++){
+			for($z = $this->baked0->z + 1; $z < $this->baked1->z; $z++){
+				$out[] = new Position($x, $this->baked0->y, $z, $this->raw0->getLevel());
+				$out[] = new Position($x, $this->baked1->y, $z, $this->raw0->getLevel());
+			}
+		}
+		return $out;
+	}
+	public function getMarginBlockList(){
+		$level = $this->raw0->getLevel();
+		$out = [];
+		for($x = $this->baked0->x; $x <= $this->baked1->x; $x++){
+			for($y = $this->baked0->y; $y <= $this->baked1->y; $y++){
+				$out[] = $level->getBlock(new Vector3($x, $y, $this->baked0->z));
+				$out[] = $level->getBlock(new Vector3($x, $y, $this->baked1->z));
+			}
+		}
+		for($y = $this->baked0->y; $y <= $this->baked1->y; $y++){
+			for($z = $this->baked0->z + 1; $z < $this->baked1->z; $z++){
+				$out[] = $level->getBlock(new Vector3($this->baked0->x, $y, $z));
+				$out[] = $level->getBlock(new Vector3($this->baked1->x, $y, $z));
+			}
+		}
+		for($x = $this->baked0->x + 1; $x < $this->baked1->x; $x++){
+			for($z = $this->baked0->z + 1; $z < $this->baked1->z; $z++){
+				$out[] = $level->getBlock(new Vector3($x, $this->baked0->y, $z));
+				$out[] = $level->getBlock(new Vector3($x, $this->baked1->y, $z));
+			}
+		}
+		return $out;
 	}
 	public function isInside(Vector3 $v){
 		$out = true;

@@ -15,8 +15,8 @@ class SphereSpace extends Space{
 		$maxY = max($y);
 		$minY = min($y);
 		$maxHeight = 127;
-		if(defined("pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
-			$maxHeight = \pemapmodder\worldeditart\MAX_WORLD_HEIGHT; // **** PhpStorm
+		if(defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+			$maxHeight = constant($path); // **** PhpStorm
 		}
 		if($maxY > $maxHeight or $minY < 0){
 			throw new SelectionExceedWorldException("SphereSpace");
@@ -41,6 +41,11 @@ class SphereSpace extends Space{
 		foreach($this->getPosList() as $pos){
 			$out[] = $this->centre->getLevel()->getBlock($pos);
 		}
+		return $out;
+	}
+	public function getMarginPosList(){
+		$out = [];
+		// TODO
 		return $out;
 	}
 	public function isInside(Vector3 $v){
