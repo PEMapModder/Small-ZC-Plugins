@@ -3,7 +3,7 @@ author: PEMapModder
 version: 1.0
 api: [1.0.0]
 load: POSTWORLD
-main: pemapmodder\worldeditart
+main: pemapmodder\worldeditart\Main
 description: A powerful and advanced world editor
 permissions:
   wea:
