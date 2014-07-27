@@ -8,6 +8,7 @@ description: A powerful and advanced world editor
 permissions:
   wea:
     description: Allow using all WorldEditArt functions
+    aliases: ["w", "we", "/"] # should I add this?
     children:
       wea.cmd:
         description: Allow using command /wea
