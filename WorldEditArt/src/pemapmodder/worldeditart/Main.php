@@ -35,7 +35,7 @@ class Main extends PluginBase implements Listener{
 		$this->saveDefaultConfig();
 		$maxHeight = $this->getConfig()->get("maximum world height");
 		if(!defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
-			define($path, $maxHeight);
+			@define($path, $maxHeight);
 		}
 	}
 	public function onEnable(){
@@ -52,9 +52,6 @@ class Main extends PluginBase implements Listener{
 
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
-	}
-	public function onJoin(PlayerJoinEvent $event){
-
 	}
 	public function onQuit(PlayerQuitEvent $event){
 		$i = $event->getPlayer()->getID();
@@ -74,17 +71,18 @@ class Main extends PluginBase implements Listener{
 	public function setClip(Player $player, array $data){
 		$this->clips[$player->getID()] = $data;
 	}
+	public function onInteract(PlayerInteractEvent $event){
+		$p = $event->getPlayer();
+		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
+			$this->setSelectedPoint($p, $event->getBlock());
+			$event->setCancelled();
+		}
+	}
 	/**
 	 * @param PlayerInteractEvent $event
 	 * @priority MONITOR
 	 * @ignoreCancelled true
 	 */
-	public function onInteract(PlayerInteractEvent $event){
-		$p = $event->getPlayer();
-		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
-			$this->setSelectedPoint($p, $event->getBlock());
-		}
-	}
 	public function onBlockPlace(BlockPlaceEvent $event){
 		$this->onBlockTouched($event->getPlayer(), $event->getBlock(), false);
 	}
