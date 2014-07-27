@@ -43,11 +43,6 @@ class SphereSpace extends Space{
 		}
 		return $out;
 	}
-	public function getMarginPosList(){
-		$out = [];
-		// TODO
-		return $out;
-	}
 	public function isInside(Vector3 $v){
 		$out = true;
 		$out = ($out and $v->distance($this->centre) <= $this->radius);

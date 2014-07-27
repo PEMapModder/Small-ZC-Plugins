@@ -29,7 +29,23 @@ abstract class Space{
 	/**
 	 * @return Position[]
 	 */
-	public abstract function getMarginPosList();
+	public function getMarginPosList(){
+		$out = [];
+		foreach($this->getPosList() as $pos){
+			$ok = false;
+			for($i = 0; $i < 6; $i++){
+				if(!$this->isInside($pos->getSide($i))){
+					// add it as long as it is visible from the outside (an adjacent block is not in the space)
+					$ok = true;
+					break;
+				}
+			}
+			if($ok){
+				$out[] = $pos;
+			}
+		}
+		return $out;
+	}
 	/**
 	 * @return Block[]
 	 */

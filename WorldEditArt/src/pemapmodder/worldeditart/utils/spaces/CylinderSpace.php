@@ -4,7 +4,6 @@ namespace pemapmodder\worldeditart\utils\spaces;
 
 use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
-use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 
 class CylinderSpace extends Space{
@@ -94,76 +93,76 @@ class CylinderSpace extends Space{
 		}
 		return $out;
 	}
-	public function getMarginPosList(){
-		$level = $this->base->getLevel();
-		$quarter = [];
-		$squared = pow($this->radius, 2);
-		for($i = 0; $i < $this->radius; $i++){
-			$quarter[] = new Vector2(sqrt($squared - pow($i, 2)), $i);
-		}
-		/** @var Vector2[] $circle */
-		$circle = $quarter;
-		foreach($quarter as $v2){
-			$circle[] = new Vector2($v2->x, -$v2->y);
-			$circle[] = new Vector2(-$v2->x, $v2->y);
-			$circle[] = new Vector2(-$v2->x, -$v2->y);
-		}
-		$filledCircle = [];
-		for($x = -$this->radius; $x <= $this->radius; $x++){
-			for($y = -$this->radius; $y <= $this->radius; $y++){
-				if((new Vector2)->distance($obj = new Vector2($x, $y)) <= $this->radius){
-					$filledCircle[] = $obj;
-				}
-			}
-		}
-		$out = [];
-		if($this->axis === self::X){
-			for($x = $this->base->x + 1; $x < $this->base->x + $this->height - 1; $x++){
-				$center = new Vector3($x, $this->base->y, $this->base->z);
-				foreach($circle as $v2){
-					$out[] = Position::fromObject($center->add(0, $v2->x, $v2->y), $level);
-				}
-			}
-			for($i = 0; $i < 2; $i++){
-				$x = $i === 0 ? $this->base->x : $this->base->x + $this->height;
-				$center = new Vector3($x, $this->base->y, $this->base->z);
-				foreach($filledCircle as $v2){
-					$out[] = Position::fromObject($center->add(0, $v2->x, $v2->y), $level);
-				}
-			}
-			return $out;
-		}
-		if($this->axis === self::Y){
-			for($y = $this->base->y + 1; $y < $this->base->y + $this->height - 1; $y++){
-				$center = new Vector3($this->base->x, $y, $this->base->z);
-				foreach($circle as $v2){
-					$out[] = Position::fromObject($center->add($v2->x, 0, $v2->y), $level);
-				}
-			}
-			for($i = 0; $i < 2; $i++){
-				$y = $i === 0 ? $this->base->y : $this->base->y + $this->height;
-				$center = new Vector3($this->base->x, $y, $this->base->z);
-				foreach($filledCircle as $v2){
-					$out[] = Position::fromObject($center->add($v2->x, 0, $v2->y), $level);
-				}
-			}
-			return $out;
-		}
-		for($z = $this->base->z + 1; $z < $this->base->z + $this->height - 1; $z++){
-			$center = new Vector3($this->base->x, $this->base->y, $z);
-			foreach($circle as $v2){
-				$out[] = Position::fromObject($center->add($v2->x, $v2->y), $level);
-			}
-		}
-		for($i = 0; $i < 2; $i++){
-			$z = $i === 0 ? $this->base->z : $this->base->z + $this->height;
-			$center = new Vector3($this->base->x, $this->base->y, $z);
-			foreach($filledCircle as $v2){
-				$out[] = Position::fromObject($center->add($v2->x, $v2->y), $level);
-			}
-		}
-		return $out;
-	}
+//	public function getMarginPosList(){
+//		$level = $this->base->getLevel();
+//		$quarter = [];
+//		$squared = pow($this->radius, 2);
+//		for($i = 0; $i < $this->radius; $i++){
+//			$quarter[] = new Vector2(sqrt($squared - pow($i, 2)), $i);
+//		}
+//		/** @var Vector2[] $circle */
+//		$circle = $quarter;
+//		foreach($quarter as $v2){
+//			$circle[] = new Vector2($v2->x, -$v2->y);
+//			$circle[] = new Vector2(-$v2->x, $v2->y);
+//			$circle[] = new Vector2(-$v2->x, -$v2->y);
+//		}
+//		$filledCircle = [];
+//		for($x = -$this->radius; $x <= $this->radius; $x++){
+//			for($y = -$this->radius; $y <= $this->radius; $y++){
+//				if((new Vector2)->distance($obj = new Vector2($x, $y)) <= $this->radius){
+//					$filledCircle[] = $obj;
+//				}
+//			}
+//		}
+//		$out = [];
+//		if($this->axis === self::X){
+//			for($x = $this->base->x + 1; $x < $this->base->x + $this->height - 1; $x++){
+//				$center = new Vector3($x, $this->base->y, $this->base->z);
+//				foreach($circle as $v2){
+//					$out[] = Position::fromObject($center->add(0, $v2->x, $v2->y), $level);
+//				}
+//			}
+//			for($i = 0; $i < 2; $i++){
+//				$x = $i === 0 ? $this->base->x : $this->base->x + $this->height;
+//				$center = new Vector3($x, $this->base->y, $this->base->z);
+//				foreach($filledCircle as $v2){
+//					$out[] = Position::fromObject($center->add(0, $v2->x, $v2->y), $level);
+//				}
+//			}
+//			return $out;
+//		}
+//		if($this->axis === self::Y){
+//			for($y = $this->base->y + 1; $y < $this->base->y + $this->height - 1; $y++){
+//				$center = new Vector3($this->base->x, $y, $this->base->z);
+//				foreach($circle as $v2){
+//					$out[] = Position::fromObject($center->add($v2->x, 0, $v2->y), $level);
+//				}
+//			}
+//			for($i = 0; $i < 2; $i++){
+//				$y = $i === 0 ? $this->base->y : $this->base->y + $this->height;
+//				$center = new Vector3($this->base->x, $y, $this->base->z);
+//				foreach($filledCircle as $v2){
+//					$out[] = Position::fromObject($center->add($v2->x, 0, $v2->y), $level);
+//				}
+//			}
+//			return $out;
+//		}
+//		for($z = $this->base->z + 1; $z < $this->base->z + $this->height - 1; $z++){
+//			$center = new Vector3($this->base->x, $this->base->y, $z);
+//			foreach($circle as $v2){
+//				$out[] = Position::fromObject($center->add($v2->x, $v2->y), $level);
+//			}
+//		}
+//		for($i = 0; $i < 2; $i++){
+//			$z = $i === 0 ? $this->base->z : $this->base->z + $this->height;
+//			$center = new Vector3($this->base->x, $this->base->y, $z);
+//			foreach($filledCircle as $v2){
+//				$out[] = Position::fromObject($center->add($v2->x, $v2->y), $level);
+//			}
+//		}
+//		return $out;
+//	}
 	public function isInside(Vector3 $v){
 		$out = true;
 		switch($this->axis){
