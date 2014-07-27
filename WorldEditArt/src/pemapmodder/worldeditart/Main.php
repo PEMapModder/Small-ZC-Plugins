@@ -4,13 +4,7 @@ namespace pemapmodder\worldeditart;
 
 use pemapmodder\worldeditart\utils\macro\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\Space;
-use pemapmodder\worldeditart\utils\subcommand\Anchor;
-use pemapmodder\worldeditart\utils\subcommand\Macro;
-use pemapmodder\worldeditart\utils\subcommand\Sel;
-use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
-use pemapmodder\worldeditart\utils\subcommand\Test;
-use pemapmodder\worldeditart\utils\subcommand\Wand;
 use pocketmine\block\Block;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -63,12 +57,7 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w"]); // I expect them to use fallback prefix if they use /w
 		$wea->registerAll([
-			new Anchor($this),
-			new Macro($this),
-			new Sel($this),
-			new Set($this),
-			new Test($this),
-			new Wand($this),
+
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
