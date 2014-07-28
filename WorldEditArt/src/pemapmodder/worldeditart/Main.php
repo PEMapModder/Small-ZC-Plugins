@@ -5,31 +5,34 @@ namespace pemapmodder\worldeditart;
 use pemapmodder\worldeditart\utils\macro\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
+use pocketmine\block\Air;
 use pocketmine\block\Block;
+use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\PluginTask;
 use pocketmine\utils\Binary;
 
 class Main extends PluginBase implements Listener{
 	/** @var array[] */
 	private $clips = [];
-	/** @var Position[] $selectedPoints */
+	/** @var Position[] */
 	private $selectedPoints = [];
 	/** @var utils\spaces\Space[] */
 	private $selections = [];
 	/** @var Position[] */
 	private $anchors = [];
+	/** @var RecordingMacro[] */
 	private $macros = [];
+	/** @var array[] */
+	private $tempPos = [];
 	private $globalClipPath;
 	public function onLoad(){
 		$this->saveDefaultConfig();
@@ -64,6 +67,9 @@ class Main extends PluginBase implements Listener{
 		if(isset($this->anchors[$i])){
 			unset($this->anchors[$i]);
 		}
+		if(isset($this->macros[$i])){
+			unset($this->macros[$i]);
+		}
 	}
 	public function getClip(Player $player){
 		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
@@ -71,6 +77,10 @@ class Main extends PluginBase implements Listener{
 	public function setClip(Player $player, array $data){
 		$this->clips[$player->getID()] = $data;
 	}
+	/**
+	 * @param PlayerInteractEvent $event
+	 * @priority HIGH
+	 */
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
 		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
@@ -79,7 +89,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 	/**
-	 * @param PlayerInteractEvent $event
+	 * @param BlockPlaceEvent $event
 	 * @priority MONITOR
 	 * @ignoreCancelled true
 	 */
@@ -182,6 +192,12 @@ class Main extends PluginBase implements Listener{
 		}
 		return false;
 	}
+	public function setTempPos(Player $player, Position $pos, $isTwo){
+		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
+	}
+	public function getTempPos(Player $player){
+		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()]:false;
+	}
 	public function setSelection(Player $player, Space $space){
 		$this->selections[$player->getID()] = clone $space;
 	}
@@ -191,10 +207,6 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function getSelection(Player $player){
 		return isset($this->selections[$player->getID()]) ? $this->selections[$player->getID()]:false;
-	}
-	public function scheduleMustEndEvent(PluginTask $task, $delay){
-		$id = $this->getServer()->getScheduler()->scheduleDelayedTask($task, $delay)->getTaskId();
-		$this->mustEnds[$id] = $task;
 	}
 	public function getAnchor(Player $player){
 		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
@@ -323,5 +335,37 @@ class Main extends PluginBase implements Listener{
 	}
 	private static function rotateBlockByOne(Block $block){
 		return Block::get($block->getID(), $block->getDamage(), new Position($block->getZ(), $block->getY(), -$block->getX(), $block->getLevel()));
+	}
+	public static function getCrosshairTarget(Entity $entity){
+		$found = null;
+		$direction = $entity->getDirectionVector()->multiply(0.5);
+		/** @var Vector3 $last */
+		for($last = null, $pos = $entity->add($direction), $i = 1; true; $last = $pos->floor(), $pos = $entity->add($direction->multiply(++$i))){
+			if($last instanceof Vector3){
+				if($last->x === $pos->getFloorX() and $last->y === $pos->getFloorY() and $last->z === $pos->getFloorZ()){
+					continue;
+				}
+				if($pos->y < 0){
+					break;
+				}
+				$maxY = 127;
+				if(defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
+					$maxY = constant($path);
+				}
+				if($pos->y > $maxY + 1){
+					break;
+				}
+				$block = $entity->getLevel()->getBlock($pos);
+				if(!($block instanceof Block)){
+					break;
+				}
+				if($block instanceof Air){
+					continue;
+				}
+				$found = $block;
+				break;
+			}
+		}
+		return $found;
 	}
 }
