@@ -11,7 +11,7 @@ use pocketmine\utils\TextFormat;
 class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	/** @var Main */
 	private $main;
-	/** @var Subcommand[] */
+	/** @var \WeakRef[] */
 	private $subcmds = [];
 	/**
 	 * @param string $name
@@ -26,7 +26,11 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		$this->setPermission($mainPerm);
 	}
 	public function registerSubcommand(Subcommand $subcmd){
-		$this->subcmds[strtolower(trim($subcmd->getName()))] = $subcmd;
+		$this->subcmds[strtolower(trim($subcmd->getName()))] = new \WeakRef($subcmd);
+		$this->subcmds[strtolower(trim($subcmd->getName()))]->acquire();
+		foreach($subcmd->getAliases() as $alias){
+			$this->subcmds[$alias] = new \WeakRef($subcmd);
+		}
 	}
 	public function getPlugin(){
 		return $this->main;
@@ -36,10 +40,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 			$args = ["help"];
 		}
 		$cmd = array_shift($args);
-		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $cmd !== "help"){
-			if($this->subcmds[$cmd]->hasPermission($issuer)){
+		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $this->subcmds[$cmd]->valid() and $cmd !== "help"){
+			if($this->subcmds[$cmd]->get()->hasPermission($issuer)){
 				try{
-					$this->subcmds[$cmd]->run($args, $issuer);
+					$this->subcmds[$cmd]->get()->run($args, $issuer);
 				}
 				catch(\Exception $exception){
 					$issuer->sendMessage("Uh-oh. Something went wrong! An exception has been caught during executing your command.");
@@ -75,14 +79,14 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	public function getFullHelp(CommandSender $sender){
 		$out = [];
 		foreach($this->subcmds as $cmd){
-			if(!$cmd->hasPermission($sender)){
+			if(!$cmd->get()->hasPermission($sender)){
 				continue;
 			}
 			$output = "";
 			$output .= "/{$this->getName()} ";
-			$output .= TextFormat::LIGHT_PURPLE . $cmd->getName() . " ";
-			$output .= TextFormat::GREEN . $cmd->getUsage() . " ";
-			$output .= TextFormat::AQUA . $cmd->getDescription();
+			$output .= TextFormat::LIGHT_PURPLE . $cmd->get()->getName() . " ";
+			$output .= TextFormat::GREEN . $cmd->get()->getUsage() . " ";
+			$output .= TextFormat::AQUA . $cmd->get()->getDescription();
 			$out[] = $output;
 		}
 		return $out;

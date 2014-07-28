@@ -4,6 +4,8 @@ namespace pemapmodder\worldeditart;
 
 use pemapmodder\worldeditart\utils\macro\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\subcommand\Cuboid;
+use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
@@ -38,7 +40,7 @@ class Main extends PluginBase implements Listener{
 		$this->saveDefaultConfig();
 		$maxHeight = $this->getConfig()->get("maximum world height");
 		if(!defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
-			@define($path, $maxHeight);
+			define($path, $maxHeight);
 		}
 	}
 	public function onEnable(){
@@ -52,7 +54,9 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
 		$wea->registerAll([
-
+			new PosSubcommand($this, false),
+			new PosSubcommand($this, true),
+			new Cuboid($this),
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
@@ -84,7 +88,7 @@ class Main extends PluginBase implements Listener{
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
 		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
-			$this->setSelectedPoint($p, $event->getBlock());
+			$this->setAnchor($p, $event->getBlock());
 			$event->setCancelled();
 		}
 	}
@@ -123,19 +127,6 @@ class Main extends PluginBase implements Listener{
 	}
 	public function setRecordingMacro(Player $player, RecordingMacro $macro){
 		$this->macros[$player->getID()] = $macro;
-	}
-	/**
-	 * @param Player $player
-	 * @return Position|bool
-	 */
-	public function getSelectedPoint(Player $player){
-		if(isset($this->selectedPoints[$player->getID()])){
-			return $this->selectedPoints[$player->getID()];
-		}
-		return false;
-	}
-	public function setSelectedPoint(Player $player, Position $pos){
-		$this->selectedPoints[$player->getID()] = clone $pos;
 	}
 	public function getPlayerWand(Player $player, &$isDamageLimited){
 		$id = false;
@@ -192,6 +183,11 @@ class Main extends PluginBase implements Listener{
 		}
 		return false;
 	}
+	/**
+	 * @param Player $player
+	 * @param Position $pos
+	 * @param bool $isTwo
+	 */
 	public function setTempPos(Player $player, Position $pos, $isTwo){
 		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
 	}
@@ -207,6 +203,13 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function getSelection(Player $player){
 		return isset($this->selections[$player->getID()]) ? $this->selections[$player->getID()]:false;
+	}
+	public function unsetSelection(Player $player){
+		if(isset($this->selections[$player->getID()])){
+			unset($this->selections[$player->getID()]);
+			return true;
+		}
+		return false;
 	}
 	public function getAnchor(Player $player){
 		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;

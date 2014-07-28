@@ -75,7 +75,7 @@ abstract class Subcommand{
 			return;
 		}
 		if($this->issuer === self::SELECTED){
-			$p = $this->main->getSelectedPoint($sender);
+			$p = $this->main->getAnchor($sender);
 			if($p instanceof Position){
 				$result = call_user_func(array($this, $this->callable), $args, $p, $sender);
 			}
@@ -133,6 +133,9 @@ abstract class Subcommand{
 	public abstract function getName();
 	public abstract function getDescription();
 	public abstract function getUsage();
+	public function getAliases(){
+		return [];
+	}
 	/**
 	 * @param CommandSender $sender
 	 * @return bool
@@ -143,7 +146,7 @@ abstract class Subcommand{
 			return false; // wrong command sender
 		}
 		if($this->issuer === self::SELECTED){
-			if(!($sender instanceof Player) or !(($p = $this->main->getSelectedPoint($sender)) instanceof Position)){
+			if(!($sender instanceof Player) or !(($p = $this->main->getAnchor($sender)) instanceof Position)){
 				return true;
 			}
 			return call_user_func($callable, $p, $sender);
