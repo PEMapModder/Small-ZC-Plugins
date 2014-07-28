@@ -71,7 +71,7 @@ class CuboidSpace extends Space{
 		);
 		$maxHeight = 127;
 		if(defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
-			$maxHeight = constant($path); // **** PhpStorm
+			$maxHeight = constant($path);
 		}
 		if($this->baked1->getFloorY() > $maxHeight or $this->baked0->getFloorY() < 0){
 			throw new SelectionExceedWorldException("CuboidSpace");

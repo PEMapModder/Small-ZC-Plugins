@@ -7,6 +7,8 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
 class SphereSpace extends Space{
+	private $centre;
+	private $radius;
 	public function __construct(Position $centre, $radius){
 		$this->centre = $centre;
 		$this->radius = $radius;
@@ -51,7 +53,22 @@ class SphereSpace extends Space{
 		}
 		return $out;
 	}
+	public function getLevel(){
+		return $this->centre->getLevel();
+	}
 	public function __toString(){
 		return "a sphere centered at ".Main::posToStr($this->centre)." of radius {$this->radius}";
+	}
+	/**
+	 * @return Position
+	 */
+	public function getCentre(){
+		return $this->centre;
+	}
+	/**
+	 * @return number
+	 */
+	public function getRadius(){
+		return $this->radius;
 	}
 }

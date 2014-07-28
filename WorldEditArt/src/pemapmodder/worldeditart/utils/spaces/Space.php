@@ -91,17 +91,14 @@ abstract class Space{
 	}
 	/**
 	 * Note: This method doesn't support /test since it is random.
-	 * @param Block $block
-	 * @param int $chance chance in percentage to replace.
+	 * @param BlockList $blocks
 	 * @return int the number of bocks replaced
 	 */
-	public function randomPlaces(Block $block, $chance){
+	public function randomPlaces(BlockList $blocks){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
-			if(rand(1, 100) <= $chance){
-				$pos->getLevel()->setBlock($pos, $block, true, false);
-				$cnt++;
-			}
+			$pos->getLevel()->setBlock($pos, $blocks->getRandom(), true, false);
+			$cnt++;
 		}
 		return $cnt;
 	}
@@ -141,24 +138,28 @@ abstract class Space{
 	}
 	/**
 	 * @param Block $from
-	 * @param Block $to
-	 * @param int $chance
+	 * @param BlockList $to
 	 * @param bool $checkMeta
+	 * @return int
 	 */
-	public function randomReplaces(Block $from, Block $to, $chance, $checkMeta = true){
+	public function randomReplaces(Block $from, BlockList $to, $chance, $checkMeta = true){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
 			if(mt_rand(1, 100) <= $chance){
 				$level = $pos->getLevel();
 				$block = $level->getBlock($pos);
 				if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
-					$level->setBlock($pos, $to, true, false);
+					$level->setBlock($pos, $to->getRandom(), true, false);
 					$cnt++;
 				}
 			}
 		}
 		return $cnt;
 	}
+	/**
+	 * @return \pocketmine\level\Level
+	 */
+	public abstract function getLevel();
 	public function undoLast(){
 		foreach($this->undoMap as $block){
 			$block->getLevel()->setBlock($block, $block, true, false);
