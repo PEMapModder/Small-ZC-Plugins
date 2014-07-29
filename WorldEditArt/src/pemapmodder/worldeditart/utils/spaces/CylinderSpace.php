@@ -8,7 +8,7 @@ use pocketmine\math\Vector3;
 
 class CylinderSpace extends Space{
 	const X = 0, Y = 1, Z = 2;
-	const PLUS = false, MINUS = true;
+	const PLUS = 1, MINUS = -1;
 	/** @var Position*/
 	private $base;
 	/** @var int positive integers */
@@ -115,7 +115,7 @@ class CylinderSpace extends Space{
 		return $out;
 	}
 	public function __toString(){
-		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".Main::posToStr($this->base)." with {$this->height} blocks long";
+		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".Main::posToStr($this->base)." with {$this->height} blocks long, with a total of ".count($this->getPosList())." blocks.";
 	}
 	public function axisToStr($axis){
 		if($axis === self::X){
@@ -128,38 +128,5 @@ class CylinderSpace extends Space{
 	}
 	public function getLevel(){
 		return $this->base->getLevel();
-	}
-	/**
-	 * @param $yaw
-	 * @param int $pitch
-	 * @param bool $int
-	 * @return array|bool|int
-	 */
-	public static function getVector($yaw, $pitch = 0, $int = false){
-		$oldYawRef = $yaw;
-		if($pitch > 45){ // >= or > ?
-			return [self::Y, true];
-		}
-		if($pitch < -45){
-			return [self::Y, false];
-		}
-		$yaw += 45;
-		$yaw %= 360;
-		$yaw = (int) ($yaw / 90);
-		if($int){
-			return $yaw;
-		}
-		switch($yaw){
-			case 0:
-				return [self::Z, false];
-			case 1:
-				return [self::X, true];
-			case 2:
-				return [self::Z, true];
-			case 3:
-				return [self::X, false];
-		}
-		trigger_error("Yaw could not be parsed correctly as a vector in WorldEditArt pemapmodder\\worldeditart\\utils\\spaces\\CylinderSpace::getVector($oldYawRef, $pitch)", E_USER_WARNING);
-		return false;
 	}
 }

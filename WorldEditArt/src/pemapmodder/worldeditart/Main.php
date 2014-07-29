@@ -3,6 +3,7 @@
 namespace pemapmodder\worldeditart;
 
 use pemapmodder\worldeditart\utils\macro\RecordingMacro;
+use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
@@ -370,5 +371,47 @@ class Main extends PluginBase implements Listener{
 			}
 		}
 		return $found;
+	}
+	/**
+	 * @param $direction
+	 * @return array
+	 */
+	public static function directionNumber2Array($direction){
+		if($direction instanceof Entity){
+			$direction = $direction->getDirection();
+		}
+		switch($direction){
+			case 0:
+				return [CylinderSpace::Y, CylinderSpace::MINUS];
+			case 1:
+				return [CylinderSpace::Y, CylinderSpace::PLUS];
+			case 2:
+				return [CylinderSpace::Z, CylinderSpace::MINUS];
+			case 3:
+				return [CylinderSpace::Z, CylinderSpace::PLUS];
+			case 4:
+				return [CylinderSpace::X, CylinderSpace::MINUS];
+		}
+		return [CylinderSpace::X, CylinderSpace::PLUS];
+	}
+	public static function rotateDirectionNumberClockwise($number, $quarters = 1){
+		if($quarters > 1){
+			for($i = 0; $i < $quarters; $i++){
+				$number = self::rotateDirectionNumberClockwise($number);
+			}
+			return $number;
+		}
+		switch($number){
+			case 2:
+				return 4;
+			case 3:
+				return 5;
+			case 4:
+				return 3;
+			case 5:
+				return 2;
+			default:
+				return $number;
+		}
 	}
 }
