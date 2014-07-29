@@ -3,3 +3,4 @@ author: PEMapModder
 version: 0.0.0
 api: [1.0.0]
 main: pemapmodder\customareas\CustomAreas
+website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/CustomAreas

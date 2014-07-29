@@ -4,6 +4,7 @@ api: [1.0.0]
 main: pemapmodder\clb\Main
 author: PEMapModder
 prefix: CLB
+website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/ChatLineBreaker
 commands:
   clb:
     usage: <cal|set|view|tog|help>

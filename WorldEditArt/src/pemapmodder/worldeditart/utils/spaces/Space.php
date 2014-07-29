@@ -142,16 +142,14 @@ abstract class Space{
 	 * @param bool $checkMeta
 	 * @return int
 	 */
-	public function randomReplaces(Block $from, BlockList $to, $chance, $checkMeta = true){
+	public function randomReplaces(Block $from, BlockList $to, $checkMeta = true){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
-			if(mt_rand(1, 100) <= $chance){
-				$level = $pos->getLevel();
-				$block = $level->getBlock($pos);
-				if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
-					$level->setBlock($pos, $to->getRandom(), true, false);
-					$cnt++;
-				}
+			$level = $pos->getLevel();
+			$block = $level->getBlock($pos);
+			if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
+				$level->setBlock($pos, $to->getRandom(), true, false);
+				$cnt++;
 			}
 		}
 		return $cnt;

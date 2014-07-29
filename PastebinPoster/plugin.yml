@@ -3,6 +3,7 @@ version: 0.0
 api: [1.0.0]
 main: pemapmodder\pastebinposter\Main
 author: PEMapModder
+website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/PastebinPoster
 commands:
   post:
     description: Posts a paste to http://pastebin.com

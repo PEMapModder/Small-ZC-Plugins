@@ -5,6 +5,7 @@ main: pemapmodder\simplemacros\Main
 version: 0.3
 load: POSTWORLD
 api: [1.0.0]
+website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/SimpleMacros
 commands:
   macro:
     usage: /macro <start|end|pause|resume|run|sudo> [name] [player]

@@ -4,6 +4,7 @@ api: [1.0.0]
 author: PEMapModder
 version: 1.0
 main: pemapmodder\lagfixer\LagFixer
+website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/LagFixer
 permissions:
   lagfixer:
     description: Allows using everything of LagFixer
