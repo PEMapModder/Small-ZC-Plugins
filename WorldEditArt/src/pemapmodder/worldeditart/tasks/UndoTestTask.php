@@ -13,7 +13,7 @@ class UndoTestTask extends PluginTask{
 		$this->space = clone $space;
 	}
 	public function onRun($ticks){
-		$this->space->undoLast();
+		$this->space->undoLastTest();
 	}
 	public function onCancel(){
 		$this->onRun(0);

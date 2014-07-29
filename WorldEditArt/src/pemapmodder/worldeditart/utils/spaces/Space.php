@@ -59,9 +59,10 @@ abstract class Space{
 	/**
 	 * @param Block $block
 	 * @param Player|bool $test
+	 * @param bool $update
 	 * @return int
 	 */
-	public function setBlocks(Block $block, $test = false){
+	public function setBlocks(Block $block, $test = false, $update = true){
 		$block = clone $block;
 		$cnt = 0;
 		foreach($this->getBlockList() as $b){
@@ -81,16 +82,20 @@ abstract class Space{
 				$cnt++;
 			}
 		}
+		if($update and $test === false){
+			$this->updateAround();
+		}
 		return $cnt;
 	}
 	/**
 	 * @param Player|bool $test
+	 * @param bool $update
 	 */
-	public function clear($test = false){
-		$this->setBlocks(new Air, $test);
+	public function clear($test = false, $update = true){
+		$this->setBlocks(new Air, $test, $update);
 	}
 	/**
-	 * Note: This method doesn't support /test since it is random.
+	 * Note: This method doesn't support /w test since it is random.
 	 * @param BlockList $blocks
 	 * @return int the number of bocks replaced
 	 */
@@ -100,6 +105,7 @@ abstract class Space{
 			$pos->getLevel()->setBlock($pos, $blocks->getRandom(), true, false);
 			$cnt++;
 		}
+		$this->updateAround();
 		return $cnt;
 	}
 	/**
@@ -107,9 +113,10 @@ abstract class Space{
 	 * @param Block $new
 	 * @param bool $checkMeta
 	 * @param Player|bool $test
+	 * @param bool $update
 	 * @return int
 	 */
-	public function replaceBlocks(Block $orig, Block $new, $checkMeta = true, $test = false){
+	public function replaceBlocks(Block $orig, Block $new, $checkMeta = true, $test = false, $update = true){
 		$orig = clone $orig;
 		$new = clone $new;
 		$cnt = 0;
@@ -134,15 +141,19 @@ abstract class Space{
 				$cnt++;
 			}
 		}
+		if($test === false and $update){
+			$this->updateAround();
+		}
 		return $cnt;
 	}
 	/**
 	 * @param Block $from
 	 * @param BlockList $to
 	 * @param bool $checkMeta
+	 * @param bool $update
 	 * @return int
 	 */
-	public function randomReplaces(Block $from, BlockList $to, $checkMeta = true){
+	public function randomReplaces(Block $from, BlockList $to, $checkMeta = true, $update = true){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
 			$level = $pos->getLevel();
@@ -152,13 +163,21 @@ abstract class Space{
 				$cnt++;
 			}
 		}
+		if($update){
+			$this->updateAround();
+		}
 		return $cnt;
 	}
 	/**
 	 * @return \pocketmine\level\Level
 	 */
 	public abstract function getLevel();
-	public function undoLast(){
+	public function updateAround(){
+		foreach($this->getMarginPosList() as $pos){
+			$this->getLevel()->updateAround($pos);
+		}
+	}
+	public function undoLastTest(){
 		foreach($this->undoMap as $block){
 			$block->getLevel()->setBlock($block, $block, true, false);
 		}
