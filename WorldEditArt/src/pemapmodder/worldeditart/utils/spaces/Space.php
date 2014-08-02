@@ -109,22 +109,33 @@ abstract class Space{
 		return $cnt;
 	}
 	/**
-	 * @param Block $orig
+	 * @param Block|Block[] $oorig
 	 * @param Block $new
 	 * @param bool $checkMeta
 	 * @param Player|bool $test
 	 * @param bool $update
 	 * @return int
 	 */
-	public function replaceBlocks(Block $orig, Block $new, $checkMeta = true, $test = false, $update = true){
-		$orig = clone $orig;
+	public function replaceBlocks($oorig, Block $new, $checkMeta = true, $test = false, $update = true){
+		/** @var Block[] $origs */
+		$origs = [];
+		foreach(((array) $oorig) as $b){
+			$origs[] = clone $b;
+		}
 		$new = clone $new;
 		$cnt = 0;
 		if($test instanceof Player){
 			$this->undoMap = []; // reset the undo map
 		}
 		foreach($this->getBlockList() as $b){
-			if($b->getID() === $orig->getID() and ($checkMeta === false or $b->getDamage() === $orig->getDamage())){
+			$valid = false;
+			foreach($origs as $orig){
+				if($b->getID() === $orig->getID() and ($checkMeta === false or $b->getDamage() === $orig->getDamage())){
+					$valid = true;
+					break;
+				}
+			}
+			if($valid){
 				if($test instanceof Player){
 					$pk = new UpdateBlockPacket;
 					$pk->block = $new->getID();
@@ -147,18 +158,30 @@ abstract class Space{
 		return $cnt;
 	}
 	/**
-	 * @param Block $from
+	 * @param Block|Block[] $ofroms
 	 * @param BlockList $to
 	 * @param bool $checkMeta
 	 * @param bool $update
 	 * @return int
 	 */
-	public function randomReplaces(Block $from, BlockList $to, $checkMeta = true, $update = true){
+	public function randomReplaces($ofroms, BlockList $to, $checkMeta = true, $update = true){
+		/** @var Block[] $froms */
+		$froms = [];
+		foreach(((array) $ofroms) as $from){
+			$froms[] = clone $from;
+		}
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
 			$level = $pos->getLevel();
 			$block = $level->getBlock($pos);
-			if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
+			$valid = false;
+			foreach($froms as $from){
+				if($block->getID() === $from->getID() and (!$checkMeta or $block->getDamage() === $from->getDamage())){
+					$valid = true;
+					break;
+				}
+			}
+			if($valid){
 				$level->setBlock($pos, $to->getRandom(), true, false);
 				$cnt++;
 			}

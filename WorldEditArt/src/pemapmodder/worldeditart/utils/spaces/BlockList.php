@@ -72,6 +72,34 @@ class BlockList{
 		}
 		return null;
 	}
+	/**
+	 * @param $string
+	 * @return null|Block
+	 */
+	public static function getBlockFronString($string){
+		$tokens = explode(":", $string);
+		$block = self::parseBlock($tokens[0]);
+		if($block === null){
+			return null;
+		}
+		$meta = isset($tokens[1]) ? intval($tokens[1]):0;
+		return Block::get($block, $meta);
+	}
+	/**
+	 * @param $string
+	 * @return Block[]|null
+	 */
+	public static function getBlockArrayFromString($string){
+		$out = [];
+		foreach(explode(",", $string) as $name){
+			$b = self::getBlockFronString($name);
+			if($b === null){
+				return null;
+			}
+			$out[] = $b;
+		}
+		return $out;
+	}
 	public function getRandom(){
 		$rand = mt_rand();
 		$value = 0;
