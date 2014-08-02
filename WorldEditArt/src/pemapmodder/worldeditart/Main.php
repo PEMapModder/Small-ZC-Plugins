@@ -6,8 +6,12 @@ use pemapmodder\worldeditart\utils\macro\RecordingMacro;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
+use pemapmodder\worldeditart\utils\subcommand\Cylinder;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
+use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
+use pemapmodder\worldeditart\utils\subcommand\Test;
+use pemapmodder\worldeditart\utils\subcommand\Wand;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
@@ -21,9 +25,12 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\Binary;
 
 class Main extends PluginBase implements Listener{
+
+///////////////////////
+// SESSIONING FIELDS //
+///////////////////////
 	/** @var array[] */
 	private $clips = [];
 	/** @var Position[] */
@@ -37,7 +44,11 @@ class Main extends PluginBase implements Listener{
 	/** @var array[] */
 	private $tempPos = [];
 	private $globalClipPath;
-	public function onLoad(){
+
+// INITIALIZERS
+	public function onPreEnable(){
+		@mkdir($this->getDataFolder());
+		@mkdir($this->getDataFolder()."players/");
 		$this->saveDefaultConfig();
 		$maxHeight = $this->getConfig()->get("maximum world height");
 		if(!defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
@@ -45,9 +56,7 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 	public function onEnable(){
-		@mkdir($this->getDataFolder());
-		@mkdir($this->getDataFolder()."players/");
-		$this->saveDefaultConfig();
+		$this->onPreEnable();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->registerCommands();
 		@mkdir($this->globalClipPath = $this->getDataFolder()."clips/");
@@ -55,12 +64,20 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
 		$wea->registerAll([
+			new Cuboid($this),
+			new Cylinder($this),
 			new PosSubcommand($this, false),
 			new PosSubcommand($this, true),
-			new Cuboid($this),
+			new Set($this),
+			new Test($this),
+			new Wand($this)
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
+
+////////////////////
+// EVENT HANDLERS //
+////////////////////
 	public function onQuit(PlayerQuitEvent $event){
 		$i = $event->getPlayer()->getID();
 		if(isset($this->selectedPoints[$i])){
@@ -76,19 +93,15 @@ class Main extends PluginBase implements Listener{
 			unset($this->macros[$i]);
 		}
 	}
-	public function getClip(Player $player){
-		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
-	}
-	public function setClip(Player $player, array $data){
-		$this->clips[$player->getID()] = $data;
-	}
 	/**
+	 * Recognizes a wand operation if item in hand matches wand
+	 *
 	 * @param PlayerInteractEvent $event
 	 * @priority HIGH
 	 */
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
-		if($this->isWand($p, $event->getItem()) and $p->hasPermission("wea.sel.pt.wand")){
+		if($this->isWand($p, $event->getItem())){
 			$this->setAnchor($p, $event->getBlock());
 			$event->setCancelled();
 		}
@@ -119,6 +132,19 @@ class Main extends PluginBase implements Listener{
 			$macro->addLog($block, $block, $isBreak);
 		}
 	}
+
+/////////////////
+// SESSIONINGS //
+/////////////////
+
+// CLIPBOARD
+	public function getClip(Player $player){
+		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
+	}
+	public function setClip(Player $player, array $data){
+		$this->clips[$player->getID()] = $data;
+	}
+	// MACROS
 	/**
 	 * @param Player $player
 	 * @return RecordingMacro|bool
@@ -129,6 +155,7 @@ class Main extends PluginBase implements Listener{
 	public function setRecordingMacro(Player $player, RecordingMacro $macro){
 		$this->macros[$player->getID()] = $macro;
 	}
+	// WANDS
 	public function getPlayerWand(Player $player, &$isDamageLimited){
 		$id = false;
 		$damage = false;
@@ -158,9 +185,6 @@ class Main extends PluginBase implements Listener{
 		$yaml["wand-damage"] = $damage;
 		yaml_emit_file($path, $yaml, YAML_UTF8_ENCODING);
 	}
-	public function getPlayerFile(Player $player){
-		return $this->getDataFolder()."players/".strtolower($player->getName());
-	}
 	public function isWand(Player $player, Item $item){
 		$path = $this->getPlayerFile($player);
 		$id = false;
@@ -184,17 +208,7 @@ class Main extends PluginBase implements Listener{
 		}
 		return false;
 	}
-	/**
-	 * @param Player $player
-	 * @param Position $pos
-	 * @param bool $isTwo
-	 */
-	public function setTempPos(Player $player, Position $pos, $isTwo){
-		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
-	}
-	public function getTempPos(Player $player){
-		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()]:false;
-	}
+	// SELECTIONS
 	public function setSelection(Player $player, Space $space){
 		$this->selections[$player->getID()] = clone $space;
 	}
@@ -212,69 +226,31 @@ class Main extends PluginBase implements Listener{
 		}
 		return false;
 	}
+	// Cuboid Selections
+	public function getTempPos(Player $player){
+		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()]:false;
+	}
+	/**
+	 * @param Player $player
+	 * @param Position $pos
+	 * @param bool $isTwo
+	 */
+	public function setTempPos(Player $player, Position $pos, $isTwo){
+		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
+	}
+	// ANCHORS
 	public function getAnchor(Player $player){
 		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
 	}
 	public function setAnchor(Player $player, Position $anchor){
 		$this->anchors[$player->getID()] = clone $anchor;
 	}
-	public function isGlobalClipCreated($name){
-		return is_file($this->globalClipPath.$name.".clp");
-	}
-	public function getGlobalClip($name){
-		if(!$this->isGlobalClipCreated($name)){
-			return false;
-		}
-		$res = gzopen($this->globalClipPath.$name.".clp", "rb");
-		if(!is_resource($res)){
-			return false;
-		}
-		$author = gzread($res, ord(gzread($res, 1)));
-		$cnt = Binary::readLong(gzread($res, 8), false);
-		/** @var Block[] $blocks */
-		$blocks = [];
-		for($i = 0; $i < $cnt and !gzeof($res); $i++){
-			$x = Binary::readLong(gzread($res, 8));
-			$y = Binary::readShort(gzread($res, 2));
-			$z = Binary::readLong(gzread($res, 8));
-			$id = ord(gzread($res, 1));
-			$damage = ord(gzread($res, 1));
-			$blocks[] = Block::get($id, $damage, new Position($x, $y, $z, $this->getServer()->getDefaultLevel())); // any placeholder level will do.
-		}
-		$yaw = Binary::readDouble(gzread($res, 8));
-		gzclose($res);
-		if(count($blocks) !== $cnt){
-			trigger_error("Global clip $name was corrupted", E_USER_WARNING);
-			return false;
-		}
-		return [
-			"author" => $author,
-			"blocks" => $blocks,
-			"yaw" => $yaw
-		];
-	}
-	public function saveGlobalClip($name, array $data){
-		$path = $this->globalClipPath.$name.".clp";
-		@unlink($path);
-		$res = gzopen($this->globalClipPath.$name.".clp", "wb");
-		if(!is_resource($res)){
-			return "Unable to open stream for \"$name.clp\". Check if \"$name\" is a valid filename.";
-		}
-		gzwrite($res, chr(strlen($data["author"])));
-		gzwrite($res, $data["author"]);
-		gzwrite($res, Binary::writeLong(count($data["blocks"])));
-		/** @var Block $block */
-		foreach($data["blocks"] as $block){
-			gzwrite($res, Binary::writeLong($block->getX()));
-			gzwrite($res, Binary::writeShort($block->getY()));
-			gzwrite($res, Binary::writeLong($block->getZ()));
-			gzwrite($res, chr($block->getID()));
-			gzwrite($res, chr($block->getDamage()));
-		}
-		gzwrite($res, Binary::writeDouble($data["yaw"]));
-		gzclose($res);
-		$this->getLogger()->info("New clip \"$name\" has been created on the global clipboard as $name.clp.");
-		return true;
+
+///////////
+// UTILS //
+///////////
+	public function getPlayerFile(Player $player){
+		return $this->getDataFolder()."players/".strtolower($player->getName());
 	}
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
