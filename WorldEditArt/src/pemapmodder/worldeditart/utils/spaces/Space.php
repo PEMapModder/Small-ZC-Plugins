@@ -12,6 +12,9 @@ use pocketmine\Player;
 abstract class Space{
 	/** @var Block[] */
 	protected $undoMap = [];
+	public function __construct(){
+		$this->acquire();
+	}
 	/**
 	 * @return Position[]
 	 */
@@ -97,6 +100,7 @@ abstract class Space{
 	/**
 	 * Note: This method doesn't support /w test since it is random.
 	 * @param BlockList $blocks
+	 * @param bool $update
 	 * @return int the number of bocks replaced
 	 */
 	public function randomPlaces(BlockList $blocks, $update = true){
@@ -208,6 +212,7 @@ abstract class Space{
 		}
 	}
 	public abstract function isInside(Vector3 $v);
+	protected abstract function acquire();
 	/**
 	 * @param Vector3 $v0
 	 * @param Vector3 $v1

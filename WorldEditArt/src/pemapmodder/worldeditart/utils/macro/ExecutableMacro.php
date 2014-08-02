@@ -2,24 +2,39 @@
 
 namespace pemapmodder\worldeditart\utils\macro;
 
+use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
+use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag;
+use pocketmine\Server;
 
 class ExecutableMacro{
 	private $author;
 	/** @var MacroOperation[] */
 	private $ops = [];
 	public function __construct($string){
-		$string = gzdecode($string);
-		$offset = 0;
-		$length = substr($string, 0, 1); $offset += 1;
-		$this->author = substr($string, $offset, $length); $offset += 8;
-		$length = substr($string, $offset, 8); $offset += 8;
-		$data = substr($string, $offset);
-		if(strlen($data) !== $length * 20){
-			trigger_error("Macro file corrupted", E_USER_WARNING);
+		$nbt = new NBT;
+		$nbt->readCompressed($string);
+		$tag = $nbt->getData();
+		/** @var tag\String $author */
+		$author = $tag["author"];
+		$this->author = $author->getValue();
+		/** @var tag\Enum $ops */
+		$ops = $tag["ops"];
+		/** @var tag\Compound $op */
+		foreach($ops as $op){
+			$this->ops[] = MacroOperation::fromTag($op);
 		}
-		foreach(str_split($data, 20) as $op){
-			$this->ops[] = MacroOperation::parse($op);
+	}
+	public function execute(Server $server, Position $anchor, Main $main){
+		$ticks = 0;
+		foreach($this->ops as $op){
+			if($op->getType() === MacroOperation::TYPE_WAIT){
+				$ticks += $op->getLength();
+				continue;
+			}
+			$anchor->level->acquire(); // StrongRef
+			$server->getScheduler()->scheduleDelayedTask(new MacroOperationTask($main, $op, $anchor), $ticks);
 		}
 	}
 	/**
@@ -27,13 +42,5 @@ class ExecutableMacro{
 	 */
 	public function getAuthor(){
 		return $this->author;
-	}
-	public function run(Position $pos){
-		$cnt = 0;
-		foreach($this->ops as $op){
-			if($op->operate($pos) !== false){
-				$cnt++;
-			}
-		}
 	}
 }

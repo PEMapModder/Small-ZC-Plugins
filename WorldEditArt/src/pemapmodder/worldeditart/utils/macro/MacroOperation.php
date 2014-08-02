@@ -5,28 +5,25 @@ namespace pemapmodder\worldeditart\utils\macro;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
-use pocketmine\utils\Binary;
+use pocketmine\nbt\tag;
 
 class MacroOperation{
-	/** @var Vector3 */
-	private $delta;
-	/** @var Block $block */
-	private $block;
-	public static function parse($string){
-		$type = substr($string, 0, 1);
-		if($type === "\x01"){
-			return Binary::readInt(substr($string, 1));
+	const TYPE_WAIT = true;
+	const TYPE_OPERATE = false;
+	public static function fromTag(tag\Compound $compound){
+		$type = $compound["type"];
+		if($type === 1){
+			return new MacroOperation($compound["delta"]);
 		}
-		$id = ord(substr($string, 1, 1));
-		$damage = ord(substr($string, 2, 1));
-		$x = Binary::readLong(substr($string, 3, 8), true);
-		$y = Binary::readShort(substr($string, 11, 2), true);
-		$z = Binary::readLong(substr($string, 13, 8), true);
-		return new MacroOperation(new Vector3($x, $y, $z), Block::get($id, $damage));
+		else{
+			$vectors = $compound["vectors"];
+			return new MacroOperation(new Vector3($vectors[0], $vectors[1], $vectors[2]), Block::get($compound["blockID"], $compound["blockDamage"]));
+		}
 	}
 	/**
 	 * @param Vector3|int $pos
 	 * @param Block|null $block
+	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($pos, $block = null){
 		if(is_int($pos)){
@@ -37,19 +34,36 @@ class MacroOperation{
 		$this->delta = $pos;
 		$this->block = $block;
 	}
-	public function __toString(){
+	public function toTag(){
+		$tag = new tag\Compound;
+		$tag["type"] = new tag\Byte("", is_int($this->delta) ? 1:0);
 		if(is_int($this->delta)){
-			return "\x01".Binary::writeInt($this->delta);
+			$tag["delta"] = new tag\Int("", $this->delta);
 		}
-		$output = "\x00";
-		$output .= chr($this->block->getID());
-		$output .= chr($this->block->getDamage());
-		$output .= Binary::writeLong($this->delta->getFloorX());
-		$output .= Binary::writeShort($this->delta->getFloorY());
-		$output .= Binary::writeLong($this->delta->getFloorZ());
-		return $output;
+		else{
+			$tag["vectors"] = new tag\Enum("", [
+				new tag\Long("", $this->delta->getFloorX()),
+				new tag\Short("", $this->delta->getFloorY()),
+				new tag\Long("", $this->delta->getFloorZ())
+			]);
+			$tag["blockID"] = new tag\Byte("", $this->block->getID());
+			$tag["blockDamage"] = new tag\Byte("", $this->block->getDamage());
+		}
+		return $tag;
 	}
-	public function operate(Position $pos){
-		$pos->getLevel()->setBlock($pos->add($this->delta), $this->block, true, true); // true
+	public function operate(Position $anchor){
+		if(is_int($this->delta)){
+			throw new \BadMethodCallException("MacroOperation is of type TRUE (wait) not FALSE (operate) thus cannot be operated");
+		}
+		$anchor->getLevel()->setBlock($anchor->add($this->delta), $this->block, true, true); // update
+	}
+	public function getLength(){
+		if(!is_int($this->delta)){
+			throw new \BadMethodCallException("MacroOperation is of type FALSE (operate) not TRUE (wait) thus no length can be resolved");
+		}
+		return $this->delta;
+	}
+	public function getType(){
+		return is_int($this->delta);
 	}
 }

@@ -5,8 +5,9 @@ namespace pemapmodder\worldeditart\utils\macro;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag;
 use pocketmine\Player;
-use pocketmine\utils\Binary;
 
 class RecordingMacro{
 	private $author;
@@ -29,31 +30,39 @@ class RecordingMacro{
 	public function setHibernating($value){
 		$this->hibernating = (boolean) $value;
 	}
+	public function isHibernating(){
+		return $this->hibernating;
+	}
 	public function addLog(Vector3 $pos, Block $block, $isBreak){
 		if($this->hibernating){
 			return;
 		}
 		$this->log[] = new MacroOperation($pos->subtract($this->anchor->x, $this->anchor->y, $this->anchor->z), $isBreak ? new Air:$block);
 	}
-	public function __toString(){
-		$output = Binary::writeLong(count($this->log));
-		foreach($this->log as $op){
-			$output .= "$op";
+	public function addWait($ticks){
+		if($this->isHibernating()){
+			return;
 		}
-		return $output;
+		$this->log[] = new MacroOperation($ticks);
 	}
-	public function saveTo($res, $isGZ = true, $close = true){
-		if(!$isGZ){
-			fwrite($res, $this->__toString());
-			if($close){
-				fclose($res);
-			}
+	public function saveTo($file){
+		$tag = new tag\Compound;
+		$tag["author"] = new tag\String("", $this->author);
+		$tag["ops"] = new tag\Enum;
+		foreach($this->log as $i => $log){
+			$tag["ops"][$i] = $log->toTag();
 		}
-		else{
-			gzwrite($res, $this->__toString());
-			if($close){
-				gzclose($res);
-			}
+		$nbt = new NBT;
+		$nbt->setData($tag);
+		$stream = @fopen($file, "wb");
+		if(!is_resource($stream)){
+			throw new \RuntimeException("Unable to open stream. Maybe the macro name is not a valid filename?");
 		}
+		$data = $nbt->writeCompressed();
+		$cnt = fwrite($stream, $data);
+		if($cnt !== strlen($data)){
+			throw new \RuntimeException("Cannot write contents to the file.");
+		}
+		fclose($stream);
 	}
 }
