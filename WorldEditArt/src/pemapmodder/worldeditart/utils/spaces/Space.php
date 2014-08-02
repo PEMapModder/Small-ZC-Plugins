@@ -99,13 +99,15 @@ abstract class Space{
 	 * @param BlockList $blocks
 	 * @return int the number of bocks replaced
 	 */
-	public function randomPlaces(BlockList $blocks){
+	public function randomPlaces(BlockList $blocks, $update = true){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
 			$pos->getLevel()->setBlock($pos, $blocks->getRandom(), true, false);
 			$cnt++;
 		}
-		$this->updateAround();
+		if($update){
+			$this->updateAround();
+		}
 		return $cnt;
 	}
 	/**
