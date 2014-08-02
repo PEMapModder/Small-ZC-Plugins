@@ -42,10 +42,18 @@ class RecordingMacro{
 		}
 		return $output;
 	}
-	public function saveTo($res, $close = true){
-		fwrite($res, gzencode("$this"));
-		if($close){
-			fclose($res);
+	public function saveTo($res, $isGZ = true, $close = true){
+		if(!$isGZ){
+			fwrite($res, $this->__toString());
+			if($close){
+				fclose($res);
+			}
+		}
+		else{
+			gzwrite($res, $this->__toString());
+			if($close){
+				gzclose($res);
+			}
 		}
 	}
 }

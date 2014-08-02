@@ -155,6 +155,9 @@ class Main extends PluginBase implements Listener{
 	public function setRecordingMacro(Player $player, RecordingMacro $macro){
 		$this->macros[$player->getID()] = $macro;
 	}
+	public function unsetRecordingMacro(Player $player){
+		unset($this->macros[$player->getID()]);
+	}
 	// WANDS
 	public function getPlayerWand(Player $player, &$isDamageLimited){
 		$id = false;
@@ -250,7 +253,13 @@ class Main extends PluginBase implements Listener{
 // UTILS //
 ///////////
 	public function getPlayerFile(Player $player){
-		return $this->getDataFolder()."players/".strtolower($player->getName());
+		return $this->getDataFolder()."players/".strtolower($player->getName()).".yml";
+	}
+	public function getMacroFile($name){
+		return $this->getDataFolder()."macros/".strtolower($name).".mcr";
+	}
+	public function getClipFile($name){
+		return $this->getDataFolder()."clips/".strtolower($name).".clp";
 	}
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
