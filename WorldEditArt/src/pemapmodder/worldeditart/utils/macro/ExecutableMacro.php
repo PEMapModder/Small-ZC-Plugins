@@ -9,16 +9,23 @@ use pocketmine\nbt\tag;
 use pocketmine\Server;
 
 class ExecutableMacro{
-	private $author;
+	/** @var string */
+	private $author, $description;
 	/** @var MacroOperation[] */
 	private $ops = [];
 	public function __construct($string){
 		$nbt = new NBT;
-		$nbt->readCompressed($string);
+		$type = ord(substr($string, 0, 1));
+		$string = substr($string, 1);
+		if($type === 0){
+			$nbt->read($string);
+		}
+		else{
+			$nbt->readCompressed($string, $type);
+		}
 		$tag = $nbt->getData();
-		/** @var tag\String $author */
-		$author = $tag["author"];
-		$this->author = $author->getValue();
+		$this->author = $tag["author"];
+		$this->description = $tag["description"];
 		/** @var tag\Enum $ops */
 		$ops = $tag["ops"];
 		/** @var tag\Compound $op */
@@ -38,9 +45,15 @@ class ExecutableMacro{
 		}
 	}
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getAuthor(){
 		return $this->author;
+	}
+	/**
+	 * @return string
+	 */
+	public function getDescription(){
+		return $this->description;
 	}
 }

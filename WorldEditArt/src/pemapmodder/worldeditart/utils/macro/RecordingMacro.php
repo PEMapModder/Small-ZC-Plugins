@@ -11,6 +11,7 @@ use pocketmine\Player;
 
 class RecordingMacro{
 	private $author;
+	private $description = "";
 	/** @var Vector3 */
 	private $anchor;
 	/** @var MacroOperation[] */
@@ -45,10 +46,11 @@ class RecordingMacro{
 		}
 		$this->log[] = new MacroOperation($ticks);
 	}
-	public function saveTo($file){
+	public function saveTo($file, $compression = 31){
 		$tag = new tag\Compound;
-		$tag["author"] = new tag\String("", $this->author);
-		$tag["ops"] = new tag\Enum;
+		$tag["author"] = new tag\String("author", $this->author);
+		$tag["description"] = new tag\String("description", $this->description);
+		$tag["ops"] = new tag\Enum("ops");
 		foreach($this->log as $i => $log){
 			$tag["ops"][$i] = $log->toTag();
 		}
@@ -58,7 +60,12 @@ class RecordingMacro{
 		if(!is_resource($stream)){
 			throw new \RuntimeException("Unable to open stream. Maybe the macro name is not a valid filename?");
 		}
-		$data = $nbt->writeCompressed();
+		if($compression !== false){
+			$data = chr($compression).$nbt->writeCompressed($compression);
+		}
+		else{
+			$data = chr(0).$nbt->write();
+		}
 		$cnt = fwrite($stream, $data);
 		if($cnt !== strlen($data)){
 			throw new \RuntimeException("Cannot write contents to the file.");

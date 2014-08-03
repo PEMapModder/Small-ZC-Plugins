@@ -43,7 +43,7 @@ class MacroOperation{
 		else{
 			$tag["vectors"] = new tag\Enum("", [
 				new tag\Long("", $this->delta->getFloorX()),
-				new tag\Short("", $this->delta->getFloorY()),
+				new tag\Long("", $this->delta->getFloorY()),
 				new tag\Long("", $this->delta->getFloorZ())
 			]);
 			$tag["blockID"] = new tag\Byte("", $this->block->getID());
