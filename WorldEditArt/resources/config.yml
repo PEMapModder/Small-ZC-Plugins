@@ -1,11 +1,96 @@
 ---
-## Wands
+#### Data providers
+## Data providers provide the plugin storages to store data
+data providers:
+  # Player data provider provides the plugin per-player data, such as personal wands
+  player:
+    # Choose a data provider type. Options:
+    # sqlite3 (create an SQLite3 file as database)
+    # yaml (save one YAML file for each player)
+    # json (save one JSON file for each player)
+    # mysqli (save on a remote MySQL database)
+    type: sqlite3
+    # SQLite3 options. If you use it, configure this properly.
+    sqlite3:
+      # The path to save the database. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will NOT be created automatically; create the directories yourself; use .. to jump up to parent folder)
+      path: "players.sq3"
+    # YAML options. If you use it, configure this properly.
+    yaml:
+      # The path to save files. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will be created automatically; you just need to use / (or / or \\ if on Windows); use .. to jump up to parent folder)
+      path: "players/yaml/<name>.yml"
+    # JSON options. If you use it, configure this properly.
+    json:
+      # The path to save files. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will be created automatically; you just need to use / (or / or \\ if on Windows); use .. to jump up to parent folder)
+      path: "players/json/<name>.json"
+      # Format the files beautifully. This will write unnecessary (and ignored when reading) indents and returns that eases your reading if you open/modify these files.
+      pretty print: true
+    # MySQLi options. If you use it, configure this properly.
+    mysqli:
+      use common: true
+      host: example.com
+      username: "guest"
+      password: "123456IsNotAGoodPassword"
+      database: "WorldEditArt player database"
+      port: 3306
+
+  # Macro data provider provides the plugin a storage of macros
+  macro:
+    # Choose a data provider type. Options:
+    # mcr (save one .mcr file for each macro)
+    # mysqli (save on a remote MySQL database)
+    type: mcr
+    # MCR options. If you use it, configure this properly.
+    mcr:
+      # The path to save files. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will be created automatically); you just need to use / (or / or \\ if on Windows); use .. to jump up to parent folder
+      path: "macros/<name>.mcr"
+      # Compression of MCR files. Options:
+      # 31 (compress with the GZIP format)
+      # 0 (do not compress)
+      # Warning: not using the formats above will cause unexpected errors.
+      compression: 0 # TODO change this to 31 after debugging # This is an internal remark. If I forgot to remove this, please tell me.
+    # MySQLi options. If you use it, configure this properly.
+    mysqli:
+      use common: true
+      host: example.com
+      username: "guest"
+      password: "123456IsNotAGoodPassword"
+      database: "WorldEditArt macro database"
+      port: 3306
+
+  # Clipboard data provider provides the plugin a clipboard to store clips
+  clipboard:
+    # Choose a data provider type. Options:
+    # clp (save one .clp file for each clip)
+    # mysqli (save on a remote MySQL database)
+    type: clp
+    # CLP options. If you use it, configure this properly.
+    clp:
+      # The path to save files. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will be created automatically; you just need to use / (or / or \\ if on Windows); use .. to jump up to parent folder)
+      path: "clipboard/<name>.clp"
+    # MySQLi options. If you use it, configure this properly.
+    mysqli:
+      use common: true
+      host: example.com
+      username: "guest"
+      password: "123456IsNotAGoodPassword"
+      database: "WorldEditArt macro database"
+      port: 3306
+
+  # If you want all mysqli data providers to use the same mysqli database, configure this and set "use common" to true in each of them
+  common mysqli database:
+    host: example.com
+    username: "guest"
+    password: "123456IsNotAGoodPassword"
+    database: "WorldEditArt_common_database"
+    port: 3306
+
+#### Wands
 # The default wand item ID
 wand-id: 292
 # leave true for any damage values
 wand-damage: true
 
-## Version compatibility
+#### Version compatibility
 ## Changing these value could lead to dangerous crashes.
 # If PocketMine and MCPE are updated such that the world maximum height is no longer 127, change this. This value is NOT to increase the world height. It is only an in-case support in case MCPE now supports higher worlds but this plugin is not yet updated.
 maximum world height: 127

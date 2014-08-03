@@ -2,7 +2,12 @@
 
 namespace pemapmodder\worldeditart;
 
-use pemapmodder\worldeditart\utils\macro\RecordingMacro;
+use pemapmodder\worldeditart\utils\macro\Macro;
+use pemapmodder\worldeditart\utils\provider\player\DummyPlayerDataProvider;
+use pemapmodder\worldeditart\utils\provider\player\JSONFilePlayerDataProvider;
+use pemapmodder\worldeditart\utils\provider\player\MysqliPlayerDataProvider;
+use pemapmodder\worldeditart\utils\provider\player\SQLite3PlayerDataProvider;
+use pemapmodder\worldeditart\utils\provider\player\YAMLFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
@@ -27,10 +32,11 @@ use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class Main extends PluginBase implements Listener{
+////////////
+// FIELDS //
+////////////
 
-///////////////////////
-// SESSIONING FIELDS //
-///////////////////////
+// SESSIONING FIELDS
 	/** @var array[] */
 	private $clips = [];
 	/** @var Position[] */
@@ -39,11 +45,19 @@ class Main extends PluginBase implements Listener{
 	private $selections = [];
 	/** @var Position[] */
 	private $anchors = [];
-	/** @var RecordingMacro[] */
+	/** @var Macro[] */
 	private $macros = [];
 	/** @var array[] */
 	private $tempPos = [];
-	private $globalClipPath;
+// DATA PROVIDERS
+	/** @var utils\provider\clip\ClipboardProvider */
+	private $clipboardProvider;
+	/** @var utils\provider\macro\MacroDataProvider */
+	private $macroDataProvider;
+	/** @var utils\provider\player\PlayerDataProvider */
+	private $playerDataProvider;
+	/** @var null|\mysqli */
+	private $commonMysqli = null;
 
 // INITIALIZERS
 	public function onPreEnable(){
@@ -59,7 +73,44 @@ class Main extends PluginBase implements Listener{
 		$this->onPreEnable();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->registerCommands();
-		@mkdir($this->globalClipPath = $this->getDataFolder()."clips/");
+		$providers = $this->getConfig()->get("data providers");
+
+		$players = $providers["player"];
+		$type = $players["type"];
+		switch(strtolower($type)){
+			case "sqlite3":
+				$this->playerDataProvider = new SQLite3PlayerDataProvider($this, $players["sqlite3"]["path"]);
+				break;
+			case "json":
+				$this->playerDataProvider = new JSONFilePlayerDataProvider($this, $players["json"]["path"]);
+				break;
+			case "yaml":
+				$this->playerDataProvider = new YAMLFilePlayerDataProvider($this, $players["yaml"]["path"]);
+				break;
+			case "mysqli":
+				if($players["mysqli"]["use common"]){
+					$db = $this->getCommonMysqli();
+				}
+				else{
+					$args = $players["mysqli"];
+					$db = new \mysqli($args["host"], $args["username"], $args["password"], $args["database"], $args["port"]);
+					if($db->connect_error){
+						$this->getLogger()->critical("Cannot connect to MySQLi remote database. The database will be assumed blank and read-only.");
+						$this->playerDataProvider = new DummyPlayerDataProvider($this);
+						break;
+					}
+				}
+				$this->playerDataProvider = new MysqliPlayerDataProvider($this, $db);
+				break;
+			default:
+				$this->getLogger()->critical("Unknown player data provider type $type. The database will be assumed blank and read-only.");
+				$this->playerDataProvider = new DummyPlayerDataProvider($this);
+				break;
+		}
+
+		// TODO clipboard data provider
+
+		// TODO macro data provider
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
@@ -128,8 +179,8 @@ class Main extends PluginBase implements Listener{
 	 * @param bool $isBreak
 	 */
 	public function onBlockTouched(Player $player, Block $block, $isBreak){
-		if(($macro = $this->getRecordingMacro($player)) instanceof RecordingMacro){
-			$macro->addLog($block, $block, $isBreak);
+		if(($macro = $this->getRecordingMacro($player)) instanceof Macro){
+			$macro->addBlock($isBreak ? new Air:$block);
 		}
 	}
 
@@ -144,74 +195,49 @@ class Main extends PluginBase implements Listener{
 	public function setClip(Player $player, array $data){
 		$this->clips[$player->getID()] = $data;
 	}
-	// MACROS
+// MACROS
 	/**
 	 * @param Player $player
-	 * @return RecordingMacro|bool
+	 * @return Macro|bool
 	 */
 	public function getRecordingMacro(Player $player){
 		return isset($this->macros[$player->getID()]) ? $this->macros[$player->getID()]:false;
 	}
-	public function setRecordingMacro(Player $player, RecordingMacro $macro){
+	/**
+	 * @param Player $player
+	 * @param Macro $macro
+	 */
+	public function setRecordingMacro(Player $player, Macro $macro){
 		$this->macros[$player->getID()] = $macro;
 	}
+	/**
+	 * @param Player $player
+	 */
 	public function unsetRecordingMacro(Player $player){
 		unset($this->macros[$player->getID()]);
 	}
-	// WANDS
-	public function getPlayerWand(Player $player, &$isDamageLimited){
-		$id = false;
-		$damage = false;
-		if(is_file($path = $this->getPlayerFile($player))){
-			$data = yaml_parse_file($path);
-			$id = $data["wand-id"];
-			$damage = $data["wand-damage"];
-		}
-		if($id === false){
-			$id = $this->getConfig()->get("wand-id");
-		}
-		if($damage === false){
-			$damage = $this->getConfig()->get("wand-damage");
-		}
-		$isDamageLimited = is_int($damage);
-		if($damage === true){
-			$damage = 0;
-		}
-		return Item::get($id, $damage);
-	}
+// WANDS
+	/**
+	 * @param Player $player
+	 * @param $id
+	 * @param bool $damage
+	 */
 	public function setWand(Player $player, $id, $damage = true){
-		if(!is_file($path = $this->getPlayerFile($player))){
-			stream_copy_to_stream($this->getResource("player.yml"), fopen($path, "wb"));
-		}
-		$yaml = yaml_parse_file($path);
-		$yaml["wand-id"] = $id;
-		$yaml["wand-damage"] = $damage;
-		yaml_emit_file($path, $yaml, YAML_UTF8_ENCODING);
+		// TODO
 	}
+	/**
+	 * @param Player $player
+	 * @param Item $item
+	 * @return bool
+	 */
 	public function isWand(Player $player, Item $item){
-		$path = $this->getPlayerFile($player);
-		$id = false;
-		$damage = false;
-		if(is_file($path)){
-			$data = yaml_parse_file($path);
-			$id = $data["wand-id"];
-			$damage = $data["wand-damage"];
-		}
-		if($id === false){
-			$id = $this->getConfig()->get("wand-id");
-		}
-		if($damage === false){
-			$damage = $this->getConfig()->get("wand-damage");
-		}
-		if($id !== $item->getID()){
-			return false;
-		}
-		if($damage === true or $damage === $item->getDamage()){
-			return true;
-		}
-		return false;
+		// TODO
 	}
-	// SELECTIONS
+// SELECTIONS
+	/**
+	 * @param Player $player
+	 * @param Space $space
+	 */
 	public function setSelection(Player $player, Space $space){
 		$this->selections[$player->getID()] = clone $space;
 	}
@@ -222,6 +248,10 @@ class Main extends PluginBase implements Listener{
 	public function getSelection(Player $player){
 		return isset($this->selections[$player->getID()]) ? $this->selections[$player->getID()]:false;
 	}
+	/**
+	 * @param Player $player
+	 * @return bool
+	 */
 	public function unsetSelection(Player $player){
 		if(isset($this->selections[$player->getID()])){
 			unset($this->selections[$player->getID()]);
@@ -230,6 +260,10 @@ class Main extends PluginBase implements Listener{
 		return false;
 	}
 	// Cuboid Selections
+	/**
+	 * @param Player $player
+	 * @return array|bool
+	 */
 	public function getTempPos(Player $player){
 		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()]:false;
 	}
@@ -241,10 +275,18 @@ class Main extends PluginBase implements Listener{
 	public function setTempPos(Player $player, Position $pos, $isTwo){
 		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
 	}
-	// ANCHORS
+// ANCHORS
+	/**
+	 * @param Player $player
+	 * @return bool|Position
+	 */
 	public function getAnchor(Player $player){
 		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
 	}
+	/**
+	 * @param Player $player
+	 * @param Position $anchor
+	 */
 	public function setAnchor(Player $player, Position $anchor){
 		$this->anchors[$player->getID()] = clone $anchor;
 	}
@@ -252,15 +294,24 @@ class Main extends PluginBase implements Listener{
 ///////////
 // UTILS //
 ///////////
-	public function getPlayerFile(Player $player){
-		return $this->getDataFolder()."players/".strtolower($player->getName()).".yml";
+
+// INSTANCE GETTERS
+	public function getCommonMysqli(){
+		if(!($this->commonMysqli instanceof \mysqli)){
+			$data = $this->getConfig()->get("data providers")["common mysqli database"];
+			$this->commonMysqli = new \mysqli($data["host"], $data["username"], $data["password"], $data["database"]);
+		}
+		return $this->commonMysqli;
 	}
-	public function getMacroFile($name){
-		return $this->getDataFolder()."macros/".strtolower($name).".mcr";
+	public function getPlayerData($name){
+		return $this->playerDataProvider[$name];
 	}
-	public function getClipFile($name){
-		return $this->getDataFolder()."clips/".strtolower($name).".clp";
-	}
+
+// STATIC UTILS
+	/**
+	 * @param Position $pos
+	 * @return string
+	 */
 	public static function posToStr(Position $pos){
 		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
 	}
@@ -321,6 +372,7 @@ class Main extends PluginBase implements Listener{
 		foreach($blocks as $key => $block){
 			$out[$key] = self::rotateBlockByOne($block);
 		}
+		return $out;
 	}
 	private static function rotateBlockByOne(Block $block){
 		return Block::get($block->getID(), $block->getDamage(), new Position($block->getZ(), $block->getY(), -$block->getX(), $block->getLevel()));
@@ -398,5 +450,23 @@ class Main extends PluginBase implements Listener{
 			default:
 				return $number;
 		}
+	}
+	/**
+	 * @return \pemapmodder\worldeditart\utils\provider\player\PlayerDataProvider
+	 */
+	public function getPlayerDataProvider(){
+		return $this->playerDataProvider;
+	}
+	/**
+	 * @return \pemapmodder\worldeditart\utils\provider\macro\MacroDataProvider
+	 */
+	public function getMacroDataProvider(){
+		return $this->macroDataProvider;
+	}
+	/**
+	 * @return \pemapmodder\worldeditart\utils\provider\clip\ClipboardProvider
+	 */
+	public function getClipboardProvider(){
+		return $this->clipboardProvider;
 	}
 }

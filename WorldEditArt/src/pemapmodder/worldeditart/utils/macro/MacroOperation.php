@@ -10,6 +10,8 @@ use pocketmine\nbt\tag;
 class MacroOperation{
 	const TYPE_WAIT = true;
 	const TYPE_OPERATE = false;
+	private $delta;
+	private $block;
 	public static function fromTag(tag\Compound $compound){
 		$type = $compound["type"];
 		if($type === 1){
@@ -65,5 +67,25 @@ class MacroOperation{
 	}
 	public function getType(){
 		return is_int($this->delta);
+	}
+	/**
+	 * @return null|\pocketmine\block\Block
+	 * @throws \BadMethodCallException
+	 */
+	public function getBlock(){
+		if(is_int($this->delta)){
+			throw new \BadMethodCallException("MacroOperation is of type TRUE (wait) not FALSE (operate) thus no length can be resolved");
+		}
+		return $this->block;
+	}
+	/**
+	 * @return \pocketmine\math\Vector3
+	 * @throws \BadMethodCallException
+	 */
+	public function getDelta(){
+		if(is_int($this->delta)){
+			throw new \BadMethodCallException("MacroOperation is of type TRUE (wait) not FALSE (operate) thus no length can be resolved");
+		}
+		return $this->delta;
 	}
 }
