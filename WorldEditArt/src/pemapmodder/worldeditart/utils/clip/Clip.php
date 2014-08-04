@@ -9,12 +9,17 @@ use pocketmine\math\Vector3;
 
 class Clip{
 	const KEY_SEPARATOR = ":";
+	private $name;
 	private $blocks = [];
+	private $creationTime;
 	/**
 	 * @param Block[]|Space $blocks
 	 * @param Position|null $anchor
+	 * @param string $name
 	 */
-	public function __construct($blocks = [], Position $anchor = null){
+	public function __construct($blocks = [], Position $anchor = null, $name = "default"){
+		$this->name = $name;
+		$this->creationTime = microtime(true);
 		if($blocks instanceof Space){
 			$anchor = $anchor->round();
 			foreach($blocks->getBlockList() as $b){
@@ -35,5 +40,28 @@ class Clip{
 	public static function unkey($string){
 		$tokens = explode(self::KEY_SEPARATOR, $string);
 		return new Vector3((int) $tokens[0], (int) $tokens[1], (int) $tokens[2]);
+	}
+	public function paste(Position $anchor){
+		foreach($this->blocks as $keyed => $block){
+			$anchor->getLevel()->setBlock(self::unkey($keyed)->add($anchor), $block, true, false);
+		}
+	}
+	/**
+	 * @return string
+	 */
+	public function getName(){
+		return $this->name;
+	}
+	/**
+	 * @return Block[]
+	 */
+	public function getBlocks(){
+		return $this->blocks;
+	}
+	/**
+	 * @return float
+	 */
+	public function getCreationTime(){
+		return $this->creationTime;
 	}
 }

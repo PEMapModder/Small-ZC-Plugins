@@ -3,6 +3,7 @@
 namespace pemapmodder\worldeditart;
 
 use pemapmodder\worldeditart\utils\macro\Macro;
+use pemapmodder\worldeditart\utils\provider\clip\BinaryClipboardProvider;
 use pemapmodder\worldeditart\utils\provider\player\DummyPlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\JSONFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\MysqliPlayerDataProvider;
@@ -108,7 +109,16 @@ class Main extends PluginBase implements Listener{
 				break;
 		}
 
-		// TODO clipboard data provider
+		$clipboard = $providers["clipboard"];
+		switch(strtolower($clipboard["type"])){
+			case "clp":
+				$this->clipboardProvider = new BinaryClipboardProvider($this, $clipboard["clp"]);
+				break;
+			default:
+				$this->getLogger()->critical("Unknown clipboard provider type ".$clipboard["type"].". A temporary-memory clipboard provider will be used.");
+				// TODO dummy
+				break;
+		}
 
 		// TODO macro data provider
 	}
