@@ -74,6 +74,16 @@ class Macro{
 		}
 		return $this->hibernating;
 	}
+	/**
+	 * @return bool
+	 * @throws \BadMethodCallException
+	 */
+	public function isHibernating(){
+		if(!$this->isAppendable()){
+			throw new \BadMethodCallException("Trying to get hibernating mode of non-appendable macro");
+		}
+		return $this->hibernating;
+	}
 	public function getAnchor(){
 		if(!$this->isAppendable()){
 			throw new \BadMethodCallException("Trying to get anchor of non-appendable macro");
