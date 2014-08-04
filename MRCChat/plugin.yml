@@ -1,0 +1,7 @@
+name: MRCChat
+description: Minecraft Relay Chat (chat channels)
+author: PEMapModder
+version: 1.0.0
+api: [1.0.0]
+main: pemapmodder\mrcchat\MRCChat
+prefix: MRC
