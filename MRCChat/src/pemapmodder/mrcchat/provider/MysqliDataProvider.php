@@ -2,12 +2,17 @@
 
 namespace pemapmodder\mrcchat\provider;
 
+use pemapmodder\mrcchat\Channel;
+use pemapmodder\mrcchat\MRCChat;
+
 class MysqliDataProvider implements DataProvider{
+	/** @var MRCChat */
 	private $main;
+	/** @var \mysqli */
 	private $db;
-	/** @var WeakRef[] */
+	/** @var \WeakRef[] */
 	private $channels = [];
-	public function __construct(..\MRCChat $main, $args){
+	public function __construct(MRCChat $main, array $args){
 		$this->main = $main;
 		$this->db = new \mysqli($args["host"], $args["username"], $args["password"], $args["database"]);
 		if($this->db->connect_error){
@@ -34,7 +39,7 @@ class MysqliDataProvider implements DataProvider{
 		$result = $this->db->query("SELECT * FROM mrcchat_channels WHERE name = '{$this->db->escape_string($name)}';");
 		$data = $result->fetch_assoc();
 		$result->close();
-		return new ..\Channel($data["name"], $data["modes"]);
+		return new Channel($data["name"], $data["modes"]);
 	}
 	public function isAvailable(){
 		return $this->db->ping();
