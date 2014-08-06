@@ -36,9 +36,9 @@ class MysqliMacroDataProvider extends MacroDataProvider{
 		$this->db->query("CREATE TABLE IF NOT EXISTS macros_ops (
 				owner VARCHAR(65536),
 				offset INT UNSIGNED,
-				x BIGINT,
-				y BIGINT,
-				z BIGINT,
+				x BIGINT SIGNED,
+				y SMALLINT SIGNED,
+				z BIGINT SIGNED,
 				id TINYINT UNSIGNED,
 				damage TINYINT
 				)");

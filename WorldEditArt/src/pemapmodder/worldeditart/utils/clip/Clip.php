@@ -64,4 +64,7 @@ class Clip{
 	public function getCreationTime(){
 		return $this->creationTime;
 	}
+	public function __toString(){
+		return $this->name;
+	}
 }

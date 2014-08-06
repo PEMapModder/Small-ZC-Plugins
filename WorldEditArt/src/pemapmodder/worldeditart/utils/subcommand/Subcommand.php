@@ -23,7 +23,7 @@ abstract class Subcommand{
 	const NO_BLOCK = 6;
 	const NO_ITEM = 7;
 	const NO_ANCHOR = 8;
-	protected $main;
+	private $main;
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
 	/**

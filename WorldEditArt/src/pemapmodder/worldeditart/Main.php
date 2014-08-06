@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart;
 
+use pemapmodder\worldeditart\utils\clip\Clip;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\provider\clip\BinaryClipboardProvider;
 use pemapmodder\worldeditart\utils\provider\player\DummyPlayerDataProvider;
@@ -11,8 +12,11 @@ use pemapmodder\worldeditart\utils\provider\player\SQLite3PlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\YAMLFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\subcommand\Copy;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
+use pemapmodder\worldeditart\utils\subcommand\Cut;
 use pemapmodder\worldeditart\utils\subcommand\Cylinder;
+use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
@@ -125,8 +129,11 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
 		$wea->registerAll([
+			new Copy($this),
 			new Cuboid($this),
+			new Cut($this),
 			new Cylinder($this),
+			new MacroSubcommand($this),
 			new PosSubcommand($this, false),
 			new PosSubcommand($this, true),
 			new Set($this),
@@ -199,11 +206,18 @@ class Main extends PluginBase implements Listener{
 /////////////////
 
 // CLIPBOARD
-	public function getClip(Player $player){
-		return isset($this->clips[$player->getID()])?$this->clips[$player->getID()]:false;
+	public function getClip(Player $player, $name = "default"){
+		return isset($this->clips[$player->getID()]) and isset($this->clips[$player->getID()][$name]) ?
+			$this->clips[$player->getID()][$name]:false;
 	}
-	public function setClip(Player $player, array $data){
-		$this->clips[$player->getID()] = $data;
+	public function setClip(Player $player, Clip $clip, $name = false){
+		if($name === false){
+			$name = $clip->getName();
+		}
+		if(!isset($this->clips[$player->getID()])){
+			$this->clips[$player->getID()] = [];
+		}
+		$this->clips[$player->getID()][$name] = $clip;
 	}
 // MACROS
 	/**

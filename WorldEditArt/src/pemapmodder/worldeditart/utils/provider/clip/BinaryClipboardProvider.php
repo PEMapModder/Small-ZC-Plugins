@@ -9,9 +9,7 @@ use pemapmodder\worldeditart\utils\StringWriter;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
-class BinaryClipboardProvider extends ClipboardProvider{
-	/** @var Clip[] */
-	private $caches = [];
+class BinaryClipboardProvider extends CachedClipboardProvider{
 	public function __construct(Main $main, $args){
 		parent::__construct($main);
 		$this->path = $main->getDataFolder().$args["path"];
@@ -19,16 +17,19 @@ class BinaryClipboardProvider extends ClipboardProvider{
 	public function getPath($name){
 		return str_replace("<name>", strtolower($name), $this->path);
 	}
-	public function offsetExists($name){
-		return is_file($this->getPath($name));
-	}
-	public function offsetGet($name){
-		if(isset($this->caches[$name])){
-			return $this->caches[$name];
+	public function getClip($name){
+		$path = $this->getPath($name);
+		if(!is_file($path)){
+			return null;
 		}
-		$reader = StringReader::fromFile($this->getPath($name));
+		try{
+			$reader = StringReader::fromFile($path);
+		}
+		catch(\Exception $e){
+			$this->getMain()->getLogger()->error("Error parsing global clip $name: ".$e->getMessage());
+			return null;
+		}
 		$clip = self::parse($reader);
-		$this->caches[$name] = $clip;
 		return $clip;
 	}
 	public static function parse(StringReader $reader){
@@ -47,13 +48,9 @@ class BinaryClipboardProvider extends ClipboardProvider{
 		}
 		return new Clip($blocks, null, $name);
 	}
-	public function offsetSet($name, $value){
-		if(!($value instanceof Clip)){
-			throw new \InvalidArgumentException("Trying to set value of a clipboard data provider to a non-clip");
-		}
-		$this->caches[$name] = $value;
+	public function setClip($name, Clip $clip){
 		$writer = new StringWriter;
-		$this->emit($writer, $value);
+		$this->emit($writer, $clip);
 		$writer->save($this->getPath($name));
 	}
 	public static function emit(StringWriter $writer, Clip $clip){
@@ -68,7 +65,7 @@ class BinaryClipboardProvider extends ClipboardProvider{
 			$writer->appendByte($block->getDamage());
 		}
 	}
-	public function offsetUnset($name){
+	public function deleteClip($name){
 		@unlink($this->getPath($name));
 	}
 	public function getName(){
@@ -79,14 +76,5 @@ class BinaryClipboardProvider extends ClipboardProvider{
 	}
 	public function close(){
 
-	}
-	public function collectGarbage(){
-		$caches = $this->caches;
-		foreach($caches as $name => $cache){
-			if(microtime(true) - $cache->getCreationTime() >= $this->getMain()->getConfig()->get("data providers")["cache time"]){
-				$this[$name] = $cache;
-				unset($this->caches[$name]);
-			}
-		}
 	}
 }
