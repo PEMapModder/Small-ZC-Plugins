@@ -4,6 +4,7 @@ namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\utils\spaces\BlockList;
 use pemapmodder\worldeditart\utils\spaces\BlockPatternParseException;
+use pemapmodder\worldeditart\utils\spaces\SingleList;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\Player;
 
@@ -15,7 +16,7 @@ class Set extends Subcommand{
 		return "Set all the blocks in your selection";
 	}
 	public function getUsage(){
-		return "/w set <blocks> [nu|no-update]";
+		return "<blocks> [h|hollow] [nu|no-update]";
 	}
 	public function checkPermission(Space $space, Player $player){
 		// TODO
@@ -39,10 +40,14 @@ class Set extends Subcommand{
 				return self::NO_BLOCK;
 			}
 		}
+		$hollow = false;
 		$update = false;
 		while(isset($args[0])){
 			$arg = array_shift($args);
 			switch($arg){
+				case "h":
+				case "hollow":
+					$hollow = true;
 				case "nu":
 				case "no-update":
 					$update = true;
@@ -50,11 +55,21 @@ class Set extends Subcommand{
 			}
 		}
 		if($block instanceof BlockList){
-			$cnt = $space->randomPlaces($block, $update);
+			if($hollow){
+				$cnt = $space->randomHollow($block, $update);
+			}
+			else{
+				$cnt = $space->randomPlaces($block, $update);
+			}
 		}
 		else{
-			$cnt = $space->setBlocks($block, false, $update);
+			if($hollow){
+				$cnt = $space->randomHollow(new SingleList($block), $update);
+			}
+			else{
+				$cnt = $space->setBlocks($block, false, $update);
+			}
 		}
-		return "$cnt blocks have been changed.";
+		return "$cnt block(s) have been changed.";
 	}
 }

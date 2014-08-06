@@ -43,7 +43,7 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $this->subcmds[$cmd]->valid() and $cmd !== "help"){
 			if($this->subcmds[$cmd]->get()->hasPermission($issuer)){
 				try{
-					$this->subcmds[$cmd]->get()->run($args, $issuer);
+					$this->subcmds[$cmd]->get()->run($this, $args, $issuer);
 				}
 				catch(\Exception $exception){
 					$issuer->sendMessage("Uh-oh. Something went wrong! An exception has been caught during executing your command.");

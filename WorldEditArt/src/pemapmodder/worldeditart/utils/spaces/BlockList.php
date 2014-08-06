@@ -92,6 +92,17 @@ class BlockList{
 	public static function getBlockArrayFromString($string){
 		$out = [];
 		foreach(explode(",", $string) as $name){
+			$tokens = explode(":", $name);
+			if(isset($tokens[1]) and $tokens[1] === "*"){
+				$id = self::parseBlock($tokens[0]);
+				if($id === null){
+					return null;
+				}
+				for($i = 0; $i < 0x10; $i++){
+					$out[] = Block::get($id, $i);
+				}
+				continue;
+			}
 			$b = self::getBlockFronString($name);
 			if($b === null){
 				return null;

@@ -14,7 +14,7 @@ class Macro extends Subcommand{
 		return "Manage macros";
 	}
 	public function getUsage(){
-		return "/w macro <start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
+		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
 	public function checkPermission(Player $player){
 		// TODO

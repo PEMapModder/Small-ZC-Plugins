@@ -24,6 +24,7 @@ use pemapmodder\worldeditart\utils\subcommand\Cut;
 use pemapmodder\worldeditart\utils\subcommand\Cylinder;
 use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
+use pemapmodder\worldeditart\utils\subcommand\Replace;
 use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pemapmodder\worldeditart\utils\subcommand\Test;
@@ -182,6 +183,7 @@ class Main extends PluginBase implements Listener{
 			new MacroSubcommand($this),
 			new PosSubcommand($this, false),
 			new PosSubcommand($this, true),
+			new Replace($this),
 			new Set($this),
 			new Test($this),
 			new Wand($this)

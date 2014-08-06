@@ -12,7 +12,7 @@ class Wand extends Subcommand{
 		return "Set own's wand";
 	}
 	public function getUsage(){
-		return "/w wand [cd|check-damage]";
+		return "[cd|check-damage]";
 	}
 	public function checkPermission(Player $player){
 		// TODO

@@ -15,7 +15,7 @@ class Test extends Subcommand{
 		return "Test your selection";
 	}
 	public function getUsage(){
-		return "/w test <to> [from] [duration = 15]";
+		return "<to> [from] [duration = 15]";
 	}
 	public function checkPermission(Space $space, Player $player){
 		// TODO

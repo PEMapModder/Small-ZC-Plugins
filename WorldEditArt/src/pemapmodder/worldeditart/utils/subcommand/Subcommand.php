@@ -65,7 +65,7 @@ abstract class Subcommand{
 		}
 	}
 	// I made these functions final to avoid accidental override
-	public final function run(array $args, CommandSender $sender){
+	public final function run(SubcommandMap $owner, array $args, CommandSender $sender){
 		if($this->issuer === self::CONSOLE and !($sender instanceof ConsoleCommandSender)){
 			$sender->sendMessage("Please run this command in-game.");
 			return;
@@ -101,7 +101,7 @@ abstract class Subcommand{
 		}
 		switch($result){
 			case self::WRONG_USE:
-				$sender->sendMessage("Usage: {$this->getUsage()}");
+				$sender->sendMessage("Usage: /{$owner->getName()} {$this->getName()} {$this->getUsage()}");
 				break;
 			case self::NO_PERM:
 				$sender->sendMessage("You don't have permission to do this!");
@@ -125,7 +125,6 @@ abstract class Subcommand{
 				$sender->sendMessage("You don't have an anchor set!");
 				break;
 		}
-		return;
 	}
 	public final function getMain(){
 		return $this->main;
