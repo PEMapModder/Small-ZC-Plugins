@@ -24,7 +24,7 @@ class MacroOperation{
 	}
 	/**
 	 * @param Vector3|int $pos
-	 * @param Block|null $block
+	 * @param null|Block $block
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($pos, $block = null){

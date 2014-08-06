@@ -11,10 +11,14 @@ class MysqliPlayerDataProvider extends SQLPlayerDataProvider{
 		$this->db = $db;
 		$this->db->query("CREATE TABLE IF NOT EXISTS players (
 				name VARCHAR(16) PRIMARY KEY,
-				wandidtype TINYINT,
-				wandidval TINYINT UNSIGNED,
-				wanddamagetype TINYINT,
-				wanddamageval TINYINT
+				wandidtype TINYINT DEFAULT 1,
+				wandidval SMALLINT UNSIGNED DEFAULT 0,
+				wanddamagetype TINYINT DEFAULT 1,
+				wanddamageval TINYINT DEFAULT 0,
+				jumpidtype SMALLINT DEFAULT 1,
+				jumpidval TINYINT DEFAULT 0,
+				jumpdamagetype TINYINT DEFAULT 1,
+				jumpdamageval TINYINT DEFAULT 0
 				);");
 	}
 	public function deletePlayerName($name){

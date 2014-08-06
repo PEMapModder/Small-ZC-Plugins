@@ -5,24 +5,15 @@ namespace pemapmodder\worldeditart\utils\provider\macro;
 use pemapmodder\worldeditart\Main;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\macro\MacroOperation;
-use pocketmine\item\Block;
+use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
-class MysqliMacroDataProvider extends MacroDataProvider{
+class MysqliMacroDataProvider extends CachedMacroDataProvider{
 	/** @var \mysqli */
 	private $db;
-	public function __construct(Main $main, $host, $username = null,
-			$password = null, $database = null, $port = 3306){
+	public function __construct(Main $main, \mysqli $db){
 		parent::__construct($main);
-		if($host instanceof \mysqli){
-			$this->db = $host;
-		}
-		else{
-			$this->db = new \mysqli($host, $username, $password, $database, $port);
-		}
-		if($this->db->connect_error){
-			throw new \RuntimeException("Cannot connect to MySQL database ({$this->db->connect_error})");
-		}
+		$this->db = $db;
 		$this->db->query("CREATE TABLE IF NOT EXISTS macros (
 				name VARCHAR(65536) PRIMARY KEY,
 				author VARCHAR(65536),
@@ -52,16 +43,13 @@ class MysqliMacroDataProvider extends MacroDataProvider{
 	public function getName(){
 		return "MySQLi Macro Data Provider";
 	}
-	public function offsetExists($name){
-		$result = $this->getMacroRaw($name);
-		$exist = is_array($result->fetch_assoc());
-		$result->close();
-		return $exist;
-	}
-	public function offsetGet($name){
+	public function readMacro($name){
 		$result = $this->getMacroRaw($name);
 		$array = $result->fetch_assoc();
 		$result->close();
+		if(!is_array($array)){
+			return null;
+		}
 		$result = $this->getMacroRaw("macros_deltas", "owner", $name);
 		$deltas = $result->fetch_all(MYSQLI_ASSOC);
 		$result->close();
@@ -80,13 +68,7 @@ class MysqliMacroDataProvider extends MacroDataProvider{
 		$macro = new Macro(false, array_values($opers), $array["author"], $array["description"]);
 		return $macro;
 	}
-	public function offsetSet($name, $macro){
-		if(!($macro instanceof Macro)){
-			throw new \InvalidArgumentException("Trying to set '$name' of a macro data provider to non-macro");
-		}
-		if(!$macro->isAppendable()){
-			throw new \BadMethodCallException("Trying to save non-appendable macro '$name' into macro data provider");
-		}
+	public function saveMacro($name, Macro $macro){
 		$this->db->query("INSERT INTO macros (name, author, description) VALUES (
 				'{$this->db->escape_string($name)}',
 				'{$this->db->escape_string($macro->getAuthor())}',
@@ -115,7 +97,7 @@ class MysqliMacroDataProvider extends MacroDataProvider{
 			}
 		}
 	}
-	public function offsetUnset($name){
+	public function deleteMacro($name){
 		$escaped = $this->db->escape_string($name);
 		$this->db->query("DELETE FROM macros WHERE name = '$escaped';");
 		$this->db->query("DELETE FROM macros_deltas WHERE owner = '$escaped';");

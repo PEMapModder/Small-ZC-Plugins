@@ -27,14 +27,24 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 		$id = $data["wandidval"];
 		$type = $data["wandidtype"];
 		if($type !== self::INT){
-			$id = $type;
+			$id = (bool) $type;
 		}
 		$damage = $data["wanddamageval"];
 		$type = $data["wanddamagetype"];
 		if($type !== self::INT){
-			$id = $type;
+			$id = (bool) $type;
 		}
-		return new PlayerData($this->getMain(), $name, $id, $damage);
+		$jumpid = $data["jumpidval"];
+		$type = $data["jumpidtype"];
+		if($type !== self::INT){
+			$jumpid = (bool) $type;
+		}
+		$jumpdamage = $data["jumpdamageval"];
+		$type = $data["jumpdamagetype"];
+		if($type !== self::INT){
+			$jumpdamage = (bool) $type;
+		}
+		return new PlayerData($this->getMain(), $name, $id, $damage, $jumpid, $jumpdamage);
 	}
 	public function offsetSet($name, $data){
 		if(!($data instanceof PlayerData)){
@@ -42,21 +52,15 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 				(is_object($data) ? get_class($data):gettype($data))." given");
 		}
 		$params = [];
-		$idType = self::INT;
-		if(is_bool($data->getWandID())){
-			$idType = $data->getWandID() ? self::TRUE:self::FALSE;
-		}
-		$idVal = (int) $data->getWandID();
-		$damageType = self::INT;
-		if(is_bool($data->getWandDamage())){
-			$damageType = $data->getWandDamage() ? self::TRUE:self::FALSE;
-		}
-		$damageVal = (int) $data->getWandDamage();
 		$params[":name"] = $name;
-		$params[":wandidtype"] = $idType;
-		$params[":wandidval"] = $idVal;
-		$params[":wanddamagetype"] = $damageType;
-		$params[":wanddamageval"] = $damageVal;
+		$params[":wandidtype"] = is_bool($data->getWandID()) ? ($data->getWandID() ? self::TRUE:self::FALSE):self::INT;
+		$params[":wandidval"] = (int) $data->getWandID();
+		$params[":wanddamagetype"] = is_bool($data->getWandDamage()) ? ($data->getWandDamage() ? self::TRUE:self::FALSE):self::INT;;
+		$params[":wanddamageval"] = (int) $data->getWandDamage();
+		$params[":jumpidtype"] = is_bool($data->getJumpID()) ? ($data->getJumpID() ? self::TRUE:self::FALSE):self::INT;
+		$params[":jumpidval"] = (int) $data->getJumpID();
+		$params[":jumpdamagetype"] = is_bool($data->getJumpDamage()) ? ($data->getJumpDamage() ? self::TRUE:self::FALSE):self::INT;;
+		$params[":jumpdamageval"] = (int) $data->getJumpDamage();
 		$this->insertPlayerData($params);
 	}
 	public function offsetUnset($name){

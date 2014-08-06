@@ -5,9 +5,15 @@ namespace pemapmodder\worldeditart;
 use pemapmodder\worldeditart\utils\clip\Clip;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\provider\clip\BinaryClipboardProvider;
+use pemapmodder\worldeditart\utils\provider\clip\DummyClipboardProvider;
+use pemapmodder\worldeditart\utils\provider\clip\MysqliClipboardProvider;
+use pemapmodder\worldeditart\utils\provider\macro\DummyMacroDataProvider;
+use pemapmodder\worldeditart\utils\provider\macro\LocalNBTMacroDataProvider;
+use pemapmodder\worldeditart\utils\provider\macro\MysqliMacroDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\DummyPlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\JSONFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\MysqliPlayerDataProvider;
+use pemapmodder\worldeditart\utils\provider\player\PlayerData;
 use pemapmodder\worldeditart\utils\provider\player\SQLite3PlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\YAMLFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
@@ -30,9 +36,11 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
+use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
@@ -118,13 +126,51 @@ class Main extends PluginBase implements Listener{
 			case "clp":
 				$this->clipboardProvider = new BinaryClipboardProvider($this, $clipboard["clp"]);
 				break;
+			case "mysqli":
+				$args = $clipboard["mysqli"];
+				if($args["use common"]){
+					$db = $this->getCommonMysqli();
+				}
+				else{
+					$db = new \mysqli($args["host"], $args["username"], $args["password"], $args["database"], $args["port"]);
+					if($db->connect_error){
+						$this->getLogger()->critical("Cannot connect to MySQLi remote database. The database will be assumed blank and read-only.");
+						$this->clipboardProvider = new DummyClipboardProvider($this);
+						break;
+					}
+				}
+				$this->clipboardProvider = new MysqliClipboardProvider($this, $db);
+				break;
 			default:
 				$this->getLogger()->critical("Unknown clipboard provider type ".$clipboard["type"].". A temporary-memory clipboard provider will be used.");
-				// TODO dummy
+				$this->clipboardProvider = new DummyClipboardProvider($this);
 				break;
 		}
 
-		// TODO macro data provider
+		$macros = $providers["macro"];
+		$type = $macros["type"];
+		switch(strtolower($type)){
+			case "mcr":
+				$this->macroDataProvider = new LocalNBTMacroDataProvider($this, $macros["mcr"]["path"]);
+				break;
+			case "mysqli":
+				$mysqli = $macros["mysqli"];
+				if($mysqli["use common"]){
+					$db = $this->getCommonMysqli();
+					if($db === null){
+						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
+						$this->macroDataProvider = new DummyMacroDataProvider($this);
+						break;
+					}
+				}
+				else{
+					$db = new \mysqli($mysqli["host"], $mysqli["username"], $mysqli["password"], $mysqli["database"], $mysqli["port"]);
+					if($db->connect_error){
+						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
+					}
+				}
+				$this->macroDataProvider = new MysqliMacroDataProvider($this, $db);
+		}
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
@@ -200,6 +246,29 @@ class Main extends PluginBase implements Listener{
 			$macro->addBlock($isBreak ? new Air:$block);
 		}
 	}
+	public function onPacketReceived(DataPacketReceiveEvent $event){
+		$pk = $event->getPacket();
+		$player = $event->getPlayer();
+		if($pk instanceof UseItemPacket and $pk->face === 0xff){
+			/** @var PlayerData $data */
+			$data = $this->getPlayerDataProvider()[$player->getName()];
+			if($data->checkJump($player->getInventory()->getItemInHand())){
+				$target = self::getCrosshairTarget($player, 0.5, PHP_INT_MAX); // config.yml
+				while(true){
+					$target = $target->add(0, 1);
+					$block = $player->getLevel()->getBlock($target);
+					if(!($block instanceof Block)){
+						break;
+					}
+					$nonSolids = [Block::AIR, Block::WATER, Block::STILL_WATER, Block::LAVA, Block::STILL_LAVA];
+					if(in_array($block->getID(), $nonSolids)){
+						break;
+					}
+				}
+				$player->teleport($target);
+			}
+		}
+	}
 
 /////////////////
 // SESSIONINGS //
@@ -246,8 +315,11 @@ class Main extends PluginBase implements Listener{
 	 * @param $id
 	 * @param bool $damage
 	 */
-	public function setWand(Player $player, $id, $damage = true){
-		// TODO
+	public function setWand(Player $player, $id, $damage = PlayerData::ALLOW_ANY){
+		/** @var PlayerData $data */
+		$data = $this->playerDataProvider[$player->getName()];
+		$data->setWandID($id);
+		$data->setWandDamage($damage);
 	}
 	/**
 	 * @param Player $player
@@ -255,7 +327,9 @@ class Main extends PluginBase implements Listener{
 	 * @return bool
 	 */
 	public function isWand(Player $player, Item $item){
-		// TODO
+		/** @var PlayerData $data */
+		$data = $this->playerDataProvider[$player->getName()];
+		return $data->checkWand($item);
 	}
 // SELECTIONS
 	/**
@@ -324,6 +398,10 @@ class Main extends PluginBase implements Listener{
 		if(!($this->commonMysqli instanceof \mysqli)){
 			$data = $this->getConfig()->get("data providers")["common mysqli database"];
 			$this->commonMysqli = new \mysqli($data["host"], $data["username"], $data["password"], $data["database"]);
+			if($this->commonMysqli->connect_error){
+				$this->getLogger()->critical("Error trying to connect to common MySQLi database: ".$this->commonMysqli->connect_error);
+				return null;
+			}
 		}
 		return $this->commonMysqli;
 	}
@@ -401,11 +479,11 @@ class Main extends PluginBase implements Listener{
 	private static function rotateBlockByOne(Block $block){
 		return Block::get($block->getID(), $block->getDamage(), new Position($block->getZ(), $block->getY(), -$block->getX(), $block->getLevel()));
 	}
-	public static function getCrosshairTarget(Entity $entity){
+	public static function getCrosshairTarget(Entity $entity, $accuracy = 0.5, $max = PHP_INT_MAX){
 		$found = null;
-		$direction = $entity->getDirectionVector()->multiply(0.5);
+		$direction = $entity->getDirectionVector()->multiply($accuracy);
 		/** @var Vector3 $last */
-		for($last = null, $pos = $entity->add($direction), $i = 1; true; $last = $pos->floor(), $pos = $entity->add($direction->multiply(++$i))){
+		for($last = null, $pos = $entity->add($direction), $i = 1; $i * $accuracy <= $max; $last = $pos->floor(), $pos = $entity->add($direction->multiply(++$i))){
 			if($last instanceof Vector3){
 				if($last->x === $pos->getFloorX() and $last->y === $pos->getFloorY() and $last->z === $pos->getFloorZ()){
 					continue;

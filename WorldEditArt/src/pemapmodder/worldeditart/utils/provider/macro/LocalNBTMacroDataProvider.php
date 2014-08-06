@@ -10,7 +10,7 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag;
 
-class LocalNBTMacroDataProvider extends MacroDataProvider{
+class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 	/** @var string */
 	private $path;
 	public function __construct(Main $main, $path){
@@ -26,11 +26,11 @@ class LocalNBTMacroDataProvider extends MacroDataProvider{
 	public function getName(){
 		return "Local NBT Macro Data Provider";
 	}
-	public function offsetExists($name){
-		return is_file($this->getFile($name));
-	}
-	public function offsetGet($name){
-		$string = file_get_contents($this->getFile($name));
+	public function readMacro($name){
+		if(!is_file($path = $this->getFile($name))){
+			return null;
+		}
+		$string = file_get_contents($path);
 		$nbt = new NBT;
 		$type = ord(substr($string, 0, 1));
 		$string = substr($string, 1);
@@ -59,13 +59,7 @@ class LocalNBTMacroDataProvider extends MacroDataProvider{
 		}
 		return new Macro(false, $ops, $author, $description);
 	}
-	public function offsetSet($name, $macro){
-		if(!($macro instanceof Macro)){
-			throw new \InvalidArgumentException("Trying to set '$name' of a macro data provider to non-macro");
-		}
-		if(!$macro->isAppendable()){
-			throw new \BadMethodCallException("Trying to save non-appendable macro '$name' into macro data provider");
-		}
+	public function saveMacro($name, Macro $macro){
 		$tag = new tag\Compound;
 		$tag["author"] = new tag\String("author", $macro->getAuthor());
 		$tag["description"] = new tag\String("description", $macro->getDescription());
@@ -90,7 +84,7 @@ class LocalNBTMacroDataProvider extends MacroDataProvider{
 		fwrite($stream, chr($compression).$data);
 		fclose($stream);
 	}
-	public function offsetUnset($name){
+	public function deleteMacro($name){
 		unlink($this->getFile($name));
 	}
 	public function getFile($name){
