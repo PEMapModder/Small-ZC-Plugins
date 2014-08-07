@@ -190,6 +190,11 @@ class Main extends PluginBase implements Listener{
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
+	public function onDisable(){
+		$this->macroDataProvider->close();
+		$this->playerDataProvider->close();
+		$this->clipboardProvider->close();
+	}
 
 ////////////////////
 // EVENT HANDLERS //
