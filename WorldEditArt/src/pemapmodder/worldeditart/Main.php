@@ -423,6 +423,10 @@ class Main extends PluginBase implements Listener{
 		}
 		return $this->commonMysqli;
 	}
+	/**
+	 * @param $name
+	 * @return PlayerData
+	 */
 	public function getPlayerData($name){
 		return $this->playerDataProvider[$name];
 	}

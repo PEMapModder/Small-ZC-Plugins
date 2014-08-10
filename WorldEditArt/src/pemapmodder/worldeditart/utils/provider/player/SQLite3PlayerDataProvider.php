@@ -34,7 +34,8 @@ class SQLite3PlayerDataProvider extends SQLPlayerDataProvider{
 		$op->execute();
 	}
 	protected function insertPlayerData(array $params){
-		$op = $this->db->prepare("INSERT OR REPLACE INTO players VALUES (".implode(", ", array_keys($params)));
+		var_export($params);
+		$op = $this->db->prepare("INSERT OR REPLACE INTO players VALUES (".implode(", ", array_keys($params)).");");
 		foreach($params as $param => $value){
 			$op->bindValue($param, $value);
 		}
