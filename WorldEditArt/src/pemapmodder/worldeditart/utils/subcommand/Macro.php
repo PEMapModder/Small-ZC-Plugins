@@ -17,7 +17,7 @@ class Macro extends Subcommand{
 		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
 	public function checkPermission(Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){

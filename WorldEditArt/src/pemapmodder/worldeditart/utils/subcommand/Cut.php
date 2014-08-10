@@ -13,7 +13,7 @@ class Cut extends Copy{
 		return "Copy your selection and delete the blocks inside it";
 	}
 	public function checkPermission(Space $space, Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Space $space, Player $player){
 		$result = parent::onRun($args, $space, $player);

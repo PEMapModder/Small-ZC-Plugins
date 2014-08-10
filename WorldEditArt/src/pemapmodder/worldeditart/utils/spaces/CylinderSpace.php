@@ -16,7 +16,6 @@ class CylinderSpace extends Space{
 	/** @var int */
 	private $axis;
 	public function __construct($axis, $radius, Position $base, $height){
-		parent::__construct();
 		$this->base = $base->floor();
 		$this->height = $height;
 		$this->radius = $radius;
@@ -38,6 +37,7 @@ class CylinderSpace extends Space{
 		if($maxY > $maxHeight or $minY < 0){
 			throw new SelectionExceedWorldException("CylinderSpace");
 		}
+		parent::__construct();
 	}
 	public function getPosList(){
 		$out = [];

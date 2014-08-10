@@ -15,7 +15,7 @@ class Wand extends Subcommand{
 		return "[cd|check-damage]";
 	}
 	public function checkPermission(Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){
 		$item = $player->getInventory()->getItemInHand();

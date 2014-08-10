@@ -23,6 +23,7 @@ class SphereSpace extends Space{
 		if($maxY > $maxHeight or $minY < 0){
 			throw new SelectionExceedWorldException("SphereSpace");
 		}
+		parent::__construct();
 	}
 	public function getPosList(){
 		$out = [];

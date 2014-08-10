@@ -18,7 +18,7 @@ class Test extends Subcommand{
 		return "<to> [from] [duration = 15]";
 	}
 	public function checkPermission(Space $space, Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Space $space, Player $player){
 		if(!isset($args[0])){
@@ -49,3 +49,4 @@ class Test extends Subcommand{
 		return "Previewing the selection for ".($duration / 20)." seconds.";
 	}
 }
+// TODO ISSUE timeout reset doesn't work

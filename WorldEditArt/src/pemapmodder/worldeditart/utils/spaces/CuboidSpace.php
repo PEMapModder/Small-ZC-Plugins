@@ -21,7 +21,6 @@ class CuboidSpace extends Space{
 		return new CuboidSpace($pos, $newPos);
 	}
 	public function __construct(Position $a, Vector3 $b){
-		parent::__construct();
 		$this->raw0 = $a;
 		if(!($b instanceof Position)){
 			$b = new Position($b->getX(), $b->getY(), $b->getZ(), $a->getLevel());
@@ -31,6 +30,7 @@ class CuboidSpace extends Space{
 			trigger_error("Positions of different levels (\"".$a->getLevel()->getName()."\" and \"".$b->getLevel()->getName()."\" passed to constructor of ".get_class($this), E_USER_WARNING);
 		}
 		$this->bake();
+		parent::__construct(); // call this at the last because it has to bake before acquiring
 	}
 	public function set0(Vector3 $v){
 		if($v instanceof Position and $v->getLevel()->getName() !== $this->baked0->getLevel()->getName()){

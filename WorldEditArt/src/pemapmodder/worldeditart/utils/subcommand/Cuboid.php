@@ -22,7 +22,7 @@ class Cuboid extends Subcommand{
 		return ["cub"];
 	}
 	public function checkPermission(Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){

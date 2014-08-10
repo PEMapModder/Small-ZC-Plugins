@@ -19,7 +19,7 @@ class Set extends Subcommand{
 		return "<blocks> [h|hollow] [nu|no-update]";
 	}
 	public function checkPermission(Space $space, Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Space $space){
 		if(!isset($args[0])){

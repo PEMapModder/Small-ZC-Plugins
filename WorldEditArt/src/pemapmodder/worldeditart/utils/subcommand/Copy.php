@@ -17,7 +17,7 @@ class Copy extends Subcommand{
 		return "[-a|-anchor] [name = default] [g|global]";
 	}
 	public function checkPermission(Space $space, Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Space $space, Player $player){
 		$anchor = $player->getPosition();

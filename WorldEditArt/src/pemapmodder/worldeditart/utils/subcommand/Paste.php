@@ -17,7 +17,7 @@ class Paste extends Subcommand{
 		return "[clip name = default]";
 	}
 	public function checkPermission(Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){
 		$global = false;

@@ -17,7 +17,7 @@ class Replace extends Subcommand{
 		return "<from> <to> [nu|no-update] [h|hollow]";
 	}
 	public function checkPermission(Space $space, Player $player){
-		// TODO
+		return true; // TODO
 	}
 	public function onRun(array $args, Space $space){
 		if(!isset($args[1])){
