@@ -59,7 +59,7 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		}else{
 			$help = $this->getFullHelp($issuer);
 			$page = 1;
-			$max = (int) ceil(count($help) / 5);
+			$max = (int) ceil(count($help) / 5) - 1;
 			if(isset($args[0])){
 				$page = max(1, (int) $args[0]);
 				$page = min($max, $page);
