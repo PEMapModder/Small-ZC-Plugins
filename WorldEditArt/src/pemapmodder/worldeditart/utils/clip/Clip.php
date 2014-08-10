@@ -2,12 +2,13 @@
 
 namespace pemapmodder\worldeditart\utils\clip;
 
+use pemapmodder\worldeditart\utils\provider\Cache;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
-class Clip{
+class Clip implements Cache{
 	const KEY_SEPARATOR = ":";
 	private $name;
 	private $blocks = [];
@@ -63,5 +64,8 @@ class Clip{
 	 */
 	public function getCreationTime(){
 		return $this->creationTime;
+	}
+	public function __toString(){
+		return $this->name;
 	}
 }

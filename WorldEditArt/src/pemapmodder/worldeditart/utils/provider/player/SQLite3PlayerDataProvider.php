@@ -12,10 +12,15 @@ class SQLite3PlayerDataProvider extends SQLPlayerDataProvider{
 		$this->db = new \SQLite3($path);
 		$this->db->query("CREATE TABLE IF NOT EXISTS players (
 				name TEXT PRIMARY KEY,
-				wandidtype INTEGER,
-				wandidval INTEGER,
-				wanddamagetype INTEGER,
-				wanddamageval INTEGER);");
+				wandidtype INTEGER DEFAULT 1,
+				wandidval INTEGER DEFAULT 0,
+				wanddamagetype INTEGER DEFAULT 1,
+				wanddamageval INTEGER DEFAULT 0,
+				jumpidtype INTEGER DEFAULT 1,
+				jumpidval INTEGER DEFAULT 0,
+				jumpdamagetype INTEGER DEFAULT 1,
+				jumpdamageval INTEGER DEFAULT 0
+				);");
 	}
 	protected function selectPlayerFromName($name){
 		$op = $this->db->prepare("SELECT * FROM players WHERE name = :name;");

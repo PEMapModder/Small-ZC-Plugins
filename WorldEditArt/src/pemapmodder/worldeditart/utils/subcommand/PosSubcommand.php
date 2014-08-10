@@ -26,7 +26,7 @@ class PosSubcommand extends Subcommand{
 		return "Set your position ".($this->is2 ? "2":"1");
 	}
 	public function getUsage(){
-		return "/w pos".($this->is2 ? "2":"1")." [me|here|a|anchor|c|crosshair]";
+		return "[me|here|a|anchor|c|crosshair]";
 	}
 	public function getAliases(){
 		if($this->is2){

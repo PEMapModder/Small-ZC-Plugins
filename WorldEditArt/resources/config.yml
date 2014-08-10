@@ -87,11 +87,18 @@ data providers:
   cache time: 120
 
 #### Wands
+# Wands set your anchor to the block you are pointing at
 # The default wand item ID
-
 wand-id: 292
-# leave true for any damage values
-wand-damage: true
+# leave false for any values
+wand-damage: false
+
+#### Jump
+# Jump is a feature where you click the screen with a specified item and you are teleported to the block your crosshair points at
+# The default jump item ID
+jump-id: 345
+# leave false for any values
+jump-damage: 0
 
 #### Version compatibility
 ## Changing these value could lead to dangerous crashes.

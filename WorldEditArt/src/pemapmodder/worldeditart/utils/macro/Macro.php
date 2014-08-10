@@ -3,11 +3,12 @@
 namespace pemapmodder\worldeditart\utils\macro;
 
 use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\utils\provider\Cache;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
 use pocketmine\scheduler\ServerScheduler;
 
-class Macro{
+class Macro implements Cache{
 	const COMPRESSION_NONE = 0;
 	const COMPRESSION_GZIP = ZLIB_ENCODING_GZIP;
 	// general
@@ -26,6 +27,7 @@ class Macro{
 	private $anchor;
 	/** @var int */
 	private $compression = ZLIB_ENCODING_GZIP;
+	private $objCreationTime;
 	/**
 	 * @param bool $isAppendable
 	 * @param Position|MacroOperation[] $mainArg
@@ -33,6 +35,7 @@ class Macro{
 	 * @param string $description
 	 */
 	public function __construct($isAppendable, $mainArg, $author, $description = ""){
+		$this->objCreationTime = microtime(true);
 		$this->appendable = $isAppendable;
 		$this->author = $author;
 		$this->description = $description;
@@ -69,6 +72,16 @@ class Macro{
 	 * @throws \BadMethodCallException
 	 */
 	public function getHibernating(){
+		if(!$this->isAppendable()){
+			throw new \BadMethodCallException("Trying to get hibernating mode of non-appendable macro");
+		}
+		return $this->hibernating;
+	}
+	/**
+	 * @return bool
+	 * @throws \BadMethodCallException
+	 */
+	public function isHibernating(){
 		if(!$this->isAppendable()){
 			throw new \BadMethodCallException("Trying to get hibernating mode of non-appendable macro");
 		}
@@ -132,5 +145,11 @@ class Macro{
 	 */
 	public function setCompression($compression){
 		$this->compression = $compression;
+	}
+	/**
+	 * @return mixed
+	 */
+	public function getCreationTime(){
+		return $this->objCreationTime;
 	}
 }

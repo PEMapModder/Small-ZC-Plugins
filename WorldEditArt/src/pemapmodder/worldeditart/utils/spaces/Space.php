@@ -197,6 +197,31 @@ abstract class Space{
 		}
 		return $cnt;
 	}
+	public function randomHollow(BlockList $blocks, $update = true){
+		$cnt = 0;
+		foreach($this->getMarginPosList() as $pos){
+			$this->getLevel()->setBlock($pos, $blocks->getRandom(), true, $update);
+			$cnt++;
+		}
+		return $cnt;
+	}
+	public function randomHollowReplace($froms, BlockList $list, $update = true){
+		$cnt = 0;
+		foreach($this->getMarginBlockList() as $b){
+			$equal = false;
+			foreach($froms as $from){
+				if(self::equals($from, $b)){
+					$equal = true;
+					break;
+				}
+			}
+			if($equal){
+				$this->getLevel()->setBlock($b, $list->getRandom(), true, $update);
+				$cnt++;
+			}
+		}
+		return $cnt;
+	}
 	/**
 	 * @return \pocketmine\level\Level
 	 */

@@ -4,7 +4,9 @@ namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
 use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
 
 class Cuboid extends Subcommand{
 	public function getName(){
@@ -14,7 +16,7 @@ class Cuboid extends Subcommand{
 		return "Make a cuboid selection using your crosshair";
 	}
 	public function getUsage(){
-		return "<diagonal length> [a|adverse]";
+		return "<s|shoot> <diagonal length> [a|adverse]  ".TextFormat::RED."OR".TextFormat::GREEN."  <g|grow> <x+> <y+> <z+> [x- = x+] [y- = y+] [z- = z+]";
 	}
 	public function getAliases(){
 		return ["cub"];
@@ -23,6 +25,22 @@ class Cuboid extends Subcommand{
 		// TODO
 	}
 	public function onRun(array $args, Player $player){
+		if(!isset($args[0])){
+			return self::WRONG_USE;
+		}
+		$sub = array_shift($args);
+		switch(strtolower($sub)){
+			case "s":
+			case "shoot":
+				return $this->onShootRun($args, $player);
+			case "g":
+			case "grow":
+				return $this->onGrowRun($args, $player);
+			default:
+				return self::WRONG_USE;
+		}
+	}
+	public function onShootRun(array $args, Player $player){
 		if(!isset($args[0]) or !is_numeric($args[0])){
 			return self::WRONG_USE;
 		}
@@ -50,6 +68,47 @@ class Cuboid extends Subcommand{
 		$level = $player->getLevel();
 		$this->getMain()->setSelection($player,
 			$sel = new CuboidSpace($p1 = Position::fromObject($p1, $level), $p2 = Position::fromObject($p2, $level)));
-		return "Cuboid selection set: ({$p1->x}, {$p2->y}, {$p2->z})-({$p2->x}, {$p2->y}, {$p2->z}) (".count($sel->getPosList())." blocks)";
+		return "Cuboid selection set: $sel (".count($sel->getPosList())." blocks)";
+	}
+	public function onGrowRun(array $args, Player $player){
+		if(!isset($args[2])){
+			return self::WRONG_USE;
+		}
+		$reverse = false;
+		if($args[0] === "r" or $args[0] === "reverse"){
+			$reverse = true;
+			array_shift($args);
+		}
+		foreach($args as $arg){
+			if(!is_numeric($arg)){
+				return self::WRONG_USE;
+			}
+		}
+		$xp = (int) array_shift($args);
+		$yp = (int) array_shift($args);
+		$zp = (int) array_shift($args);
+		$xm = $xp;
+		$ym = $yp;
+		$zm = $zp;
+		if(isset($args[0])){
+			$xm = (int) array_shift($args);
+		}
+		if(isset($args[0])){
+			$ym = (int) array_shift($args);
+		}
+		if(isset($args[0])){
+			$zm = (int) array_shift($args);
+		}
+		$from = new Vector3($xm, $ym, $zm);
+		$to = new Vector3($xp, $yp, $zp);
+		$level = $player->getLevel();
+		if($reverse){
+			$space = new CuboidSpace(Position::fromObject($to, $level), $from);
+		}
+		else{
+			$space = new CuboidSpace(Position::fromObject($from, $level), $to);
+		}
+		$this->getMain()->setSelection($player, $space);
+		return "Cuboid selection set: $space";
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\utils\macro\RecordingMacro;
+use pemapmodder\worldeditart\utils\macro\Macro as MacroObj;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
@@ -14,7 +14,7 @@ class Macro extends Subcommand{
 		return "Manage macros";
 	}
 	public function getUsage(){
-		return "/w macro <start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
+		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
 	public function checkPermission(Player $player){
 		// TODO
@@ -25,7 +25,7 @@ class Macro extends Subcommand{
 		}
 		switch($sub = strtolower(array_shift($args))){
 			case "start":
-				if($this->getMain()->getRecordingMacro($player) instanceof RecordingMacro){
+				if($this->getMain()->getRecordingMacro($player) instanceof MacroObj){
 					return "You are already recording a macro!";
 				}
 				$anchor = $player->getPosition();
@@ -40,7 +40,7 @@ class Macro extends Subcommand{
 							}
 					}
 				}
-				$macro = new RecordingMacro($player, $anchor);
+				$macro = new MacroObj(false, $anchor, $player);
 				$this->getMain()->setRecordingMacro($player, $macro);
 				return "You are now recording a macro.";
 			case "save":
@@ -49,11 +49,10 @@ class Macro extends Subcommand{
 					return "Usage: /w macro save <name>";
 				}
 			case "ng":
-
 			case "pause":
 			case "resume":
 				$macro = $this->getMain()->getRecordingMacro($player);
-				if(!($macro instanceof RecordingMacro)){
+				if(!($macro instanceof MacroObj)){
 					return "You don't have a recording macro!";
 				}
 				break;
@@ -66,20 +65,19 @@ class Macro extends Subcommand{
 				return "Your recording macro has been terminated.";
 			case "save":
 				$name = array_shift($args);
-				$file = $this->getMain()->getMacroFile($name);
-				if(file_exists($file)){
+				$macroProvider = $this->getMain()->getMacroDataProvider();
+				if(isset($macroProvider[$name])){
 					return "Such macro already exists!";
 				}
 				try{
-					$macro->saveTo($file);
-					return "Macro \"$name\" saved.";
+					$macroProvider[$name] = $macro;
 				}
-				catch(\RuntimeException $e){
-					return "An exception occurred: ".$e->getMessage();
+				catch(\Exception $e){
+					return "An error occurred. Type: ".(new \ReflectionClass($e))->getShortName()."; Message: ".$e->getMessage();
 				}
 			case "wait":
 				$ticks = (int) round(floatval(array_shift($args)) * 20);
-				$macro->addWait($ticks);
+				$macro->wait($ticks);
 				return "A $ticks-tick waiting added.";
 			case "pause":
 				if($macro->isHibernating()){

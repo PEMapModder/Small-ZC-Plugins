@@ -13,25 +13,28 @@ class PlayerData{
 	/** @var string */
 	private $name;
 	/** @var int|bool */
-	private $wandID, $wandDamage;
-	public function __construct(Main $main, $name, $wandID = self::USE_DEFAULT, $wandDamage = self::USE_DEFAULT){
+	private $wandID, $wandDamage, $jumpID, $jumpDamage;
+	public function __construct(Main $main, $name, $wandID = self::USE_DEFAULT, $wandDamage = self::USE_DEFAULT, $jumpID = self::USE_DEFAULT, $jumpDamage = self::USE_DEFAULT){
 		$this->main = $main;
 		$this->name = $name;
 		$this->wandID = $wandID;
 		$this->wandDamage = $wandDamage;
+		$this->jumpID = $jumpID;
+		$this->jumpDamage = $jumpDamage;
 	}
+	// wand
 	/**
 	 * @param Item $item
 	 * @return bool
 	 */
 	public function checkWand(Item $item){
-		return $this->checkID($item->getID()) and $this->checkDamage($item->getDamage());
+		return $this->checkWandID($item->getID()) and $this->checkWandDamage($item->getDamage());
 	}
 	/**
 	 * @param $id
 	 * @return bool
 	 */
-	public function checkID($id){
+	public function checkWandID($id){
 		if($this->wandID === self::ALLOW_ANY){
 			return true;
 		}
@@ -45,7 +48,7 @@ class PlayerData{
 	 * @param $damage
 	 * @return bool
 	 */
-	public function checkDamage($damage){
+	public function checkWandDamage($damage){
 		if($this->wandDamage === self::ALLOW_ANY){
 			return true;
 		}
@@ -72,13 +75,66 @@ class PlayerData{
 	 */
 	public function setWandID($wandID){
 		$this->wandID = $wandID;
-		$this->main->getPlayerDataProvider()[$this->name] = $this;
+		$this->update();
 	}
 	/**
 	 * @param int|bool $wandDamage
 	 */
 	public function setWandDamage($wandDamage){
 		$this->wandDamage = $wandDamage;
+		$this->update();
+	}
+	// jump
+	public function checkJump(Item $item){
+		return $this->checkJumpID($item->getID()) and $this->checkJumpDamage($item->getDamage());
+	}
+	public function checkJumpID($id){
+		if($this->jumpID === self::ALLOW_ANY){
+			return true;
+		}
+		$required = $this->jumpID;
+		if($required === self::USE_DEFAULT){
+			$required = $this->main->getConfig()->get("jump-id");
+		}
+		return $id === $required;
+	}
+	public function checkJumpDamage($damage){
+		if($this->jumpDamage === self::ALLOW_ANY){
+			return true;
+		}
+		$required = $this->jumpDamage;
+		if($required === self::USE_DEFAULT){
+			$required = $this->main->getConfig()->get("jump-damage");
+		}
+		return $damage === $required;
+	}
+	/**
+	 * @return bool|int
+	 */
+	public function getJumpID(){
+		return $this->jumpID;
+	}
+	/**
+	 * @param bool|int $jumpID
+	 */
+	public function setJumpID($jumpID){
+		$this->jumpID = $jumpID;
+		$this->update();
+	}
+	/**
+	 * @return bool|int
+	 */
+	public function getJumpDamage(){
+		return $this->jumpDamage;
+	}
+	/**
+	 * @param bool|int $jumpDamage
+	 */
+	public function setJumpDamage($jumpDamage){
+		$this->jumpDamage = $jumpDamage;
+		$this->update();
+	}
+	public function update(){
 		$this->main->getPlayerDataProvider()[$this->name] = $this;
 	}
 	public function __toString(){

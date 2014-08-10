@@ -24,7 +24,7 @@ abstract class FilePlayerDataProvider extends PlayerDataProvider{
 	public function offsetGet($name){
 		if(is_file($this->getPath($name))){
 			$data = $this->parseFile($this->getPath($name));
-			return new PlayerData($this->getMain(), $name, $data["wand-id"], $data["wand-damage"]);
+			return new PlayerData($this->getMain(), $name, $data["wand-id"], $data["wand-damage"], $data["jump-id"], $data["jump-damage"]);
 		}
 		return new PlayerData($this->getMain(), $name);
 	}
@@ -35,7 +35,9 @@ abstract class FilePlayerDataProvider extends PlayerDataProvider{
 		}
 		$this->emitFile($this->getPath($name), [
 			"wand-id" => $data->getWandID(),
-			"wand-damage" => $data->getWandDamage()
+			"wand-damage" => $data->getWandDamage(),
+			"jump-id" => $data->getJumpID(),
+			"jump-damage" => $data->getJumpDamage()
 		]);
 	}
 	public function offsetUnset($name){
