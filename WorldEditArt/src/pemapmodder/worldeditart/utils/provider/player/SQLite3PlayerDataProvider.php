@@ -9,7 +9,7 @@ class SQLite3PlayerDataProvider extends SQLPlayerDataProvider{
 	private $db;
 	public function __construct(Main $main, $path){
 		parent::__construct($main);
-		$this->db = new \SQLite3($path);
+		$this->db = new \SQLite3($main->getDataFolder().$path);
 		$this->db->query("CREATE TABLE IF NOT EXISTS players (
 				name TEXT PRIMARY KEY,
 				wandidtype INTEGER DEFAULT 1,
