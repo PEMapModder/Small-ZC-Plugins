@@ -65,11 +65,12 @@ class Macro extends Subcommand{
 				return "Your recording macro has been terminated.";
 			case "save":
 				$name = array_shift($args);
-				if(isset($this->getMain()->getMacroDataProvider()[$name])){
+				$macroProvider = $this->getMain()->getMacroDataProvider();
+				if(isset($macroProvider[$name])){
 					return "Such macro already exists!";
 				}
 				try{
-					$this->getMain()->getMacroDataProvider()[$name] = $macro;
+					$macroProvider[$name] = $macro;
 				}
 				catch(\Exception $e){
 					return "An error occurred. Type: ".(new \ReflectionClass($e))->getShortName()."; Message: ".$e->getMessage();

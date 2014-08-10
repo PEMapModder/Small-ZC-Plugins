@@ -29,7 +29,8 @@ class Copy extends Subcommand{
 		}
 		$clip = new Clip($space, $anchor, array_shift($args));
 		if(isset($args[0]) and ($args[0] === "g" or $args[0] === "global")){
-			$this->getMain()->getClipboardProvider()[$clip->getName()] = $clip;
+			$clipboard = $this->getMain()->getClipboardProvider();
+			$clipboard[$clip->getName()] = $clip;
 		}
 		else{
 			$this->getMain()->setClip($player, $clip, $clip->getName());
