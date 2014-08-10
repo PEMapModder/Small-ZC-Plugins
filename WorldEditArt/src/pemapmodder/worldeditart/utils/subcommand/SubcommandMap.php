@@ -78,7 +78,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	 */
 	public function getFullHelp(CommandSender $sender){
 		$out = [];
-		foreach($this->subcmds as $cmd){
+		foreach($this->subcmds as $name => $cmd){
+			if($cmd->get()->getName() !== $name){
+				continue;
+			}
 			if(!$cmd->get()->hasPermission($sender)){
 				continue;
 			}
