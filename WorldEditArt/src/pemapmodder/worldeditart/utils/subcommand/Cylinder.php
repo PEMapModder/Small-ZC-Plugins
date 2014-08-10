@@ -76,4 +76,7 @@ class Cylinder extends Subcommand{
 		$this->getMain()->setSelection($player, $space);
 		return "Your selection is now $space.";
 	}
+	public function getAliases(){
+		return ["cyl"];
+	}
 }

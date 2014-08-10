@@ -16,7 +16,7 @@ class CylinderSpace extends Space{
 	/** @var int */
 	private $axis;
 	public function __construct($axis, $radius, Position $base, $height){
-		$this->base = $base->floor();
+		$this->base = Position::fromObject($base->floor(), $base->getLevel());
 		$this->height = $height;
 		$this->radius = $radius;
 		$this->axis = $axis % 3;
