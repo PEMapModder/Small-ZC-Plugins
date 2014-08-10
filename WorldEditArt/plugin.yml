@@ -4,5 +4,5 @@ version: 1.0
 api: [1.0.0]
 load: POSTWORLD
 main: pemapmodder\worldeditart\Main
-description: A powerful and advanced world editor
+description: A powerful advanced world editor
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/WorldEditArt

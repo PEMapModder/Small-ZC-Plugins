@@ -23,6 +23,7 @@ use pemapmodder\worldeditart\utils\subcommand\Cuboid;
 use pemapmodder\worldeditart\utils\subcommand\Cut;
 use pemapmodder\worldeditart\utils\subcommand\Cylinder;
 use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
+use pemapmodder\worldeditart\utils\subcommand\Paste;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Replace;
 use pemapmodder\worldeditart\utils\subcommand\Set;
@@ -76,7 +77,6 @@ class Main extends PluginBase implements Listener{
 // INITIALIZERS
 	public function onPreEnable(){
 		@mkdir($this->getDataFolder());
-		@mkdir($this->getDataFolder()."players/");
 		$this->saveDefaultConfig();
 		$maxHeight = $this->getConfig()->get("maximum world height");
 		if(!defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
@@ -181,6 +181,7 @@ class Main extends PluginBase implements Listener{
 			new Cut($this),
 			new Cylinder($this),
 			new MacroSubcommand($this),
+			new Paste($this),
 			new PosSubcommand($this, false),
 			new PosSubcommand($this, true),
 			new Replace($this),
@@ -282,10 +283,20 @@ class Main extends PluginBase implements Listener{
 /////////////////
 
 // CLIPBOARD
+	/**
+	 * @param Player $player
+	 * @param string $name
+	 * @return Clip|bool
+	 */
 	public function getClip(Player $player, $name = "default"){
 		return isset($this->clips[$player->getID()]) and isset($this->clips[$player->getID()][$name]) ?
 			$this->clips[$player->getID()][$name]:false;
 	}
+	/**
+	 * @param Player $player
+	 * @param Clip $clip
+	 * @param string|bool $name
+	 */
 	public function setClip(Player $player, Clip $clip, $name = false){
 		if($name === false){
 			$name = $clip->getName();
