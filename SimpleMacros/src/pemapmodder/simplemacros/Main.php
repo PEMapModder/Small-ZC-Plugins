@@ -103,6 +103,7 @@ class Main extends PluginBase implements Listener{
 				}
 				if(isset($this->stack[$k])){
 					$sender->sendMessage("You have already started recording a macro!");
+					return true;
 				}
 				$this->stack[$k] = "";
 				$sender->sendMessage("You are now recording a macro.");
@@ -110,6 +111,7 @@ class Main extends PluginBase implements Listener{
 			case "pause":
 				if(!isset($this->stack[$k])){
 					$sender->sendMessage("You are not recording a macro!");
+					return true;
 				}
 				$this->paused[$k] = true;
 				$sender->sendMessage("Your macro is now paused.");
