@@ -1,0 +1,39 @@
+name: InfoEssentials
+version: 6.6 # gravitational constant: 6.671281903963040991511534289
+api: [1.0.0]
+author: PEMapModder
+prefix: InfoEss
+main: pemapmodder\infoess\InfoEss
+commands:
+  getping:
+    description: See the ping of other players
+  seearmor:
+    description: See the armor of a player
+  seegm:
+    description: See the gamemode of a player
+  getpos:
+    description: See the position of a player
+  setarmor:
+    description: See the armor of a player
+  rmarmor:
+    description: Remove the armor of a player
+  sessions:
+    description: See how many times a player has logged in in this server
+permissions:
+  infoess:
+    description: Allows using all InfoEssentials commands
+    default: "true"
+    infoess.getping:
+      description: Allows using /getping
+    infoess.seearmor:
+      description: Allows using /seearmor
+    infoess.seegm:
+      description: Allows using /seegm
+    infoess.getpos:
+      description: Allows using /getpos
+    infoess.setarmor:
+      description: Allows using /setarmor
+    infoess.rmarmor:
+      description: Allows using /rmarmor
+    infoess.sessions:
+      description: Allows using /sessions
