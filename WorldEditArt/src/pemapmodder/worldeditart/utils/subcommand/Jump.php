@@ -6,12 +6,12 @@ use pemapmodder\worldeditart\utils\provider\player\PlayerData;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-class Wand extends Subcommand{
+class Jump extends Subcommand{
 	public function getName(){
-		return "wand";
+		return "jump";
 	}
 	public function getDescription(){
-		return "Set/view own's wand";
+		return "Set/view own's jump";
 	}
 	public function getUsage(){
 		return "[cd|check-damage|v|view]";
@@ -38,22 +38,25 @@ class Wand extends Subcommand{
 		switch($mode){
 			case 0:
 				$item = $player->getInventory()->getItemInHand();
-				$this->getMain()->setWand($player, $item->getID(), $cd ? $item->getDamage():PlayerData::ALLOW_ANY);
-				return "Your wand has been set.";
+				/** @var PlayerData $data */
+				$data = $this->getMain()->getPlayerData($player);
+				$data->setJumpID($item->getID());
+				$data->setJumpDamage($cd ? $item->getDamage():PlayerData::ALLOW_ANY);
+				return "Your jump has been set.";
 			case 1:
 				$data = $this->getMain()->getPlayerData($player);
-				$id = $data->getWandID();
-				$damage = $data->getWandDamage();
+				$id = $data->getJumpID();
+				$damage = $data->getJumpDamage();
 				if($id === PlayerData::USE_DEFAULT){
-					$id = $this->getMain()->getConfig()->get("wand-id");
+					$id = $this->getMain()->getConfig()->get("jump-id");
 				}
 				if($damage === PlayerData::USE_DEFAULT){
-					$damage = $this->getMain()->getConfig()->get("wand-damage");
+					$damage = $this->getMain()->getConfig()->get("jump-damage");
 				}
 				if(is_int($damage)){
-					return "Your wand is item $id:$damage. (Name: ".Item::get($id)->getName().")";
+					return "Your jump is item $id:$damage. (Name: ".Item::get($id)->getName().")";
 				}
-				return "Your wand is item $id. (Name: ".Item::get($id)->getName().")";
+				return "Your jump is item $id. (Name: ".Item::get($id)->getName().")";
 		}
 		return null;
 	}
