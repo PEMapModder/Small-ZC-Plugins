@@ -13,7 +13,6 @@ abstract class Space{
 	/** @var Block[] */
 	protected $undoMap = [];
 	public function __construct(){
-		$this->acquire();
 	}
 	/**
 	 * @return Position[]
@@ -237,7 +236,6 @@ abstract class Space{
 		}
 	}
 	public abstract function isInside(Vector3 $v);
-	protected abstract function acquire();
 	/**
 	 * @param Vector3 $v0
 	 * @param Vector3 $v1

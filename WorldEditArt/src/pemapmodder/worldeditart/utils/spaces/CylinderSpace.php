@@ -115,9 +115,6 @@ class CylinderSpace extends Space{
 		}
 		return $out;
 	}
-	public function acquire(){
-		$this->base->level->acquire();
-	}
 	public function __toString(){
 		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".Main::posToStr($this->base)." with {$this->height} blocks long, with a total of ".count($this->getPosList())." blocks.";
 	}

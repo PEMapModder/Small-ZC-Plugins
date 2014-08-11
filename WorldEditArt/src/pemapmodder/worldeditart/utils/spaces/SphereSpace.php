@@ -57,9 +57,6 @@ class SphereSpace extends Space{
 	public function getLevel(){
 		return $this->centre->getLevel();
 	}
-	public function acquire(){
-		$this->centre->level->acquire();
-	}
 	public function __toString(){
 		return "a sphere centered at ".Main::posToStr($this->centre)." of radius {$this->radius}";
 	}

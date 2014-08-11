@@ -166,9 +166,6 @@ class CuboidSpace extends Space{
 	public function getLevel(){
 		return $this->baked0->getLevel();
 	}
-	public function acquire(){
-		$this->baked0->level->acquire();
-	}
 	public function __toString(){
 		return "a cuboid from ".Main::v3ToStr($this->raw0)." to ".Main::posToStr($this->raw1);
 	}
