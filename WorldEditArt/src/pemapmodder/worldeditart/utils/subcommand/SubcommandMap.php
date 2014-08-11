@@ -66,7 +66,7 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				}
 			}
 			else{
-				$issuer->sendMessage("You don't have permission to do this!");
+				$issuer->sendMessage("You either have to select an anchor / make a selection first, don't have permission to do this, or you have to run this command in-game/on-console.");
 			}
 		}else{
 			$help = $this->getFullHelp($issuer);
@@ -76,7 +76,7 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				$page = max(1, (int) $args[0]);
 				$page = min($max, $page);
 			}
-			$output = "Showing help page $page of $max\n";
+			$output = "Commands available for you currently: (page $page of $max)\n";
 			for($i = $page * 5; $i < ($page + 1) * 5 and isset($help[$i]); $i++){
 				$output .= $help[$i] . "\n";
 			}
