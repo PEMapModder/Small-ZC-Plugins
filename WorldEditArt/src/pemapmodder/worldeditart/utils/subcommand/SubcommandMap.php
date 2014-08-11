@@ -68,16 +68,17 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 			else{
 				$issuer->sendMessage("You either have to select an anchor / make a selection first, don't have permission to do this, or you have to run this command in-game/on-console.");
 			}
-		}else{
+		}
+		else{
 			$help = $this->getFullHelp($issuer);
 			$page = 1;
-			$max = (int) ceil(count($help) / 5) - 1;
+			$max = (int) ceil(count($help) / 5);
 			if(isset($args[0])){
 				$page = max(1, (int) $args[0]);
 				$page = min($max, $page);
 			}
 			$output = "Commands available for you currently: (page $page of $max)\n";
-			for($i = $page * 5; $i < ($page + 1) * 5 and isset($help[$i]); $i++){
+			for($i = ($page - 1) * 5; $i < ($page) * 5 and isset($help[$i]); $i++){
 				$output .= $help[$i] . "\n";
 			}
 			$issuer->sendMessage($output);
@@ -98,11 +99,14 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				continue;
 			}
 			$output = "";
-			$output .= "/{$this->getName()} ";
-			$output .= TextFormat::LIGHT_PURPLE . $cmd->get()->getName() . " ";
-			$output .= TextFormat::GREEN . $cmd->get()->getUsage() . " ";
-			$output .= TextFormat::AQUA . $cmd->get()->getDescription();
+			$output .= TextFormat::WHITE."/{$this->getName()} ";
+			$output .= TextFormat::LIGHT_PURPLE.$cmd->get()->getName()." ";
+			$output .= TextFormat::GREEN.$cmd->get()->getUsage()." ";
+			$output .= TextFormat::AQUA.$cmd->get()->getDescription();
 			$out[] = $output;
+		}
+		if(IS_DEBUGGING){
+			$this->getPlugin()->getLogger()->alert("getFullHelp(".$sender->getName()."):\n".implode("\n", $out));
 		}
 		return $out;
 	}
@@ -117,6 +121,9 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		foreach($this->subcmds as $name => $sub){
 			$aliases[] = "/$name";
 		}
-		$this->setAliases(array_merge($aliases, $this->getAliases()));
+		$aliases = array_merge($aliases, $this->getAliases());
+		ksort($aliases, SORT_FLAG_CASE | SORT_NATURAL);
+		$this->setAliases($aliases);
+
 	}
 }
