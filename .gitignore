@@ -2,3 +2,4 @@
 .idea/*
 # Hex Editor temporary files
 *.bak
+# ignoreme/*
