@@ -10,7 +10,7 @@ class SingleList extends BlockList{
 		$blocks = (array) $blocks;
 		foreach($blocks as $block){
 			if(!($block instanceof Block)){
-				trigger_error("Argument 1 must be instance of Block or an array of Block, an element given is ".var_export($block, true), E_USER_ERROR);
+				throw new \InvalidArgumentException("Argument 1 must be instance of Block or an array of Block, an element given is ".var_export($block, true), E_USER_ERROR);
 			}
 		}
 		$this->blocks = $blocks;

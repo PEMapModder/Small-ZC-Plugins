@@ -27,6 +27,7 @@ use pemapmodder\worldeditart\utils\subcommand\Paste;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Replace;
 use pemapmodder\worldeditart\utils\subcommand\Set;
+use pemapmodder\worldeditart\utils\subcommand\Sphere;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pemapmodder\worldeditart\utils\subcommand\Test;
 use pemapmodder\worldeditart\utils\subcommand\Wand;
@@ -188,6 +189,7 @@ class Main extends PluginBase implements Listener{
 			new PosSubcommand($this, true),
 			new Replace($this),
 			new Set($this),
+			new Sphere($this),
 			new Test($this),
 			new Wand($this)
 		]);
