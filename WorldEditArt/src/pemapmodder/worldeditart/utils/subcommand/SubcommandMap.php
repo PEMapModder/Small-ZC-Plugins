@@ -39,7 +39,12 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		if(count($args) === 0){
 			$args = ["help"];
 		}
-		$cmd = array_shift($args);
+		if(is_string($lbl) and substr($lbl, 0, 1) === "/" and strlen($lbl) > 1){
+			$cmd = substr($lbl, 1);
+		}
+		else{
+			$cmd = array_shift($args);
+		}
 		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $this->subcmds[$cmd]->valid() and $cmd !== "help"){
 			if($this->subcmds[$cmd]->get()->hasPermission($issuer)){
 				try{
@@ -101,5 +106,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		foreach($subcmds as $subcmd){
 			$this->registerSubcommand($subcmd);
 		}
+		$aliases = [];
+		foreach($this->subcmds as $name => $sub){
+			$aliases[] = "/$name";
+		}
+		$this->setAliases($aliases);
 	}
 }
