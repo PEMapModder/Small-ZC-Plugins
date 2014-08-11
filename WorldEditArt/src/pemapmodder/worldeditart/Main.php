@@ -2,6 +2,8 @@
 
 namespace pemapmodder\worldeditart;
 
+use pemapmodder\worldeditart\events\AnchorChangeEvent;
+use pemapmodder\worldeditart\events\SelectionChangeEvent;
 use pemapmodder\worldeditart\utils\clip\Clip;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\provider\clip\BinaryClipboardProvider;
@@ -57,8 +59,6 @@ class Main extends PluginBase implements Listener{
 // SESSIONING FIELDS
 	/** @var array[] */
 	private $clips = [];
-	/** @var Position[] */
-	private $selectedPoints = [];
 	/** @var utils\spaces\Space[] */
 	private $selections = [];
 	/** @var Position[] */
@@ -206,9 +206,6 @@ class Main extends PluginBase implements Listener{
 ////////////////////
 	public function onQuit(PlayerQuitEvent $event){
 		$i = $event->getPlayer()->getID();
-		if(isset($this->selectedPoints[$i])){
-			unset($this->selectedPoints[$i]);
-		}
 		if(isset($this->selections[$i])){
 			unset($this->selections[$i]);
 		}
@@ -359,7 +356,15 @@ class Main extends PluginBase implements Listener{
 	 * @param Space $space
 	 */
 	public function setSelection(Player $player, Space $space){
-		$this->selections[$player->getID()] = clone $space;
+		$this->getServer()->getPluginManager()->callEvent($ev = new SelectionChangeEvent($this, $player, $space));
+		if($ev->isCancelled()){
+			$ev->sendCancelMessage($player);
+			return;
+		}
+		$this->selections[$id = $player->getID()] = clone $ev->getSelection();
+		if($this->selections[$id] === null){
+			unset($this->selections[$id]);
+		}
 	}
 	/**
 	 * @param Player $player
@@ -408,7 +413,12 @@ class Main extends PluginBase implements Listener{
 	 * @param Position $anchor
 	 */
 	public function setAnchor(Player $player, Position $anchor){
-		$this->anchors[$player->getID()] = clone $anchor;
+		$this->getServer()->getPluginManager()->callEvent($ev = new AnchorChangeEvent($this, $player, $anchor));
+		if($ev->isCancelled()){
+			$ev->sendCancelMessage($player);
+			return;
+		}
+		$this->anchors[$player->getID()] = clone $ev->getAnchor();
 	}
 
 ///////////
