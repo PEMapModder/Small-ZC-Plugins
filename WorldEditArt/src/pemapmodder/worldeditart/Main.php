@@ -46,6 +46,8 @@ use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
+const IS_DEBUGGING = true;
+
 class Main extends PluginBase implements Listener{
 ////////////
 // FIELDS //

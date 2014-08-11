@@ -64,7 +64,7 @@ class BlockList{
 		if(defined($const = "pocketmine\\block\\Block::".strtoupper($blockString))){
 			return constant($const);
 		}
-		if(class_exists($path = "pocketmine\\block\\$blockString")){
+		if(@class_exists($path = "pocketmine\\block\\$blockString")){
 			$class = new \ReflectionClass($path);
 			if(!$class->isAbstract()){
 				return $class->newInstance()->getID();

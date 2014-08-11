@@ -8,6 +8,8 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\utils\TextFormat;
 
+const IS_DEBUGGING = \pemapmodder\worldeditart\IS_DEBUGGING;
+
 class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	/** @var Main */
 	private $main;
@@ -47,15 +49,20 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		}
 		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $this->subcmds[$cmd]->valid() and $cmd !== "help"){
 			if($this->subcmds[$cmd]->get()->hasPermission($issuer)){
-				try{
-					$this->subcmds[$cmd]->get()->run($this, $args, $issuer);
+				if(!IS_DEBUGGING){
+					try{
+						$this->subcmds[$cmd]->get()->run($this, $args, $issuer);
+					}
+					catch(\Exception $exception){
+						$issuer->sendMessage("Uh-oh. Something went wrong! An exception has been caught during executing your command.");
+						$issuer->sendMessage("Error caught: ".($class = array_slice(explode("\\", get_class($exception)), -1)[0]));
+						$issuer->sendMessage("Error message: ".$exception->getMessage());
+						$issuer->sendMessage("The error has been reported to console.");
+						$this->main->getLogger()->notice("An exception has been caught. Exception name: '$class'. Exception message: ".$exception->getMessage());
+					}
 				}
-				catch(\Exception $exception){
-					$issuer->sendMessage("Uh-oh. Something went wrong! An exception has been caught during executing your command.");
-					$issuer->sendMessage("Error caught: ".($class = array_slice(explode("\\", get_class($exception)), -1)[0]));
-					$issuer->sendMessage("Error message: ".$exception->getMessage());
-					$issuer->sendMessage("The error has been reported to console.");
-					$this->main->getLogger()->notice("An exception has been caught. Exception name: '$class'. Exception message: ".$exception->getMessage());
+				else{
+					$this->subcmds[$cmd]->get()->run($this, $args, $issuer); // let the error fly
 				}
 			}
 			else{
@@ -110,6 +117,6 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		foreach($this->subcmds as $name => $sub){
 			$aliases[] = "/$name";
 		}
-		$this->setAliases($aliases);
+		$this->setAliases(array_merge($aliases, $this->getAliases()));
 	}
 }
