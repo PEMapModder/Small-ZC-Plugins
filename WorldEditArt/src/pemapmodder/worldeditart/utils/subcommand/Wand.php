@@ -23,7 +23,7 @@ class Wand extends Subcommand{
 		$cd = false;
 		$mode = 0; // 0: set to held item; 1: set to
 		while(isset($args[0])){
-			$arg = $args[0];
+			$arg = array_shift($args);
 			switch($arg){
 				case "cd":
 				case "check-damage":
