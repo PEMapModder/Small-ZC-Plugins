@@ -26,7 +26,7 @@ $opts["make"] = "..\\..\\";
 
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
-$pharName = "..\\WorldEditArt_dev_build_#";
+$pharName = "..\\WorldEditArt_dev_branch_macro-multi-provider_build_#";
 for($i = 1; is_file($pharName.$i.".phar"); $i++){}
 $pharName .= $i;
 $pharName .= ".phar";
