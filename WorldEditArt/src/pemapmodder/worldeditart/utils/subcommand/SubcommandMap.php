@@ -99,14 +99,11 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				continue;
 			}
 			$output = "";
-			$output .= TextFormat::WHITE."/{$this->getName()} ";
+			$output .= TextFormat::RESET."/{$this->getName()} ";
 			$output .= TextFormat::LIGHT_PURPLE.$cmd->get()->getName()." ";
 			$output .= TextFormat::GREEN.$cmd->get()->getUsage()." ";
 			$output .= TextFormat::AQUA.$cmd->get()->getDescription();
 			$out[] = $output;
-		}
-		if(IS_DEBUGGING){
-			$this->getPlugin()->getLogger()->alert("getFullHelp(".$sender->getName()."):\n".implode("\n", $out));
 		}
 		return $out;
 	}

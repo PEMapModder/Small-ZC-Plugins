@@ -146,13 +146,13 @@ abstract class Subcommand{
 		}
 		if($this->issuer === self::SELECTED){
 			if(!($sender instanceof Player) or !(($p = $this->main->getAnchor($sender)) instanceof Position)){
-				return true;
+				return false;
 			}
 			return call_user_func($callable, $p, $sender);
 		}
 		if($this->issuer === self::SEL_SPACE){
 			if(!($sender instanceof Player) or !(($space = $this->main->getSelection($sender)) instanceof Space)){
-				return true;
+				return false;
 			}
 			return call_user_func($callable, $space, $sender);
 		}

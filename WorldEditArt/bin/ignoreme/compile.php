@@ -43,7 +43,7 @@ if(isset($opts["entry"]) and $opts["entry"] != null){
 	echo "Setting entry point to ".$entry."\n";
 	$phar->setStub('<?php require("phar://". __FILE__ ."/'.$entry.'"); __HALT_COMPILER();');
 }else{
-	$phar->setStub('<?php echo "This is development build #$i of WorldEditArt.\nUse with caution. Backup your worlds before using.\nReport bugs to https://github.com/PEMapModder/Small-ZC-Plugins/issues/new please.\n"; __HALT_COMPILER();');
+	$phar->setStub('<?php __HALT_COMPILER();');
 }
 $phar->setSignatureAlgorithm(\Phar::SHA1);
 $phar->startBuffering();
