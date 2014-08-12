@@ -36,23 +36,6 @@ class MacroOperation{
 		$this->delta = $pos;
 		$this->block = $block;
 	}
-	public function toTag(){
-		$tag = new tag\Compound;
-		$tag["type"] = new tag\Byte("", is_int($this->delta) ? 1:0);
-		if(is_int($this->delta)){
-			$tag["delta"] = new tag\Int("", $this->delta);
-		}
-		else{
-			$tag["vectors"] = new tag\Enum("", [
-				new tag\Long("", $this->delta->getFloorX()),
-				new tag\Long("", $this->delta->getFloorY()),
-				new tag\Long("", $this->delta->getFloorZ())
-			]);
-			$tag["blockID"] = new tag\Byte("", $this->block->getID());
-			$tag["blockDamage"] = new tag\Byte("", $this->block->getDamage());
-		}
-		return $tag;
-	}
 	public function operate(Position $anchor){
 		if(is_int($this->delta)){
 			throw new \BadMethodCallException("MacroOperation is of type TRUE (wait) not FALSE (operate) thus cannot be operated");

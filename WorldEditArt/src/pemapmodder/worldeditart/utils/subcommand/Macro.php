@@ -3,6 +3,7 @@
 namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\utils\macro\Macro as MacroObj;
+use pemapmodder\worldeditart\utils\provider\macro\MacroDataProvider;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
@@ -43,6 +44,46 @@ class Macro extends Subcommand{
 				$macro = new MacroObj(false, $anchor, $player);
 				$this->getMain()->setRecordingMacro($player, $macro);
 				return "You are now recording a macro.";
+			case "run":
+				if(!isset($args[0])){
+					return self::WRONG_USE;
+				}
+				$name = array_shift($args);
+				$tokens = explode(":", $name);
+				if(isset($tokens[2])){
+					return "Macros don't have colons (:) in their names.";
+				}
+				if(!isset($tokens[1])){
+					array_unshift($tokens, "default");
+				}
+				$database = $tokens[0];
+				$name = $tokens[1];
+				if($this->getMain()->getRecordingMacro($player) instanceof MacroObj){
+					return "For the sake of safety, you cannot run a macro during macro recording.";
+				}
+				$anchor = $player->getPosition();
+				while(isset($args[0])){
+					$arg = array_shift($args);
+					switch($arg){
+						case "a":
+						case "anchor":
+							$anchor = $this->getMain()->getAnchor($player);
+							if(!($anchor instanceof Position)){
+								return self::NO_ANCHOR;
+							}
+							break;
+					}
+				}
+				$provider = $this->getMain()->getMacroDataProvider($database);
+				if(!($provider instanceof MacroDataProvider)){
+					return "Macro provider $database doesn't exist! Macro cannot have colons (:) in their names.";
+				}
+				$macro = $provider[$name];
+				if(!($macro instanceof MacroObj)){
+					return "Macro $name doesn't exist.";
+				}
+				$macro->execute($this->getMain()->getServer()->getScheduler(), $anchor, $this->getMain());
+				return "The macro is now running.";
 			case "save":
 			case "wait":
 				if(!isset($args[0])){
@@ -65,7 +106,17 @@ class Macro extends Subcommand{
 				return "Your recording macro has been terminated.";
 			case "save":
 				$name = array_shift($args);
-				$macroProvider = $this->getMain()->getMacroDataProvider();
+				$tokens = explode(":", $name);
+				if(isset($tokens[2])){
+					return "Macro name cannot contain a colon (:)!";
+				}
+				if(!isset($tokens[1])){
+					array_unshift($tokens, "default");
+				}
+				$macroProvider = $this->getMain()->getMacroDataProvider($tokens[0]);
+				if(!($macroProvider instanceof MacroDataProvider)){
+					return "Macro provider $tokens[0] doesn't exist! Macros cannot have colons (:) in their names.";
+				}
 				if(isset($macroProvider[$name])){
 					return "Such macro already exists!";
 				}

@@ -2,6 +2,8 @@
 
 namespace pemapmodder\worldeditart;
 
+const IS_DEBUGGING = true;
+
 use pemapmodder\worldeditart\events\AnchorChangeEvent;
 use pemapmodder\worldeditart\events\SelectionChangeEvent;
 use pemapmodder\worldeditart\utils\clip\Clip;
@@ -48,7 +50,6 @@ use pocketmine\math\Vector3;
 use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-const IS_DEBUGGING = true;
 
 class Main extends PluginBase implements Listener{
 ////////////
@@ -70,13 +71,18 @@ class Main extends PluginBase implements Listener{
 	/** @var utils\provider\clip\ClipboardProvider */
 	private $clipboardProvider;
 	/** @var utils\provider\macro\MacroDataProvider[] */
-	private $macroDataProvider = [];
+	private $macroDataProviders = [];
 	/** @var utils\provider\player\PlayerDataProvider */
 	private $playerDataProvider;
 	/** @var null|\mysqli */
 	private $commonMysqli = null;
+// OTHERS
+	/** @var SubcommandMap */
+	private $cmd;
 
-// INITIALIZERS
+//////////////////
+// INITIALIZERS //
+//////////////////
 	public function onPreEnable(){
 		@mkdir($this->getDataFolder());
 		$this->saveDefaultConfig();
@@ -196,29 +202,31 @@ class Main extends PluginBase implements Listener{
 		switch($db["type"]){
 			case "mcr":
 				$file = $this->getPath($db["config"]["path"]);
-				$this->macroDataProvider[$name] = new LocalNBTMacroDataProvider($this, $file, $db["config"]["compression"]);
+				$this->macroDataProviders[$name] = new LocalNBTMacroDataProvider($this, $file, $db["config"]["compression"]);
 				break;
 			case "ram":
-				$this->macroDataProvider[$name] = new DummyMacroDataProvider($this);
+				$this->macroDataProviders[$name] = new DummyMacroDataProvider($this);
 				break;
 			case "mysqli":
 				if($db["config"]["use common"]){
 					$mysqli = $this->getCommonMysqli();
 					if($mysqli === null){
-						$this->macroDataProvider[$name] = new DummyMacroDataProvider($this);
+						$this->macroDataProviders[$name] = new DummyMacroDataProvider($this);
+						break;
 					}
 				}
 				else{
 					$config = $db["config"];
 					$mysqli = new \mysqli($config["host"], $config["username"], $config["password"], $config["database"], $config["port"]);
 					if($mysqli->connect_error){
-						$this->getLogger()->critical("Error");// TODO
+						$this->macroDataProviders[$name] = new DummyMacroDataProvider($this);
+						$this->getLogger()->critical("Unable to connect to MySQL database. A RAM macro data provider will be used for database $name.");
+						break;
 					}
 				}
-				$this->macroDataProvider[$name] = new MysqliMacroDataProvider($this, $mysqli);
+				$this->macroDataProviders[$name] = new MysqliMacroDataProvider($this, $mysqli);
 				break;
 		}
-		return;
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
@@ -238,9 +246,10 @@ class Main extends PluginBase implements Listener{
 			new Wand($this)
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
+		$this->cmd = $wea;
 	}
 	public function onDisable(){
-		foreach($this->macroDataProvider as $p){
+		foreach($this->macroDataProviders as $p){
 			$p->close();
 		}
 		$this->playerDataProvider->close();
@@ -648,10 +657,11 @@ class Main extends PluginBase implements Listener{
 		return $this->playerDataProvider;
 	}
 	/**
+	 * @param string $name
 	 * @return \pemapmodder\worldeditart\utils\provider\macro\MacroDataProvider
 	 */
-	public function getMacroDataProvider(){
-		return $this->macroDataProvider;
+	public function getMacroDataProvider($name){
+		return isset($this->macroDataProviders[$name]) ? $this->macroDataProviders[$name]:null;
 	}
 	/**
 	 * @return \pemapmodder\worldeditart\utils\provider\clip\ClipboardProvider
