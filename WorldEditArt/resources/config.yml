@@ -33,29 +33,49 @@ data providers:
       database: "WorldEditArt player database"
       port: 3306
 
-  # Macro data provider provides the plugin a storage of macros
   macro:
-    # Choose a data provider type. Options:
-    # mcr (save one .mcr file for each macro)
-    # mysqli (save on a remote MySQL database)
-    type: mcr
-    # MCR options. If you use it, configure this properly.
-    mcr:
-      # The path to save files. It will be saved in /.../PocketMine-MP/plugins/WorldEditArt/<path>. Enter <path> below. (Sub-folders will be created automatically); you just need to use / (or / or \\ if on Windows); use .. to jump up to parent folder
-      path: "macros/<name>.mcr"
-      # Compression of MCR files. Options:
-      # 31 (compress with the GZIP format)
-      # 0 (do not compress)
-      # Warning: not using the formats above will cause unexpected errors.
-      compression: 0 # TODO change this to 31 after debugging # This is an internal remark. If I forgot to remove this, please tell me.
-    # MySQLi options. If you use it, configure this properly.
-    mysqli:
-      use common: true
-      host: example.com
-      username: "guest"
-      password: "123456IsNotAGoodPassword"
-      database: "WorldEditArt macro database"
-      port: 3306
+    # Macros can be provided by multiple providers.
+    databases:
+      default:
+        # Options:
+        # mcr: Saves using the NBT-oriented .mcr database
+        # mysqli: Connects to a remote MySQLi database for macros
+        # ram: Saves macros in RAM, which will be deleted when the server stops/reloads. Only use this when you don't want to save any macros, or expect another plugin to set another provider.
+        type: mcr
+        # If you don't want new macros to be saved into the database,
+        # or if you don't have write access to the database, set this to true
+        # If you don't have permision to write that database, you must set this to true
+        # Otherwise, the server may crash
+        read-only: false
+        # If the database name is default, this database will be loaded regardless of this setting.
+        enabled: true
+        config:
+          # path inside plugin folder
+          path: "macros/<name>.mcr"
+          is phar: false
+          compression: 0
+      builtin:
+        type: mcr
+        read-only: true
+        enabled: true
+        config:
+          # res://path.ext jumps to the resources path of the plugin
+          # The files in the resources path can be
+          path: "res://defaults/<name>.mcr"
+          compression: 0
+      online:
+        type: mysqli
+        read-only: false
+        enabled: false
+        config:
+          # Whether or not to use the common database.
+          # If set to true, host, username, password, database and port here aren't needed.
+          use common: false
+          host: example.com
+          username: "guest"
+          password: "123456AintGoodPassword"
+          database: "WorldEditArt database"
+          port: 3306
 
   # Clipboard data provider provides the plugin a clipboard to store clips
   clipboard:

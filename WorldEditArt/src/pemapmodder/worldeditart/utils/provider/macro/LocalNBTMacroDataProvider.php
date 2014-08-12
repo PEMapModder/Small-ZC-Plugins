@@ -13,9 +13,11 @@ use pocketmine\nbt\tag;
 class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 	/** @var string */
 	private $path;
-	public function __construct(Main $main, $path){
+	private $compression;
+	public function __construct(Main $main, $path, $compression){
 		parent::__construct($main);
 		$this->path = $path;
+		$this->compression = $compression;
 	}
 	public function isAvailable(){
 		return true;
@@ -74,7 +76,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 		if(!is_resource($stream)){
 			throw new \RuntimeException("Unable to open stream. Maybe the macro name is not a valid filename?");
 		}
-		$compression = $this->getMain()->getConfig()["data providers"]["macro"]["mcr"]["compression"];
+		$compression = $this->compression;
 		if($compression === 0){
 			$data = $nbt->write();
 		}

@@ -48,7 +48,6 @@ use pocketmine\math\Vector3;
 use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-
 const IS_DEBUGGING = true;
 
 class Main extends PluginBase implements Listener{
@@ -70,8 +69,8 @@ class Main extends PluginBase implements Listener{
 // DATA PROVIDERS
 	/** @var utils\provider\clip\ClipboardProvider */
 	private $clipboardProvider;
-	/** @var utils\provider\macro\MacroDataProvider */
-	private $macroDataProvider;
+	/** @var utils\provider\macro\MacroDataProvider[] */
+	private $macroDataProvider = [];
 	/** @var utils\provider\player\PlayerDataProvider */
 	private $playerDataProvider;
 	/** @var null|\mysqli */
@@ -152,29 +151,74 @@ class Main extends PluginBase implements Listener{
 		}
 
 		$macros = $providers["macro"];
-		$type = $macros["type"];
-		switch(strtolower($type)){
+		$dbs = $macros["databases"];
+		if(!isset($dbs["default"])){
+			$this->getLogger()->critical("Default database deleted for WorldEditArt! Applying RAM macro database for substitution...");
+			$dbs["default"] = [
+				"type" => "ram",
+				"read-only" => false,
+				"enabled" => true,
+				"config" => []
+			];
+		}
+		$dbs["default"]["enabled"] = true;
+		foreach($dbs as $name => $db){
+			$this->loadMacroProvider($name, $db);
+		}
+//		$type = $macros["type"];
+//		switch(strtolower($type)){
+//			case "mcr":
+//				$this->macroDataProvider = new LocalNBTMacroDataProvider($this, $macros["mcr"]["path"]);
+//				break;
+//			case "mysqli":
+//				$mysqli = $macros["mysqli"];
+//				if($mysqli["use common"]){
+//					$db = $this->getCommonMysqli();
+//					if($db === null){
+//						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
+//						$this->macroDataProvider = new DummyMacroDataProvider($this);
+//						break;
+//					}
+//				}
+//				else{
+//					$db = new \mysqli($mysqli["host"], $mysqli["username"], $mysqli["password"], $mysqli["database"], $mysqli["port"]);
+//					if($db->connect_error){
+//						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
+//					}
+//				}
+//				$this->macroDataProvider = new MysqliMacroDataProvider($this, $db);
+//		}
+	}
+	private function loadMacroProvider($name, $db){
+		if(!$db["enabled"]){
+			return;
+		}
+		switch($db["type"]){
 			case "mcr":
-				$this->macroDataProvider = new LocalNBTMacroDataProvider($this, $macros["mcr"]["path"]);
+				$file = $this->getPath($db["config"]["path"]);
+				$this->macroDataProvider[$name] = new LocalNBTMacroDataProvider($this, $file, $db["config"]["compression"]);
+				break;
+			case "ram":
+				$this->macroDataProvider[$name] = new DummyMacroDataProvider($this);
 				break;
 			case "mysqli":
-				$mysqli = $macros["mysqli"];
-				if($mysqli["use common"]){
-					$db = $this->getCommonMysqli();
-					if($db === null){
-						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
-						$this->macroDataProvider = new DummyMacroDataProvider($this);
-						break;
+				if($db["config"]["use common"]){
+					$mysqli = $this->getCommonMysqli();
+					if($mysqli === null){
+						$this->macroDataProvider[$name] = new DummyMacroDataProvider($this);
 					}
 				}
 				else{
-					$db = new \mysqli($mysqli["host"], $mysqli["username"], $mysqli["password"], $mysqli["database"], $mysqli["port"]);
-					if($db->connect_error){
-						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
+					$config = $db["config"];
+					$mysqli = new \mysqli($config["host"], $config["username"], $config["password"], $config["database"], $config["port"]);
+					if($mysqli->connect_error){
+						$this->getLogger()->critical("Error");// TODO
 					}
 				}
-				$this->macroDataProvider = new MysqliMacroDataProvider($this, $db);
+				$this->macroDataProvider[$name] = new MysqliMacroDataProvider($this, $mysqli);
+				break;
 		}
+		return;
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
@@ -196,9 +240,17 @@ class Main extends PluginBase implements Listener{
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
 	public function onDisable(){
-		$this->macroDataProvider->close();
+		foreach($this->macroDataProvider as $p){
+			$p->close();
+		}
 		$this->playerDataProvider->close();
 		$this->clipboardProvider->close();
+	}
+	private function getPath($path){
+		if(strpos($path, "res://") === 0){
+			return $this->getFile()."/resources/".substr($path, 6);
+		}
+		return $this->getDataFolder().$path;
 	}
 
 ////////////////////
