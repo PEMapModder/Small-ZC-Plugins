@@ -262,20 +262,36 @@ class Main extends PluginBase implements Listener{
 		if($pk instanceof UseItemPacket and $pk->face === 0xff){
 			/** @var PlayerData $data */
 			$data = $this->getPlayerDataProvider()[$player->getName()];
-			if($data->getJump()->match($player->getInventory()->getItemInHand())){
-				$target = self::getCrosshairTarget($player, 0.5, PHP_INT_MAX); // config.yml
-				while(true){
-					$target = $target->add(0, 1);
-					$block = $player->getLevel()->getBlock($target);
-					if(!($block instanceof Block)){
+			$mode = 0;
+			$item = $player->getInventory()->getItemInHand();
+			if($item->getID() === 0){
+				return; // don't allow air
+			}
+			if($data->getJump()->match($item)){
+				$mode = PlayerData::JUMP;
+			}
+			if($mode > 0){
+				switch($mode){
+					case PlayerData::JUMP:
+						$target = self::getCrosshairTarget($player, 0.5, PHP_INT_MAX); // config.yml
+						if(!($target instanceof Block)){
+							$player->sendMessage("The block is too far/in the void/sky; can't jump there!");
+							break;
+						}
+						while(true){
+							$target = $target->add(0, 1);
+							$block = $player->getLevel()->getBlock($target);
+							if(!($block instanceof Block)){
+								break;
+							}
+							$nonSolids = [Block::AIR, Block::WATER, Block::STILL_WATER, Block::LAVA, Block::STILL_LAVA];
+							if(in_array($block->getID(), $nonSolids)){
+								break;
+							}
+						}
+						$player->teleport($target);
 						break;
-					}
-					$nonSolids = [Block::AIR, Block::WATER, Block::STILL_WATER, Block::LAVA, Block::STILL_LAVA];
-					if(in_array($block->getID(), $nonSolids)){
-						break;
-					}
 				}
-				$player->teleport($target);
 			}
 		}
 	}
