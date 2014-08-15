@@ -24,7 +24,10 @@ abstract class FilePlayerDataProvider extends PlayerDataProvider{
 	public function offsetGet($name){
 		if(is_file($this->getPath($name))){
 			$data = $this->parseFile($this->getPath($name));
-			return new PlayerData($this->getMain(), $name, $data["wand-id"], $data["wand-damage"], $data["jump-id"], $data["jump-damage"]);
+			$config = $this->getMain()->getConfig();
+			$wand = new SelectedTool($data["wand-id"], $data["wand-damage"], $config->get("wand-id"), $config->get("wand-damage"));
+			$jump = new SelectedTool($data["jump-id"], $data["jump-damage"], $config->get("jump-id"), $config->get("jump-damage"));
+			return new PlayerData($name, $name, $wand, $jump);
 		}
 		return new PlayerData($this->getMain(), $name);
 	}
@@ -34,10 +37,10 @@ abstract class FilePlayerDataProvider extends PlayerDataProvider{
 					(is_object($data) ? get_class($data):gettype($data))." given");
 		}
 		$this->emitFile($this->getPath($name), [
-			"wand-id" => $data->getWandID(),
-			"wand-damage" => $data->getWandDamage(),
-			"jump-id" => $data->getJumpID(),
-			"jump-damage" => $data->getJumpDamage()
+			"wand-id" => $data->getWand()->getRawID(),
+			"wand-damage" => $data->getWand()->getRawDamage(),
+			"jump-id" => $data->getJump()->getRawID(),
+			"jump-damage" => $data->getJump()->getRawDamage()
 		]);
 	}
 	public function offsetUnset($name){

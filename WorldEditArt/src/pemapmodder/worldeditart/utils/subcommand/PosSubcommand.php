@@ -36,7 +36,8 @@ class PosSubcommand extends Subcommand{
 			return ["p1", "1"];
 		}
 	}
-	public function checkPermission(Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){

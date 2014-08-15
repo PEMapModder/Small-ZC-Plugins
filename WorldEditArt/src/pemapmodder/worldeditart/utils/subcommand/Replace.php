@@ -16,7 +16,9 @@ class Replace extends Subcommand{
 	public function getUsage(){
 		return "<from> <to> [nu|no-update] [h|hollow]";
 	}
-	public function checkPermission(Space $space, Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Space $space, /** @noinspection PhpUnusedParameterInspection */
+	                                Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Space $space){

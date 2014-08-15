@@ -8,60 +8,53 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 	const INT = 2;
 	/**
 	 * @param string $name
-	 * @return array
-	 */
-	protected abstract function selectPlayerFromName($name);
-	/**
-	 * @param string $name
 	 */
 	protected abstract function deletePlayerName($name);
+	protected abstract function insertTool($name, $id, $it, $iv, $dt, $dv);
+	protected abstract function fetchPlayer($name);
 	/**
-	 * @param string[] $params
+	 * @param string $name
+	 * @return array[]
 	 */
-	protected abstract function insertPlayerData(array $params);
 	public function offsetGet($name){
-		$data = $this->selectPlayerFromName($name);
-		if(!is_array($data)){
-			return new PlayerData($this->getMain(), $name);
+		$arrays = $this->fetchPlayer($name = strtolower($name));
+		$wand = null;
+		$jump = null;
+		foreach($arrays as $arr){
+			$name = $arr["player"];
+			$tool = $arr["tool_id"];
+			$typedID = [$arr["item_id_type"], $arr["item_id_value"]];
+			$typedDamage = [$arr["item_id_type"], $arr["item_id_value"]];
+			$id = self::typedToMixed($typedID);
+			$damage = self::typedToMixed($typedDamage);
+			$c = $this->getMain()->getConfig();
+			switch($tool){
+				case PlayerData::WAND:
+					$wand = new SelectedTool($id, $damage, $c->get("wand-id"), $c->get("wand-damage"));
+					break;
+				case PlayerData::JUMP:
+					$jump = new SelectedTool($id, $damage, $c->get("jump-id"), $c->get("jump-damage"));
+					break;
+			}
 		}
-		$id = $data["wandidval"];
-		$type = $data["wandidtype"];
-		if($type !== self::INT){
-			$id = (bool) $type;
-		}
-		$damage = $data["wanddamageval"];
-		$type = $data["wanddamagetype"];
-		if($type !== self::INT){
-			$id = (bool) $type;
-		}
-		$jumpid = $data["jumpidval"];
-		$type = $data["jumpidtype"];
-		if($type !== self::INT){
-			$jumpid = (bool) $type;
-		}
-		$jumpdamage = $data["jumpdamageval"];
-		$type = $data["jumpdamagetype"];
-		if($type !== self::INT){
-			$jumpdamage = (bool) $type;
-		}
-		return new PlayerData($this->getMain(), $name, $id, $damage, $jumpid, $jumpdamage);
+		return new PlayerData($this->getMain(), $name, $wand, $jump);
 	}
 	public function offsetSet($name, $data){
 		if(!($data instanceof PlayerData)){
-			throw new \InvalidArgumentException("Player data passed to FilePlayerDataProvider must be instance of PlayerData, ".
-				(is_object($data) ? get_class($data):gettype($data))." given");
+			throw new \InvalidArgumentException("Trying to set a player data provider element to non-PlayerData");
 		}
-		$params = [];
-		$params[":name"] = $name;
-		$params[":wandidtype"] = is_bool($data->getWandID()) ? ($data->getWandID() ? self::TRUE:self::FALSE):self::INT;
-		$params[":wandidval"] = (int) $data->getWandID();
-		$params[":wanddamagetype"] = is_bool($data->getWandDamage()) ? ($data->getWandDamage() ? self::TRUE:self::FALSE):self::INT;;
-		$params[":wanddamageval"] = (int) $data->getWandDamage();
-		$params[":jumpidtype"] = is_bool($data->getJumpID()) ? ($data->getJumpID() ? self::TRUE:self::FALSE):self::INT;
-		$params[":jumpidval"] = (int) $data->getJumpID();
-		$params[":jumpdamagetype"] = is_bool($data->getJumpDamage()) ? ($data->getJumpDamage() ? self::TRUE:self::FALSE):self::INT;;
-		$params[":jumpdamageval"] = (int) $data->getJumpDamage();
-		$this->insertPlayerData($params);
+		$name = strtolower($name);
+		$this->insert($name, PlayerData::WAND, $data->getWand());
+		$this->insert($name, PlayerData::JUMP, $data->getJump());
+	}
+	private function insert($name, $id, SelectedTool $tool){
+		$typed = self::mixedToTyped($tool->getRawID());
+		$it = $typed[0];
+		$iv = $typed[1];
+		$typed = self::mixedToTyped($tool->getRawDamage());
+		$dt = $typed[0];
+		$dv = $typed[1];
+		$this->insertTool($name, $id, $it, $iv, $dt, $dv);
 	}
 	public function offsetUnset($name){
 		$this->deletePlayerName($name);
@@ -71,5 +64,14 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 	}
 	public function isAvailable(){
 		return true;
+	}
+	public static function mixedToTyped($mixed){
+		return [
+			is_bool($mixed) ? ($mixed ? self::TRUE:self::FALSE):self::INT,
+			(int) $mixed
+		];
+	}
+	public static function typedToMixed(array $typed){
+		return $typed[0] === self::INT ? $typed[1]:($typed[0] === self::TRUE);
 	}
 }

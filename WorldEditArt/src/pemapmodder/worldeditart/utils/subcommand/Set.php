@@ -18,7 +18,9 @@ class Set extends Subcommand{
 	public function getUsage(){
 		return "<blocks> [h|hollow] [nu|no-update]";
 	}
-	public function checkPermission(Space $space, Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Space $space, /** @noinspection PhpUnusedParameterInspection */
+	                                Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Space $space){

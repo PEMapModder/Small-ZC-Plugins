@@ -21,7 +21,8 @@ class Cuboid extends Subcommand{
 	public function getAliases(){
 		return ["cub"];
 	}
-	public function checkPermission(Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){

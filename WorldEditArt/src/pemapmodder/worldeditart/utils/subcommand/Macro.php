@@ -16,7 +16,8 @@ class Macro extends Subcommand{
 	public function getUsage(){
 		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
-	public function checkPermission(Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){

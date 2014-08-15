@@ -28,11 +28,11 @@ use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Paste;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Replace;
+use pemapmodder\worldeditart\utils\subcommand\SelectedToolSetterSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Set;
 use pemapmodder\worldeditart\utils\subcommand\Sphere;
 use pemapmodder\worldeditart\utils\subcommand\SubcommandMap;
 use pemapmodder\worldeditart\utils\subcommand\Test;
-use pemapmodder\worldeditart\utils\subcommand\Wand;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
@@ -42,13 +42,11 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-
 const IS_DEBUGGING = true;
 
 class Main extends PluginBase implements Listener{
@@ -188,10 +186,11 @@ class Main extends PluginBase implements Listener{
 			new PosSubcommand($this, false),
 			new PosSubcommand($this, true),
 			new Replace($this),
+			new SelectedToolSetterSubcommand($this, "jump", PlayerData::JUMP, "jump"),
+			new SelectedToolSetterSubcommand($this, "wand", PlayerData::WAND, "wand"),
 			new Set($this),
 			new Sphere($this),
 			new Test($this),
-			new Wand($this)
 		]);
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
@@ -224,7 +223,9 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function onInteract(PlayerInteractEvent $event){
 		$p = $event->getPlayer();
-		if($this->isWand($p, $event->getItem())){
+		/** @var PlayerData $tool */
+		$tool = $this->getPlayerDataProvider()[strtolower($p->getName())];
+		if($tool->getWand()->match($p->getInventory()->getItemInHand())){
 			$this->setAnchor($p, $event->getBlock());
 			$event->setCancelled();
 		}
@@ -261,7 +262,7 @@ class Main extends PluginBase implements Listener{
 		if($pk instanceof UseItemPacket and $pk->face === 0xff){
 			/** @var PlayerData $data */
 			$data = $this->getPlayerDataProvider()[$player->getName()];
-			if($data->checkJump($player->getInventory()->getItemInHand())){
+			if($data->getJump()->match($player->getInventory()->getItemInHand())){
 				$target = self::getCrosshairTarget($player, 0.5, PHP_INT_MAX); // config.yml
 				while(true){
 					$target = $target->add(0, 1);
@@ -327,28 +328,6 @@ class Main extends PluginBase implements Listener{
 	 */
 	public function unsetRecordingMacro(Player $player){
 		unset($this->macros[$player->getID()]);
-	}
-// WANDS
-	/**
-	 * @param Player $player
-	 * @param $id
-	 * @param bool $damage
-	 */
-	public function setWand(Player $player, $id, $damage = PlayerData::ALLOW_ANY){
-		/** @var PlayerData $data */
-		$data = $this->playerDataProvider[$player->getName()];
-		$data->setWandID($id);
-		$data->setWandDamage($damage);
-	}
-	/**
-	 * @param Player $player
-	 * @param Item $item
-	 * @return bool
-	 */
-	public function isWand(Player $player, Item $item){
-		/** @var PlayerData $data */
-		$data = $this->playerDataProvider[$player->getName()];
-		return $data->checkWand($item);
 	}
 // SELECTIONS
 	/**

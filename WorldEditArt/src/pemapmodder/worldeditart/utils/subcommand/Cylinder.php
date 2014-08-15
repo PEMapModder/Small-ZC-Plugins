@@ -17,7 +17,8 @@ class Cylinder extends Subcommand{
 	public function getUsage(){
 		return "<radius> <height> [d <m|me|u|up|d|down|l|left|r|right|b|back>] [a|anchor]";
 	}
-	public function checkPermission(Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){

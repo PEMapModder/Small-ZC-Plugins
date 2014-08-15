@@ -17,7 +17,8 @@ class Test extends Subcommand{
 	public function getUsage(){
 		return "<to> [from] [duration = 15]";
 	}
-	public function checkPermission(Space $space, Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Space $space, Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Space $space, Player $player){
