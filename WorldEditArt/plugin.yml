@@ -6,3 +6,44 @@ load: POSTWORLD
 main: pemapmodder\worldeditart\Main
 description: A powerful advanced world editor
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/WorldEditArt
+permissions:
+  wea:
+    description: Allows using all WorldEditArt commands
+    wea.anchor:
+      description: Allows using //anchor
+    wea.copy:
+      description: Allows using //copy
+    wea.cuboid:
+      description: Allows using //cuboid
+    wea.cut:
+      description: Allows using //cut
+    wea.cylinder:
+      description: Allows using //cylinder
+    wea.macro:
+      description: Allows using //macro
+    wea.paste:
+      description: Allows using //paste
+    wea.pos:
+      description: Allows using //pos1 and //pos2
+    wea.replace:
+      description: Allows using //replace
+    wea.tool:
+      description: Allows using subcommands that modify selected tools
+      children:
+        wea.tool.jump:
+          description: Allows using //jump
+        wea.tool.wand:
+          description: Allows using //wand
+    wea.set:
+      description: Allows using //set
+      children:
+        wea.set.cuboid:
+          description: Allows using //set for cuboid selections
+        wea.set.cylinder:
+          description: Allows using //set for cylinder selections
+        wea.set.sphere:
+          description: Allows using //set for sphere selections
+    wea.sphere:
+      description: Allows using //sphere
+    wea.test:
+      description: Allows using //test

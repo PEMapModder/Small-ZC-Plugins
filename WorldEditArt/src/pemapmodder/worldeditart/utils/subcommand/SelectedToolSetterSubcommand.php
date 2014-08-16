@@ -5,6 +5,7 @@ namespace pemapmodder\worldeditart\utils\subcommand;
 use pemapmodder\worldeditart\Main;
 use pemapmodder\worldeditart\utils\provider\player\PlayerData;
 use pemapmodder\worldeditart\utils\provider\player\SelectedTool;
+use pocketmine\block\Air;
 use pocketmine\Player;
 
 class SelectedToolSetterSubcommand extends Subcommand{
@@ -30,7 +31,7 @@ class SelectedToolSetterSubcommand extends Subcommand{
 		return $this->name;
 	}
 	public function getUsage(){
-		return "[cd|check-damage|v|view]";
+		return "[cd|check-damage|v|view|rm|remove|del|delete]";
 	}
 	public function getDescription(){
 		return "Set/view own's {$this->name} tool";
@@ -41,7 +42,7 @@ class SelectedToolSetterSubcommand extends Subcommand{
 	}
 	public function onRun(array $args, Player $player){
 		$cd = false;
-		$mode = 0; // 0 for set hand, 1 for view
+		$mode = 0; // 0 for set hand, 1 for view, 2 for removal
 		while(isset($args[0])){
 			$arg = $args[0];
 			switch($arg){
@@ -53,27 +54,40 @@ class SelectedToolSetterSubcommand extends Subcommand{
 				case "view":
 					$mode = 1;
 					break;
+				case "del":
+				case "delete":
+				case "rm":
+				case "remove":
+					$mode = 2;
+					break;
 			}
 		}
 		switch($mode){
 			case 0:
 				$item = $player->getInventory()->getItemInHand();
+				if($item instanceof Air){
+					return "You cannot use air (hand) as your tool! Use '//{$this->getName()} rm' to delete the tool.";
+				}
 				$provider = $this->getMain()->getPlayerDataProvider();
-				/** @var \pemapmodder\worldeditart\utils\provider\player\PlayerData $data */
+				/** @var PlayerData $data */
 				$data = $provider[strtolower($player->getName())];
 				$id = $item->getID();
 				$damage = $cd ? $item->getDamage():PlayerData::ALLOW_ANY;
 				$data->setTool($$this->id, new SelectedTool(
 						$id, $damage, $this->getDefaultID(), $this->getDefaultDamage()));
 				return "Your {$this->name} item is now $id".(is_int($damage) ? ":$damage":" (no damage value specified").".";
-			default:
+			case 1:
 				/** @var PlayerData $data */
 				$data = $this->getMain()->getPlayerDataProvider()[strtolower($player->getName())];
 				$tool = $data->getTool($this->id);
 				$id = $tool->getRawID();
 				$damage = $tool->getRawDamage();
 				return "Your {$this->name} item is $id".(is_int($damage) ? ":$damage":" (no damage value specified").".";
-				break;
+			default:
+				/** @var PlayerData $data */
+				$data = $this->getMain()->getPlayerDataProvider()[strtolower($player->getName())];
+				$data->setTool($this->id, new SelectedTool(0, PlayerData::ALLOW_ANY, $this->getDefaultID(), $this->getDefaultDamage()));
+				return "Your {$this->name} item has been removed.";
 		}
 	}
 	private function getDefaultID(){

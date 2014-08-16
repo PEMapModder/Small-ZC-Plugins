@@ -17,7 +17,8 @@ class Anchor extends Subcommand{
 	public function getUsage(){
 		return "[v|view|c|crosshair]";
 	}
-	public function checkPermission(Player $player){
+	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
+		Player $player){
 		return true; // TODO
 	}
 	public function onRun(array $args, Player $player){

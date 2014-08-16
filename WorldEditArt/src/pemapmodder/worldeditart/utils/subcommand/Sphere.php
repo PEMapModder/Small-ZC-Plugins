@@ -16,9 +16,8 @@ class Sphere extends Subcommand{
 	public function getUsage(){
 		return "<radius> [a|anchor]";
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Player $player){
-		return true; // TODO
+	public function checkPermission(Player $player){
+		return $player->hasPermission("wea.sphere");
 	}
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
