@@ -26,10 +26,10 @@ $opts["make"] = "..\\..\\";
 
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
-$pharName = "..\\WorldEditArt_dev_build_#";
-for($i = 1; is_file($pharName.$i.".phar"); $i++){}
-$pharName .= $i;
-$pharName .= ".phar";
+$pharName = "..\\WorldEditArt_dev_build.phar";
+if(is_file($pharName)){
+	unlink($pharName);
+}
 
 if(!is_dir($folderPath)){
 	echo $folderPath ." is not a folder\n";
@@ -45,6 +45,7 @@ if(isset($opts["entry"]) and $opts["entry"] != null){
 }else{
 	$phar->setStub('<?php __HALT_COMPILER();');
 }
+
 $phar->setSignatureAlgorithm(\Phar::SHA1);
 $phar->startBuffering();
 echo "Adding files...\n";

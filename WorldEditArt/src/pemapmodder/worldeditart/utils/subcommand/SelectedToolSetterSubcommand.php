@@ -43,7 +43,7 @@ class SelectedToolSetterSubcommand extends Subcommand{
 		$cd = false;
 		$mode = 0; // 0 for set hand, 1 for view, 2 for removal
 		while(isset($args[0])){
-			$arg = $args[0];
+			$arg = array_shift($args);
 			switch($arg){
 				case "cd":
 				case "check-damage":
