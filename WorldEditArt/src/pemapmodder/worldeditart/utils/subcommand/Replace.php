@@ -3,7 +3,10 @@
 namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\utils\spaces\BlockList;
+use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
+use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\spaces\SphereSpace;
 use pocketmine\Player;
 
 class Replace extends Subcommand{
@@ -16,10 +19,17 @@ class Replace extends Subcommand{
 	public function getUsage(){
 		return "<from> <to> [nu|no-update] [h|hollow]";
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Space $space, /** @noinspection PhpUnusedParameterInspection */
-	                                Player $player){
-		return true; // TODO
+	public function checkPermission(Space $space, Player $player){
+		if($space instanceof CuboidSpace){
+			return $player->hasPermission("wea.set.cuboid");
+		}
+		if($space instanceof CylinderSpace){
+			return $player->hasPermission("wea.set.cylinder");
+		}
+		if($space instanceof SphereSpace){
+			return $player->hasPermission("wea.set.sphere");
+		}
+		return $player->hasPermission("wea.set.*");
 	}
 	public function onRun(array $args, Space $space){
 		if(!isset($args[1])){

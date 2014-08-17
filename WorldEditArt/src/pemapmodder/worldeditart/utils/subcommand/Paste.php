@@ -16,10 +16,8 @@ class Paste extends Subcommand{
 	public function getUsage(){
 		return "[clip name = default]";
 	}
-	public function checkPermission(
-		/** @noinspection PhpUnusedParameterInspection */
-		Player $player){
-		return true; // TODO
+	public function checkPermission(Player $player){
+		return $player->hasPermission("wea.paste");
 	}
 	public function onRun(array $args, Player $player){
 		$global = false;

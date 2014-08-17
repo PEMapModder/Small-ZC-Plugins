@@ -16,9 +16,8 @@ class Macro extends Subcommand{
 	public function getUsage(){
 		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Player $player){
-		return true; // TODO
+	public function checkPermission(Player $player){
+		return $player->hasPermission("wea.macro.*");
 	}
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
@@ -26,6 +25,9 @@ class Macro extends Subcommand{
 		}
 		switch($sub = strtolower(array_shift($args))){
 			case "start":
+				if(!$player->hasPermission("wea.macro.start")){
+					return self::NO_PERM;
+				}
 				if($this->getMain()->getRecordingMacro($player) instanceof MacroObj){
 					return "You are already recording a macro!";
 				}
@@ -45,20 +47,39 @@ class Macro extends Subcommand{
 				$this->getMain()->setRecordingMacro($player, $macro);
 				return "You are now recording a macro.";
 			case "save":
-			case "wait":
 				if(!isset($args[0])){
 					return "Usage: /w macro save <name>";
 				}
+				if(!$player->hasPermission("wea.macro.save")){
+					return self::NO_PERM;
+				}
+				break;
+			case "wait":
+				if(!$player->hasPermission("wea.macro.resume")){
+					return self::NO_PERM;
+				}
+				break;
 			case "ng":
+				if(!$player->hasPermission("wea.macro.ng")){
+					return self::NO_PERM;
+				}
+				break;
 			case "pause":
+				if(!$player->hasPermission("wea.macro.pause")){
+					return self::NO_PERM;
+				}
+				break;
 			case "resume":
-				$macro = $this->getMain()->getRecordingMacro($player);
-				if(!($macro instanceof MacroObj)){
-					return "You don't have a recording macro!";
+				if(!$player->hasPermission("wea.macro.resume")){
+					return self::NO_PERM;
 				}
 				break;
 			default:
 				return self::WRONG_USE;
+		}
+		$macro = $this->getMain()->getRecordingMacro($player);
+		if(!($macro instanceof MacroObj)){
+			return "You don't have a recording macro!";
 		}
 		switch($sub){
 			case "ng":

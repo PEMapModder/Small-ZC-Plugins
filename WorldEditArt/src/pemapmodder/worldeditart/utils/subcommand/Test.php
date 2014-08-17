@@ -4,7 +4,10 @@ namespace pemapmodder\worldeditart\utils\subcommand;
 
 use pemapmodder\worldeditart\tasks\UndoTestTask;
 use pemapmodder\worldeditart\utils\spaces\BlockList;
+use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
+use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\spaces\SphereSpace;
 use pocketmine\Player;
 
 class Test extends Subcommand{
@@ -17,9 +20,17 @@ class Test extends Subcommand{
 	public function getUsage(){
 		return "<to> [from] [duration = 15]";
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Space $space, Player $player){
-		return true; // TODO
+	public function checkPermission(Space $space, Player $player){
+		if($space instanceof CuboidSpace){
+			return $player->hasPermission("wea.test.cuboid");
+		}
+		if($space instanceof CylinderSpace){
+			return $player->hasPermission("wea.test.cylinder");
+		}
+		if($space instanceof SphereSpace){
+			return $player->hasPermission("wea.test.sphere");
+		}
+		return $player->hasPermission("wea.test.*");
 	}
 	public function onRun(array $args, Space $space, Player $player){
 		if(!isset($args[0])){

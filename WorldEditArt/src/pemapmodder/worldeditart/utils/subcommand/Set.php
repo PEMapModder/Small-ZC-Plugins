@@ -31,7 +31,7 @@ class Set extends Subcommand{
 		if($space instanceof SphereSpace){
 			return $player->hasPermission("wea.set.sphere");
 		}
-		return $player->hasPermission("wea.set");
+		return $player->hasPermission("wea.set.*");
 	}
 	public function onRun(array $args, Space $space){
 		if(!isset($args[0])){

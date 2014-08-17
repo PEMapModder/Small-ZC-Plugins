@@ -36,9 +36,8 @@ class SelectedToolSetterSubcommand extends Subcommand{
 	public function getDescription(){
 		return "Set/view own's {$this->name} tool";
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Player $player){
-		return true; // TODO
+	public function checkPermission(Player $player){
+		return $player->hasPermission("wea.tool.{$this->getName()}");
 	}
 	public function onRun(array $args, Player $player){
 		$cd = false;

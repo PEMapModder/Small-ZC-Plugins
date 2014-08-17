@@ -20,22 +20,46 @@ permissions:
     wea.cylinder:
       description: Allows using //cylinder
     wea.macro:
-      description: Allows using //macro
+      description: Allows using all subcommands of //macro
+      children:
+        wea.macro.start:
+          description: Allows using //macro start
+        wea.macro.end:
+          description: Allows ending a macro by all means
+          children:
+            wea.macro.end.ng:
+              description: Allows using //macro ng
+              default: true
+            wea.macro.end.save:
+              description: Allows using //macro save
+        wea.macro.wait:
+          description: Allows using //macro wait
+        wea.macro.pause:
+          descrition: Allows using //macro pause
+        wea.macro.resume:
+          description: Allows using //macro resume
     wea.paste:
       description: Allows using //paste
     wea.pos:
       description: Allows using //pos1 and //pos2
     wea.replace:
-      description: Allows using //replace
+      description: Allows using //replace on all shapes of selections
+      children:
+        wea.replace.cuboid:
+          description: Allows using //replace for cuboid selections
+        wea.replace.cylinder:
+          description: Allows using //replace for cylinder selections
+        wea.replace.sphere:
+          description: Allows using //replace for sphere selections
     wea.tool:
-      description: Allows using subcommands that modify selected tools
+      description: Allows using all subcommands that modify selected tools
       children:
         wea.tool.jump:
           description: Allows using //jump
         wea.tool.wand:
           description: Allows using //wand
     wea.set:
-      description: Allows using //set
+      description: Allows using //set on all shapes of selections
       children:
         wea.set.cuboid:
           description: Allows using //set for cuboid selections
@@ -46,4 +70,11 @@ permissions:
     wea.sphere:
       description: Allows using //sphere
     wea.test:
-      description: Allows using //test
+      description: Allows using //test on all shapes of selections
+      children:
+        wea.test.cuboid:
+          description: Allows using //test for cuboid selections
+        wea.test.cylinder:
+          description: Allows using //test for cylinder selections
+        wea.test.sphere:
+          description: Allows using //test for sphere selections

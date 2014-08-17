@@ -36,9 +36,8 @@ class PosSubcommand extends Subcommand{
 			return ["p1", "1"];
 		}
 	}
-	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
-		Player $player){
-		return true; // TODO
+	public function checkPermission(Player $player){
+		return $player->hasPermission("wea.pos");
 	}
 	public function onRun(array $args, Player $player){
 		$flag = 0; // 0 for me, 1 for anchor, 2 for crosshair
