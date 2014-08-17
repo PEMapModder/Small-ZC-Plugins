@@ -72,7 +72,7 @@ class SelectedToolSetterSubcommand extends Subcommand{
 				$data = $provider[strtolower($player->getName())];
 				$id = $item->getID();
 				$damage = $cd ? $item->getDamage():PlayerData::ALLOW_ANY;
-				$data->setTool($$this->id, new SelectedTool(
+				$data->setTool($this->id, new SelectedTool(
 						$id, $damage, $this->getDefaultID(), $this->getDefaultDamage()));
 				return "Your {$this->name} item is now $id".(is_int($damage) ? ":$damage":" (no damage value specified").".";
 			case 1:
