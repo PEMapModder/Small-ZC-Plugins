@@ -2,6 +2,6 @@
 .idea/*
 # Hex Editor temporary files
 *.bak
-push.cmd
+*.bat
 commit-msg.txt
 *.lnk

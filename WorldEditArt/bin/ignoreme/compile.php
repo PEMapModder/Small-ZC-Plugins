@@ -72,4 +72,7 @@ $phar->stopBuffering();
 $pharName = realpath($pharName);
 echo "\x1b[36;1mDone! Phar created at \x1b[33;1m$pharName\x1b[36;1m.\n";
 exec("git add ".$pharName);
+if(is_file("copy.php")){
+	include "copy.php";
+}
 exec("pause");
