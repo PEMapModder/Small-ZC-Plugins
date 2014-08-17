@@ -18,8 +18,17 @@ class SelectedTool{
 	 * @param int|bool $damage
 	 * @param int $defaultID
 	 * @param int|bool $defaultDamage
+	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($id, $damage, $defaultID, $defaultDamage){
+		$path = "pocketmine\\DEBUG";
+		if(defined($path) and constant($path) > 1){
+			foreach(func_get_args() as $arg){
+				if(!is_int($arg) and !is_bool($arg)){
+					throw new \InvalidArgumentException("Invalid arguments passed to SelectedTool constructor!");
+				}
+			}
+		}
 		$this->id = $id;
 		$this->damage = $damage;
 		$this->defaultID = $defaultID;

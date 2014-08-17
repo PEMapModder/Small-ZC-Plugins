@@ -18,10 +18,10 @@ class PlayerData{
 	public function __construct(Main $main, $name, SelectedTool $wand = null, SelectedTool $jump = null){
 		$config = $main->getConfig();
 		if($wand === null){
-			$wand = new SelectedTool($main, PlayerData::USE_DEFAULT, PlayerData::USE_DEFAULT, $config->get("wand-id"), $config->get("wand-damage"));
+			$wand = new SelectedTool(PlayerData::USE_DEFAULT, PlayerData::USE_DEFAULT, $config->get("wand-id"), $config->get("wand-damage"));
 		}
 		if($jump === null){
-			$jump = new SelectedTool($main, PlayerData::USE_DEFAULT, PlayerData::USE_DEFAULT, $config->get("jump-id"), $config->get("jump-damage"));
+			$jump = new SelectedTool(PlayerData::USE_DEFAULT, PlayerData::USE_DEFAULT, $config->get("jump-id"), $config->get("jump-damage"));
 		}
 		$this->main = $main;
 		$this->name = $name;
