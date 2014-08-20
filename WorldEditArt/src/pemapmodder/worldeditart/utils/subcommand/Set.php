@@ -40,7 +40,7 @@ class Set extends Subcommand{
 		$name = array_shift($args);
 		if(strpos($name, ",") !== false){
 			try{
-				$block = new BlockList(array_shift($args));
+				$list = new BlockList(array_shift($args));
 			}
 			catch(BlockPatternParseException $e){
 				return "The following pattern error occurred: ".$e->getMessage();
@@ -51,6 +51,7 @@ class Set extends Subcommand{
 			if($block === null){
 				return self::NO_BLOCK;
 			}
+			$list = new SingleList($block);
 		}
 		$hollow = false;
 		$update = false;
@@ -66,21 +67,11 @@ class Set extends Subcommand{
 					break;
 			}
 		}
-		if($block instanceof BlockList){
-			if($hollow){
-				$cnt = $space->randomHollow($block, $update);
-			}
-			else{
-				$cnt = $space->randomPlaces($block, $update);
-			}
+		if($hollow){
+			$cnt = $space->randomHollow($list, $update);
 		}
 		else{
-			if($hollow){
-				$cnt = $space->randomHollow(new SingleList($block), $update);
-			}
-			else{
-				$cnt = $space->setBlocks($block, false, $update);
-			}
+			$cnt = $space->randomPlaces($list, $update);
 		}
 		return "$cnt block(s) have been changed.";
 	}
