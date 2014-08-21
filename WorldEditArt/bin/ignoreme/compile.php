@@ -59,6 +59,9 @@ foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPa
 	if(strpos($path, "bin") !== false){
 		continue;
 	}
+	if(strpos($path, ".md") !== false){
+		continue;
+	}
 	$phar->addFile($file, $path);
 	if(strlen($path) > $maxLen){
 		$maxLen = strlen($path);

@@ -47,3 +47,14 @@ If you want to make it a weighted list such that certain blocks are more likely 
 ## Commands
 Most obviously, the thing everyone asks for.
 
+### Command Prefix
+WEA commands can start with `/worldeditart `, `/wea `, `// ` or `//`. For example, the `set` command can be sent by `/worldeditart set`, `/wea set`, `// set` or `//set`.
+
+### Help List
+The help list command is special and different from normal help commands. It is dynamic, and it only shows the commands you can run at the moment. For example, it doesn't show players-only commands on console, nor does it show commands that require you to have a selection when you don't have one.
+
+### Table of Commands
+The following table of commands specifies the commands, the link to the description and the permission nodes and requirements.
+
+| Command | Description | Requirements to run the command |
+| `//help` | [Help List](#help-list) | Has the permission `wea.cmd` |

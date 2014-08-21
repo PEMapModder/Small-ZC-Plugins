@@ -103,6 +103,8 @@ class PosSubcommand extends Subcommand{
 		if($space instanceof Space){
 			$cnt = count($space->getPosList());
 		}
-		return ($this->is2 ? "Second":"First")." position set to ({$selected->x}, {$selected->y}, {$selected->z}).".(isset($cnt) ? "\n  (Cuboid position with $cnt blocks set)":"");
+		return ($this->is2 ? "Second":"First")." position set to ".
+				"({$selected->x}, {$selected->y}, {$selected->z}).".
+				(isset($cnt) ? "\n  (Cuboid selected with $cnt blocks)":"");
 	}
 }

@@ -24,6 +24,7 @@ use pemapmodder\worldeditart\utils\subcommand\Copy;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
 use pemapmodder\worldeditart\utils\subcommand\Cut;
 use pemapmodder\worldeditart\utils\subcommand\Cylinder;
+use pemapmodder\worldeditart\utils\subcommand\Desel;
 use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Paste;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
@@ -175,12 +176,13 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 	private function registerCommands(){
-		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "w", "/"]); // I expect them to use fallback prefix if they use /w
+		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "/"]);
 		$wea->registerAll([
 			new Copy($this),
 			new Cuboid($this),
 			new Cut($this),
 			new Cylinder($this),
+			new Desel($this),
 			new MacroSubcommand($this),
 			new Paste($this),
 			new PosSubcommand($this, false),
