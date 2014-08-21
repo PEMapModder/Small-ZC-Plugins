@@ -1,7 +1,9 @@
+---
 name: WorldEditArt
 author: PEMapModder
-version: 1.0_dev_#7
-api: [1.0.0]
+version: 1.0.0_dev_#010
+api:
+- 1.0.0
 load: POSTWORLD
 main: pemapmodder\worldeditart\Main
 description: A powerful advanced world editor
@@ -83,3 +85,4 @@ permissions:
             description: Allows using //test for cylinder selections
           wea.test.sphere:
             description: Allows using //test for sphere selections
+...

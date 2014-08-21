@@ -101,6 +101,9 @@ class PosSubcommand extends Subcommand{
 		end:
 		$space = $this->getMain()->getSelection($player);
 		if($space instanceof Space){
+			if(IS_DEBUGGING){
+				$this->getMain()->getLogger()->info($player->getName()." has selected a selection.");
+			}
 			$cnt = count($space->getPosList());
 		}
 		return ($this->is2 ? "Second":"First")." position set to ".

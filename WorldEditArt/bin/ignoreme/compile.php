@@ -24,6 +24,19 @@ if(ini_get("phar.readonly") == 1){
 
 $opts["make"] = "..\\..\\";
 
+$plugin_yml = realpath($opts["make"]."plugin.yml");
+$ymlData = yaml_parse_file($plugin_yml);
+$version = $ymlData["version"];
+$v = ltrim(substr($version, -3), "0");
+$v = intval($v) + 1;
+$v = "$v";
+while(strlen($v) < 3){
+	$v = "0".$v;
+}
+$ymlData["version"] = substr($version, 0, -3).$v;
+echo "New version! ".$ymlData["version"];
+yaml_emit_file($plugin_yml, $ymlData);
+exec("git add $plugin_yml");
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
 $pharName = "..\\WorldEditArt_dev_build.phar";
