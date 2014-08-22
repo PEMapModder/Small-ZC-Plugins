@@ -99,7 +99,7 @@ class CuboidSpace extends Space{
 			for($y = $this->baked0->getY(); $y <= $this->baked1->getY(); $y++){
 				for($z = $this->baked0->getZ(); $z <= $this->baked1->getZ(); $z++){
 					echo "\rConstructing position $x,$y,$z";
-//					$pos[] = new Position($x, $y, $z, $this->baked0->getLevel());
+					$pos[] = new Position($x, $y, $z, $this->baked0->getLevel());
 				}
 			}
 		}
