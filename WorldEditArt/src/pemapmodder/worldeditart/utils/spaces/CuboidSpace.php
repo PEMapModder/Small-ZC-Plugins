@@ -5,6 +5,7 @@ namespace pemapmodder\worldeditart\utils\spaces;
 use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
+use pocketmine\utils\MainLogger;
 
 class CuboidSpace extends Space{
 	/** @var Position  */
@@ -56,7 +57,7 @@ class CuboidSpace extends Space{
 	}
 	public function bake(){
 		if($this->raw0->getLevel()->getName() !== $this->raw1->getLevel()->getName()){
-			trigger_error("Positions of different levels (\"".$this->raw0->getLevel()->getName()."\" and \"".$this->raw1->getLevel()->getName()."\" passed to constructor of ".get_class($this), E_USER_WARNING);
+			throw new \InvalidArgumentException("Positions of different levels (\"".$this->raw0->getLevel()->getName()."\" and \"".$this->raw1->getLevel()->getName()."\" passed to constructor of ".get_class($this));
 		}
 		$this->baked0 = new Position(
 			min($this->raw0->getFloorX(), $this->raw1->getFloorX()),
@@ -68,7 +69,7 @@ class CuboidSpace extends Space{
 			max($this->raw0->getFloorX(), $this->raw1->getFloorX()),
 			max($this->raw0->getFloorY(), $this->raw1->getFloorY()),
 			max($this->raw0->getFloorZ(), $this->raw1->getFloorZ()),
-			$this->raw1->getLevel()
+			$this->raw0->getLevel()
 		);
 		$maxHeight = 127;
 		if(defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT")){
@@ -76,6 +77,9 @@ class CuboidSpace extends Space{
 		}
 		if($this->baked1->getFloorY() > $maxHeight or $this->baked0->getFloorY() < 0){
 			throw new SelectionExceedWorldException("CuboidSpace");
+		}
+		if(\pemapmodder\worldeditart\utils\subcommand\IS_DEBUGGING){
+			MainLogger::getLogger()->info("CuboidSpace baked: 0=>{$this->baked0}, 1=>{$this->baked1}");
 		}
 	}
 	public function get0(){
@@ -87,14 +91,19 @@ class CuboidSpace extends Space{
 		return $this->baked1;
 	}
 	public function getPosList(){
+		if(\pemapmodder\worldeditart\utils\subcommand\IS_DEBUGGING){
+			echo "Fetching position of CuboidSpace...\n";
+		}
 		$pos = [];
 		for($x = $this->baked0->getX(); $x <= $this->baked1->getX(); $x++){
 			for($y = $this->baked0->getY(); $y <= $this->baked1->getY(); $y++){
 				for($z = $this->baked0->getZ(); $z <= $this->baked1->getZ(); $z++){
-					$pos[] = new Position($x, $y, $z, $this->baked0->getLevel());
+					echo "\rConstructing position $x,$y,$z";
+//					$pos[] = new Position($x, $y, $z, $this->baked0->getLevel());
 				}
 			}
 		}
+		echo "\nCompleted: ".count($pos)." instances\n";
 		return $pos;
 	}
 	public function getBlockList(){
