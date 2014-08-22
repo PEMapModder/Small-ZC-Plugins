@@ -9,7 +9,7 @@ use pocketmine\math\Vector3;
 use pocketmine\network\protocol\UpdateBlockPacket;
 use pocketmine\Player;
 
-abstract class Space{
+abstract class Space implements \Countable{
 	/** @var Block[] */
 	protected $undoMap = [];
 	public function __construct(){
@@ -250,6 +250,9 @@ abstract class Space{
 			$out = ($out and $v0->getLevel()->getName() === $v1->getLevel()->getName());
 		}
 		return $out;
+	}
+	public function count(){
+		return count($this->getPosList());
 	}
 	public abstract function __toString();
 }

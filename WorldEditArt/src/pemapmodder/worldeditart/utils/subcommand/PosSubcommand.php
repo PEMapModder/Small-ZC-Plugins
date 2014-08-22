@@ -104,7 +104,7 @@ class PosSubcommand extends Subcommand{
 			if(IS_DEBUGGING){
 				$this->getMain()->getLogger()->info($player->getName()." has selected a selection: ".(new \ReflectionClass($space))->getShortName());
 			}
-			$cnt = count($space->getPosList());
+			$cnt = count($space);
 			if(IS_DEBUGGING){
 				$this->getMain()->getLogger()->info($player->getName()." has $cnt blocks selected.");
 			}

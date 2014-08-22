@@ -20,6 +20,7 @@ use pemapmodder\worldeditart\utils\provider\player\SQLite3PlayerDataProvider;
 use pemapmodder\worldeditart\utils\provider\player\YAMLFilePlayerDataProvider;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\utils\subcommand\Anchor;
 use pemapmodder\worldeditart\utils\subcommand\Copy;
 use pemapmodder\worldeditart\utils\subcommand\Cuboid;
 use pemapmodder\worldeditart\utils\subcommand\Cut;
@@ -178,6 +179,7 @@ class Main extends PluginBase implements Listener{
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "/"]);
 		$wea->registerAll([
+			new Anchor($this),
 			new Copy($this),
 			new Cuboid($this),
 			new Cut($this),

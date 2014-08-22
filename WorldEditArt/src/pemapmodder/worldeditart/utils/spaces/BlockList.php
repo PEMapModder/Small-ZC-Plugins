@@ -20,7 +20,7 @@ class BlockList{
 					$damage = intval($ts[1]);
 				}
 				$block = $ts[0];
-				unset($ts); // bug warning (過河拆橋 xD)
+				unset($ts); // bug warning
 				$ts = explode("%", $block);
 				unset($block); // another :P
 				if(isset($ts[1])){

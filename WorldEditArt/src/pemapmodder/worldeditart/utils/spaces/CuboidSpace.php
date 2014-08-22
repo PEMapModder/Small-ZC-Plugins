@@ -172,6 +172,11 @@ class CuboidSpace extends Space{
 		}
 		return $out;
 	}
+	public function count(){
+		return ($this->baked1->x - $this->baked0->x + 1) *
+		($this->baked1->y - $this->baked0->y + 1) *
+		($this->baked1->z - $this->baked0->z + 1);
+	}
 	public function getLevel(){
 		return $this->baked0->getLevel();
 	}
