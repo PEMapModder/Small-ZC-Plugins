@@ -3,8 +3,32 @@ name: SpicyCapacitor
 author: PEMapModder
 api:
 - 1.0.0
-version: 1.0.0
+version: 1.0.0_dev#000
 main: pemapmodder\spicycap\SpicyCap
+commands:
+  report:
+    description: Report a player
+    usage: "/report <player> <flags> <description...> (use '/sc-help flags' for details for flags)"
+    permission: spicycap.report
+  sc-help:
+    description: Show help information for SpicyCapacitor commands
+    usage: /sc-help [flags|cmds] [page = 1] [lines = 5]
+    permission: spicycap.*
+  rules:
+    description: Display the server rules
+    usage:
+  report-view:
+    description: View the next pending report or assigned report
+    usage: /rv [log]
+    permission: spicycap.viewreport
+  assign:
+    description: Self-assign the next pending report
+    usage: /assign [player]
+    permission: spicycap.assign.*
+  resolve:
+    description: Resolve the self-assigned report
+    usage: /resolve [ban points]
+    permission: spicycap.resolve
 permissions:
   spicycap:
     description: Allows using all SpicyCapacitor permissions
@@ -14,6 +38,15 @@ permissions:
         default: true
       spicycap.viewreport:
         description: Allows viewing reports
+      spicycap.assign:
+        description: Allows assigning reports
+        children:
+          spicycap.assign.self:
+            description: Allows self-assigning reports
+          spicycap.assign.other:
+            description: Allows assigning reports to others
+      spicycap.resolve:
+        description: Allows resolving reports
       spicycap.banpt:
         description: Allows using all ban point-related permissions
         children:

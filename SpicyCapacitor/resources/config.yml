@@ -1,0 +1,41 @@
+---
+points:
+  ban reason: Having too many ban points
+  ban rules:
+    # If at least is not defined, it is assumed as 0.
+    # If at most is not defined, it is assumed as PHP_INT_MAX (the maximum integer we can have in PHP)
+    - at least: 4
+      at most: 6
+      ban period: 24 # this counts in hours
+    - at least: 7
+      at most: 9
+      ban period: 72 # 72 hours = 3 days
+    - at least: 10
+      at most: 12
+      ban period: 168 # 7 days (1 week)
+database:
+  # Database type. Options: "SQLite3", "MySQLi"
+  type: SQLite3
+  # Settings for the SQLite3 database. These only apply if you select SQLite3 as the database type.
+  SQLite3:
+    # Path to save the database in. Read the paths section in the general stuffs article at the end of this file for help configuring this.
+    path: database.sq3
+  # Settings for the MySQL database. These only apply if you select MySQLi as the database type.
+  MySQLi:
+    host: example.com
+    username: Steve
+    password: 123456AintGoodPassword
+    database: SpicyCapacitor
+    port: 3306
+    table prefix: ""
+# General stuffs
+  # Paths
+    # Include paths
+      # Paths are used as include paths by default. This means, a folder is automatically createed to put everything the plugin has, and the paths you type in are files/folders inside the plugin folder. For example, if your plugins folder is /pocketmine/plugins, the path "hello.txt" refers to "/pocketmine/plugins/SpicyCapacitor/hello.txt" and the path "hello/world.doc" refers to "/pocketmine/plugins/SpicyCapacitor/hello/world.doc".
+    # Resource paths
+      # This is same as include paths, except they are in the resources/ folder inside the .phar plugin file. Do not use this, unless you are telling the plugin to read files from the resources attached when you download the plugin. To make a path a resource path, add "res://" before the path.
+    # Absolute paths
+      # Absolute paths are non-include paths. They are the real addresses of files inside your device. For example, for Windows, you may have C:\Users\YourName\Desktop\hello.txt, and /storage/emulated/0/hello.txt for Android. To make a path an absolute path, add "file://" before the path. For Windows, both slash (/) and backslash(\) are OK inside your path, but it must start with "file://" not "file:\\".
+    # Internet paths
+      # If you want the plugin to read a file via HTTP, the path should be directly the HTTP URL path. For example, "http://example.com/hello-world.txt".
+...
