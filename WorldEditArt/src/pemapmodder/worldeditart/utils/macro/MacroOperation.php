@@ -57,7 +57,7 @@ class MacroOperation{
 		if(is_int($this->delta)){
 			throw new \BadMethodCallException("MacroOperation is of type TRUE (wait) not FALSE (operate) thus cannot be operated");
 		}
-		$anchor->getLevel()->setBlock($anchor->add($this->delta), $this->block, true, true); // update
+		$anchor->getLevel()->setBlock($anchor->add($this->delta), $this->block, false, true); // update
 	}
 	public function getLength(){
 		if(!is_int($this->delta)){

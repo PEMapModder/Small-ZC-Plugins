@@ -15,6 +15,7 @@ class SpicyCap extends PluginBase{
 	/** @var BanRule[] */
 	private $rules = [];
 	public function onEnable(){
+		$this->saveResource("rules.txt");
 		$this->saveDefaultConfig();
 		$config = $this->getConfig()->get("database");
 		$type = $config["type"];
@@ -111,7 +112,14 @@ class SpicyCap extends PluginBase{
 							"  not be added. <time> is the same format as",
 							"  in -f[<time>]."
 						];
-						return self::breakLines($help, $lines, $page);
+						$issuer->sendMessage(self::breakLines($help, $lines, $page));
+						break;
+					case "cmds":
+						$text = [
+							"TODO"
+						];
+						$issuer->sendMessage(self::breakLines($text, $lines, $page));
+						break;
 				}
 				return true;
 		}
