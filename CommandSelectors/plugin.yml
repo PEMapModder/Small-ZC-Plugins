@@ -1,0 +1,10 @@
+name: CommandSelectors
+version: 1.0.0
+api: [1.0.0]
+main: pemapmodder\cmdsel\CmdSel
+permissions:
+  cmdsel:
+    chidren:
+      cmdsel.loopall:
+        description: "Allow using the '@a' selector"
+        default: op
