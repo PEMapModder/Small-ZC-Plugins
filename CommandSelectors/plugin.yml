@@ -1,6 +1,6 @@
 ---
 name: CommandSelectors
-version: 1.0.0_dev_build_#002
+version: 1.0.0_dev_build_#014
 api:
 - 1.0.0
 main: pemapmodder\cmdsel\CmdSel
@@ -10,4 +10,5 @@ permissions:
       cmdsel.loopall:
         description: Allow using the '@a' selector
         default: op
+author: PEMapModder
 ...

@@ -18,6 +18,8 @@ use pocketmine\level\Position;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 
+const DEBUGGING = true;
+
 class CmdSel extends PluginBase implements Listener{
 	/** @var Selector[] */
 	private $selectors = [];
@@ -47,10 +49,17 @@ class CmdSel extends PluginBase implements Listener{
 		if($event instanceof ServerCommandEvent_sub){
 			return;
 		}
-
 		/** @var string|array $cmd */
 		$cmd = $event->getCommand();
+		if(DEBUGGING){
+			echo "Processing console command $cmd... ";
+		}
 		if($this->proceedCommand($event->getSender(), $cmd)){
+			if(DEBUGGING){
+				echo "Parsed command recursively: ";
+				var_dump($cmd);
+				echo PHP_EOL;
+			}
 			if(count($cmd) > 0){
 				$event->setCommand(array_shift($cmd));
 				foreach($cmd as $c){
@@ -60,6 +69,9 @@ class CmdSel extends PluginBase implements Listener{
 		}
 		else{
 			$event->setCommand($cmd);
+			if(DEBUGGING){
+				echo "Command processed and changed to:\n$cmd\n";
+			}
 		}
 	}
 	/**

@@ -19,6 +19,7 @@ class NearestSelector implements Selector{
 		if(!($sender instanceof Position)){
 			return null;
 		}
+		/** @var CommandSender|Position $sender */
 		$players = CmdSel::getNearestPlayers($sender, [
 			function(Player $player) use($args, $sender){
 				return CmdSel::checkSelectors($args, $sender, $player);
