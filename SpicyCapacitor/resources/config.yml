@@ -33,7 +33,7 @@ database:
     # Include paths
       # Paths are used as include paths by default. This means, a folder is automatically createed to put everything the plugin has, and the paths you type in are files/folders inside the plugin folder. For example, if your plugins folder is /pocketmine/plugins, the path "hello.txt" refers to "/pocketmine/plugins/SpicyCapacitor/hello.txt" and the path "hello/world.doc" refers to "/pocketmine/plugins/SpicyCapacitor/hello/world.doc".
     # Resource paths
-      # This is same as include paths, except they are in the resources/ folder inside the .phar plugin file. Do not use this, unless you are telling the plugin to read files from the resources attached when you download the plugin. To make a path a resource path, add "res://" before the path.
+      # This is same as include paths, except they are in the resources/ folder inside the .phar plugin file. Do not use this, unless you are telling the plugin to read files from the resources attached when you download the plugin. To make a path a resource path, add "res://" before the path. Note that files in this folder are usually read-only and may cause damage to the server if you can and do change them.
     # Absolute paths
       # Absolute paths are non-include paths. They are the real addresses of files inside your device. For example, for Windows, you may have C:\Users\YourName\Desktop\hello.txt, and /storage/emulated/0/hello.txt for Android. To make a path an absolute path, add "file://" before the path. For Windows, both slash (/) and backslash(\) are OK inside your path, but it must start with "file://" not "file:\\".
     # Internet paths

@@ -2,130 +2,103 @@
 
 namespace pemapmodder\spicycap;
 
-use pemapmodder\spicycap\database\MySQLDatabase;
-use pemapmodder\spicycap\database\SQLite3Database;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
-use pocketmine\permission\BanEntry;
+use pemapmodder\spicycap\provider\DataProvider;
+use pocketmine\command\defaults\BanCommand;
+use pocketmine\command\defaults\BanIpCommand;
+use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\plugin\PluginBase;
 
-class SpicyCap extends PluginBase{
-	/** @var \pemapmodder\spicycap\database\Database */
-	private $database;
+class SpicyCap extends PluginBase implements Listener, DataProvider{
+	// main class - fields
+	/** @var DataProvider */
+	private $provider;
 	/** @var BanRule[] */
-	private $rules = [];
+	private $banRules = [];
+	/** @var string */
+	private $banReason;
+	private $actionLogger;
+	// plugin base
 	public function onEnable(){
-		$this->saveResource("rules.txt");
 		$this->saveDefaultConfig();
-		$config = $this->getConfig()->get("database");
-		$type = $config["type"];
+		$dbInfo = $this->getConfig()->get("database");
+		$type = strtolower($dbInfo["type"]);
 		switch($type){
-			case "SQLite3":
-				$opts = $config[$type];
-				$this->database = new SQLite3Database($opts["path"], $this);
+			case "sqlite3":
+				// TODO instantiate SQLite3 data provider
 				break;
-			case "MySQLi":
-				$opts = $config[$type];
-				$mysqli = new \mysqli($opts["host"], $opts["username"], $opts["password"], $opts["database"], $opts["port"]);
-				if($mysqli->connect_error){
-					$this->getLogger()->critical("Cannot connect to MySQL server. Reason: {$mysqli->connect_error}. SpicyCapacitor will not be enabled.");
-					$this->getServer()->getPluginManager()->disablePlugin($this);
-					return;
+			case "mysql":
+			case "mysqli":
+				// TODO instantiate MySQLi data provider
+				if("success"){ // TODO make provider if no error
+					break;
 				}
-				$this->database = new MySQLDatabase($mysqli, $this);
+				else{
+					$this->getLogger()->warning("Failed connecting to MySQL database!");
+					$sup = true;
+				}
 			default:
-				$this->getLogger()->critical("Unknown database type: $type. SpicyCapacitor will not be enabled.");
-				$this->getServer()->getPluginManager()->disablePlugin($this);
-				return;
+				if(isset($sup) and $sup){
+					$this->getLogger()->warning("Unknown data provider type '$type'; " .
+						"Random Access Memory data provider will be used.");
+				}
+				$provider = $this;
+				$provider->dp_construct();
+				$this->provider = $this;
+				break;
 		}
-		$ptCfg = $this->getConfig()->get("points");
-		foreach($ptCfg["ban rules"] as $rule){
-			$this->rules[] = new BanRule($rule);
+		$banInfo = $this->getConfig()->get("points");
+		$this->banReason = $banInfo["ban reason"];
+		foreach($banInfo["ban rules"] as $rule){
+			$this->banRules[] = new BanRule($rule);
+		}
+		$this->actionLogger = new ActionLogger($this);
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+	}
+	public function onDisable(){
+		$this->provider->dp_close();
+	}
+	// listener
+
+	// data provider
+	public function dp_construct(){
+		// TODO init fields
+	}
+	public function dp_getMain(){
+		return $this;
+	}
+	public function dp_getPoints($ip){
+		// TODO Implement dp_getPoints()
+		return 0;
+	}
+	public function dp_close(){
+		// TODO unset fields
+	}
+	// main class - utils
+	public function updateBansOfIp($ip){
+		$this->getServer()->getIPBans()->removeExpired();
+		$entries = $this->getServer()->getIPBans()->getEntries();
+		$entry = null;
+		if(isset($entries[$ip])){
+			$entry = $entries[$ip];
+		}
+		$points = $this->provider->dp_getPoints($ip);
+		$time = time() + $this->getBanPeriod($points);
+		$orig = $entry->getExpires();
+		if($time > $orig){
+			$expiry = new \DateTime;
+			$expiry->setTimestamp($time);
+			$this->getServer()->getIPBans()->addBan($ip, $this->banReason, $expiry);
 		}
 	}
-	public function updatePoints($ip){
-		$sum = $this->database->getBanPointsSum($ip);
-		$secs = 0;
-		foreach($this->rules as $rule){
-			$secs += $rule->getSeconds($sum);
+	public function getBanPeriod($points){
+		$period = 0;
+		foreach($this->banRules as $rule){
+			$period += $rule->getHours($points);
 		}
-		if($secs === 0){
-			return;
-		}
-		$list = $this->getServer()->getIPBans();
-		$list->remove($ip);
-		$entry = new BanEntry($ip);
-		$expiry = new \DateTime();
-		$expiry->setTimestamp(time() + $secs);
-		$entry->setExpires($expiry);
-		$entry->setReason($this->getConfig()->get("points")["ban reason"]);
-		$list->add($entry);
+		return $period;
 	}
-	public function onCommand(CommandSender $issuer, Command $cmd, $alias, array $args){
-		switch($cmd->getName()){
-			case "sc-help":
-				if(!isset($args[0])){
-					$args[0] = "cmds";
-				}
-				$page = 1;
-				if(isset($args[1])){
-					$page = intval($args[1]);
-				}
-				$lines = 5;
-				if(isset($args[2])){
-					$lines = intval($args[2]);
-				}
-				switch($args[0]){
-					case "flags":
-						$help = [
-//							"                                                  ", // dummy line: we have 50 spaces here, the standard length of an MCPE chat screen
-							"Flags specify the type of report.",
-							"If you specify the correct flags,",
-							"related logs will be attached with the report",
-							"to provide evidence for report reviewers.",
-							"When specifying multiple flags",
-							"separate them with a comma (',').",
-							"",
-							"The following is a list of flags.",
-							"chat - use this flag when chat logs",
-							"  can serve as evidence to the report.",
-							"motion - use this flag when logs",
-							"  that record speed, directions and coordinates",
-							"  of a player can serve as evidence to the report.",
-							"",
-							"The following are modifiers for flags.",
-							"These modifiers can change the range of the logs",
-							"so that report reviewers only have",
-							"to concentrate on the useful logs.",
-							"To use these modifiers, add them after a flag.",
-							"-p - add this modifier to the chat flag",
-							"  so that only chat messages of the reported",
-							"  player are attached with the report.",
-							"-f[<time>] - add this modifier to any flags",
-							"  so that the logs start from <time>.",
-							"  <time> should be replaced by a time period.",
-							"  e.g. 2m30s for 2 minutes and 30 seconds.",
-							"  Available units are h(hour), m(minute) and",
-							"  s(second).",
-							"-t[<time>] - add this modifier to any flags",
-							"  so that the logs in the past <time> will",
-							"  not be added. <time> is the same format as",
-							"  in -f[<time>]."
-						];
-						$issuer->sendMessage(self::breakLines($help, $lines, $page));
-						break;
-					case "cmds":
-						$text = [
-							"TODO"
-						];
-						$issuer->sendMessage(self::breakLines($text, $lines, $page));
-						break;
-				}
-				return true;
-		}
-		return false;
-	}
-	public static function breakLines($string, $linesCnt, $page, $lineSeparator = "\n"){
+	public static function wrapAndTruncate($string, $linesCnt, $page, $lineSeparator = "\n"){
 		if(is_array($string)){
 			$lines = $string;
 		}
@@ -140,16 +113,6 @@ class SpicyCap extends PluginBase{
 		$delta = 0;
 		for($i = 0; $i < $linesCnt; $i++){
 			$k = $actPage * $linesCnt + $i + $delta;
-//			if($i === 0 or $i + 1 === $linesCnt){
-//				while(isset($lines[$k]) and trim($lines[$k]) === ""){
-//					$delta++;
-//					$k = $actPage * $linesCnt + $i + $delta;
-//				}
-//				if(!isset($lines[$k])){
-//					break;
-//				}
-//			}
-			// too unstable
 			if(isset($lines[$k])){
 				$out[] = $lines[$k];
 			}
@@ -166,5 +129,17 @@ class SpicyCap extends PluginBase{
 		// convert from \r to \n
 		$string = str_replace("\r", "\n", $string);
 		return $string;
+	}
+	/**
+	 * @return ActionLogger
+	 */
+	public function getActionLogger(){
+		return $this->actionLogger;
+	}
+	/**
+	 * @return DataProvider
+	 */
+	public function getDataProvider(){
+		return $this->provider;
 	}
 }
