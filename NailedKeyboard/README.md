@@ -26,4 +26,4 @@ Note that the third line is case-insensitive, which means you can make the words
 
 ===
 
-Also, Unicode (chinese, japanese, arabian, etc. non-ASCII characters) is only supported on servers with the multibyte extension installed. If it isn't, it should show a warning when the server starts. Then there might be some bugs when the player clicks the left/right buttons.
+Also, Unicode (chinese, japanese, arabian, etc. non-ASCII characters) is only supported on servers with the _multibyte_ PHP extension installed. If it isn't, it should show a warning when the server starts. Then there might be some bugs when the player clicks the left/right buttons.
