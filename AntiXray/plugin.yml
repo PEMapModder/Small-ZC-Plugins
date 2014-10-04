@@ -1,7 +1,0 @@
-name: AntiXray
-author: PEMapModder
-description: A powerful plugin that avoids a player from finding ores via the X-Ray mod of transparent-stone texture packs by not showing the ores until the player is very near to the ore.
-main: pemapmodder\antixray\Main
-load: PostWorld
-version: alpha 0
-api: [1.0.0]
