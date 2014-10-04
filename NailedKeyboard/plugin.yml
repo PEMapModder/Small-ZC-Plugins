@@ -1,0 +1,8 @@
+name: NailedKeyboard
+version: 1.0.0
+api: [1.0.0]
+main: pemapmodder\nailedkeyboard
+permissions:
+  nailedkeyboard:
+    description: Using NailedKeyboard
+    default: true
