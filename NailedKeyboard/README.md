@@ -19,6 +19,7 @@ There are several sign types. Refer to the following table.
 | SUBMIT or SEND or ENTER | ignored (anything) | Send the text out as chat, or send a command if it starts with a slash (/) |
 | BACKSPACE | ignored (anything) | Delete the character before the pointer, like the normal backspace button |
 | DELETE | ignored (anything) | Delete the character before the pointer, like the normal delete button |
+| VIEW | ignored (anything) | Simply view what your line is and where your pointer is at |
 | anything else or empty | the text to type | Insert the words in the second line to the place at the pointer
 
 Note that the third line is case-insensitive, which means you can make the words all in caps or otherwise.
