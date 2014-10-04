@@ -2,10 +2,12 @@
 
 namespace pemapmodder\nailedkeyboard;
 
+use pemapmodder\cmdsel\event\PlayerCommandPreprocessEvent_sub;
 use pocketmine\block\SignPost;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\network\protocol\MessagePacket;
+use pocketmine\event\Timings;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Sign;
@@ -84,11 +86,22 @@ class NailedKeyboard extends PluginBase implements Listener{
 			case "SEND":
 				$text = $line->getText();
 				$line->reset();
-				$pk = new MessagePacket;
-				$pk->message = $text;
-				$pk->source = ""; // this is a redundant but version-secure line
-				$player->handleDataPacket($pk);
-				break;
+				$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($player, $text));
+				if($ev->isCancelled()){
+					return "";
+				}
+				$text = $ev->getMessage();
+				if(substr($text, 0, 1) === "/"){
+					Timings::$playerCommandTimer->startTiming();
+					$this->getServer()->dispatchCommand($ev->getPlayer(), substr($text, 1));
+					Timings::$playerCommandTimer->stopTiming();
+					return "";
+				}
+				$this->getServer()->getPluginManager()->callEvent($ev = new PlayerChatEvent($ev->getPlayer(), $text));
+				if(!$ev->isCancelled()){
+					$this->getServer()->broadcastMessage(sprintf($ev->getFormat(), $ev->getPlayer()->getDisplayName(), $ev->getMessage()), $ev->getRecipients());
+				}
+				return "";
 			case "VIEW":
 				break;
 			default:
