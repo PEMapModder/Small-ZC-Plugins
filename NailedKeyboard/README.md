@@ -1,11 +1,11 @@
 NailedKeyboard
 ===
-This is an ease-of-access plugin that allows players who cannot type chat due to their keyboard issues to use an in-game virtual keyboard.
+This is an ease-of-access plugin that allows players who cannot type chat due to their keyboard issues to use **an in-game virtual keyboard**.
 
 ### How to use
 Players can tap signs instead of keyboard keys to send chat.
 
-To make a sign a NailedKeyboard sign, the first line of the sign must be exactly "NailedKeyboard". The third line of the sign is the type of the sign (what type of things the sign will do), the second line is the arguments (detailed things that control what the sign does) and the fourth line is ignored (it can be anything).
+To make a sign a NailedKeyboard sign, **the first line of the sign must be exactly `NailedKeyboard`**. The **third line** of the sign is the **type of the sign** (what type of things the sign will do), the **second line** is the **arguments** (detailed things that control what the sign does) and the fourth line is ignored (it can be anything).
 
 There are several sign types. Refer to the following table.
 
