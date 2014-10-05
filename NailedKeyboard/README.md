@@ -30,8 +30,8 @@ Also, Unicode (chinese, japanese, arabian, etc. non-ASCII characters) is only su
 
 Screenshots
 ===
-* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/demo-1.png)
-* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/demo-2.png)
-* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/full-signs-2.png)
-* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/signs-left.png)
-* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/full-signs-1.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/NailedKeyboard/bin/demo-1.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/NailedKeyboard/bin/demo-2.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/NailedKeyboard/bin/full-signs-2.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/NailedKeyboard/bin/signs-left.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/NailedKeyboard/bin/full-signs-1.png)
