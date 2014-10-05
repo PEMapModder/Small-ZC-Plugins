@@ -34,8 +34,8 @@ while(strlen($v) < 3){
 	$v = "0".$v;
 }
 $ymlData["version"] = substr($version, 0, -3).$v;
-echo "New version! ".$ymlData["version"];
-yaml_emit_file($plugin_yml, $ymlData);
+//echo "New version! ".$ymlData["version"]."\n";
+//yaml_emit_file($plugin_yml, $ymlData);
 exec("git add $plugin_yml");
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;

@@ -33,8 +33,12 @@ class Line{
 		$this->pointer--;
 	}
 	public function delete(){
-		$this->pointer++;
-		$this->backspace();
+		if($this->pointer === self::strlen($this->text)){
+			throw new \OutOfBoundsException;
+		}
+		$left = $this->getLeftText();
+		$right = self::substr($this->getRightText(), 1);
+		$this->text = $left . $right;
 	}
 	public function input($input){
 		$left = self::substr($this->text, 0, $this->pointer);

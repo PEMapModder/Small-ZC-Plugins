@@ -2,7 +2,6 @@
 
 namespace pemapmodder\nailedkeyboard;
 
-use pemapmodder\cmdsel\event\PlayerCommandPreprocessEvent_sub;
 use pocketmine\block\SignPost;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
@@ -81,12 +80,18 @@ class NailedKeyboard extends PluginBase implements Listener{
 					return "Nothing to delete at the right side!";
 				}
 				break;
+			case "HOME":
+				$line->home();
+				break;
+			case "END":
+				$line->end();
+				break;
 			case "SUBMIT":
 			case "ENTER":
 			case "SEND":
 				$text = $line->getText();
 				$line->reset();
-				$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($player, $text));
+				$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($player, $text, $this));
 				if($ev->isCancelled()){
 					return "";
 				}
