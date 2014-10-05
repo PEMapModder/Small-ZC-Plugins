@@ -1,0 +1,5 @@
+name: JQLatency
+version: 1.0.0
+author: PEMapModder
+api: [1.4.0]
+main: pemapmodder\jqlatency\JQLatency

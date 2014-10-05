@@ -1,0 +1,14 @@
+---
+database:
+  type: SQLite3
+  SQLite3:
+    path: database.sq3
+  MySQL:
+    host: "example.com"
+    username: "guest"
+    password: "123456"
+    database: "SpicyCapacitor"
+    port: 3306
+    # the tables in the database start with...
+    table prefix: "spicycap_"
+...
