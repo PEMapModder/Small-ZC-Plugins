@@ -27,3 +27,11 @@ Note that the third line is case-insensitive, which means you can make the words
 ===
 
 Also, Unicode (chinese, japanese, arabian, etc. non-ASCII characters) is only supported on servers with the _multibyte_ PHP extension installed. If it isn't, it should show a warning when the server starts. Then there might be some bugs when the player clicks the left/right buttons.
+
+Screenshots
+===
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/demo-1.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/demo-2.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/full-signs-2.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/signs-left.png)
+* ![](https://github.com/PEMapModder/Small-ZC-Plugins/blob/master/NailedKeyboard/bin/full-signs-1.png)
