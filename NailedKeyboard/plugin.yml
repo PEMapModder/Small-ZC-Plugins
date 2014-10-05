@@ -1,6 +1,6 @@
 ---
 name: NailedKeyboard
-version: 1.0.1
+version: 1.1.0
 api:
 - 1.0.0
 main: pemapmodder\nailedkeyboard\NailedKeyboard
