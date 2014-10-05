@@ -5,3 +5,5 @@
 *.bat
 commit-msg.txt
 *.lnk
+
+NailedKeyboard/bin/NailedKeyboard_v*.phar
