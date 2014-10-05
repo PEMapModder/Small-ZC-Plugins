@@ -22,7 +22,7 @@ class Line{
 	}
 	public function copy(){
 		if($this->selectFrom = null){
-			throw new \BadMethodCallException;
+			throw new \UnexpectedValueException;
 		}
 		$this->clipboard = self::substr($this->text, min($this->pointer, $this->selectFrom), max($this->pointer, $this->pointer));
 	}
@@ -47,6 +47,12 @@ class Line{
 		$copy = $this->clipboard;
 		$this->clipboard = null;
 		return $copy;
+	}
+	public function getSelectedText(){
+		return $this->selectFrom === null ? null:self::substr($this->text, min($this->pointer, $this->selectFrom), max($this->pointer, $this->selectFrom));
+	}
+	public function getClipboard(){
+		return $this->clipboard;
 	}
 	public function left(){
 		if($this->pointer === 0){

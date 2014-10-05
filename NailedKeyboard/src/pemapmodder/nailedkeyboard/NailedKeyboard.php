@@ -45,6 +45,35 @@ class NailedKeyboard extends PluginBase implements Listener{
 		$fx = strtoupper($texts[2]);
 		$line = $this->get($player);
 		switch($fx){
+			case "SHIFT":
+			case "SEL":
+			case "SELECT":
+				$this->lines[$this->offset($player)]->startSelection();
+				break;
+			case "COPY":
+				try{
+					$this->lines[$this->offset($player)]->copy();
+				}
+				catch(\UnexpectedValueException $e){
+					return "You are not selecting text! Select a text to copy.";
+				}
+				break;
+			case "CUT":
+				try{
+					$this->lines[$this->offset($player)]->cut();
+				}
+				catch(\UnexpectedValueException $e){
+					return "You are not selecting text! Select a text to cut.";
+				}
+				break;
+			case "PASTE":
+				try{
+					$this->lines[$this->offset($player)]->paste();
+				}
+				catch(\UnexpectedValueException $e){
+					return "You don't have a copied text!";
+				}
+				break;
 			case "LEFT":
 				try{
 					$line->left();
@@ -113,7 +142,9 @@ class NailedKeyboard extends PluginBase implements Listener{
 				$line->input($texts[1]);
 				break;
 		}
-		return "Text: {$line->getText()}\nPointer at \"|\": {$line->getLeftText()}|{$line->getRightText()}";
+		return "Text: {$line->getText()}\nPointer at \"|\": {$line->getLeftText()}|{$line->getRightText()}" .
+			(($selected = $line->getSelectedText()) === null ? "":"\nSelected text: $selected") .
+			(($clip = $line->getClipboard()) === null ? "":"\nCopied text: $clip");
 	}
 	/**
 	 * @param Player $player
