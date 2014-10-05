@@ -44,7 +44,7 @@ class Clip implements Cache{
 	}
 	public function paste(Position $anchor){
 		foreach($this->blocks as $keyed => $block){
-			$anchor->getLevel()->setBlock(self::unkey($keyed)->add($anchor), $block, true, false);
+			$anchor->getLevel()->setBlock(self::unkey($keyed)->add($anchor), $block, false, false);
 		}
 	}
 	/**

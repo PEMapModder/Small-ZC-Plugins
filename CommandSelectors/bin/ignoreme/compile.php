@@ -34,12 +34,12 @@ while(strlen($v) < 3){
 	$v = "0".$v;
 }
 $ymlData["version"] = substr($version, 0, -3).$v;
-echo "New version! ".$ymlData["version"];
+echo "New version! ".$ymlData["version"].PHP_EOL;
 yaml_emit_file($plugin_yml, $ymlData);
 exec("git add $plugin_yml");
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
-$pharName = "..\\WorldEditArt_dev_build.phar";
+$pharName = "..\\CommandSelectors_dev_build.phar";
 if(is_file($pharName)){
 	unlink($pharName);
 }

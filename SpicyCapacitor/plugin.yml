@@ -3,20 +3,9 @@ name: SpicyCapacitor
 author: PEMapModder
 api:
 - 1.0.0
-version: 1.0.0
+version: 1.0.0_dev#000
 main: pemapmodder\spicycap\SpicyCap
 permissions:
   spicycap:
-    description: Allows using all SpicyCapacitor permissions
-    children:
-      spicycap.report:
-        description: Allows creating reports
-        default: true
-      spicycap.viewreport:
-        description: Allows viewing reports
-      spicycap.banpt:
-        description: Allows using all ban point-related permissions
-        children:
-          spicycap.banpt.issue:
-            description: Allows issuing ban points
+    description: Allows using all permissions of SpiyCapacitor
 ...

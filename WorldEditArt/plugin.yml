@@ -1,7 +1,7 @@
 ---
 name: WorldEditArt
 author: PEMapModder
-version: 1.0.0_dev_#024
+version: 1.0.0_dev_#027
 api:
 - 1.0.0
 load: POSTWORLD

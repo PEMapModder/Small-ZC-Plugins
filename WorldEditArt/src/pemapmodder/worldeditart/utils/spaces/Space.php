@@ -79,7 +79,7 @@ abstract class Space implements \Countable{
 					$test->dataPacket($pk);
 				}
 				else{
-					$b->getLevel()->setBlock($b, $block, true, false); // w** shoghicp
+					$b->getLevel()->setBlock($b, $block, false, false); // w** shoghicp
 				}
 				$cnt++;
 			}
@@ -105,7 +105,7 @@ abstract class Space implements \Countable{
 	public function randomPlaces(BlockList $blocks, $update = true){
 		$cnt = 0;
 		foreach($this->getPosList() as $pos){
-			$pos->getLevel()->setBlock($pos, $blocks->getRandom(), true, false);
+			$pos->getLevel()->setBlock($pos, $blocks->getRandom(), false, false);
 			$cnt++;
 		}
 		if($update){
@@ -129,9 +129,6 @@ abstract class Space implements \Countable{
 		}
 		$new = clone $new;
 		$cnt = 0;
-		if($test instanceof Player){
-			$this->undoMap = []; // reset the undo map
-		}
 		foreach($this->getBlockList() as $b){
 			$valid = false;
 			foreach($origs as $orig){
@@ -149,10 +146,9 @@ abstract class Space implements \Countable{
 					$pk->y = $b->y;
 					$pk->z = $b->z;
 					$test->dataPacket($pk);
-					$this->undoMap[] = clone $b;
 				}
 				else{
-					$b->getLevel()->setBlock($b, $new, true, false); // w** shoghicp
+					$b->getLevel()->setBlock($b, $new, false, false); // w** shoghicp
 				}
 				$cnt++;
 			}
@@ -187,7 +183,7 @@ abstract class Space implements \Countable{
 				}
 			}
 			if($valid){
-				$level->setBlock($pos, $to->getRandom(), true, false);
+				$level->setBlock($pos, $to->getRandom(), false, false);
 				$cnt++;
 			}
 		}
@@ -199,7 +195,7 @@ abstract class Space implements \Countable{
 	public function randomHollow(BlockList $blocks, $update = true){
 		$cnt = 0;
 		foreach($this->getMarginPosList() as $pos){
-			$this->getLevel()->setBlock($pos, $blocks->getRandom(), true, $update);
+			$this->getLevel()->setBlock($pos, $blocks->getRandom(), false, $update);
 			$cnt++;
 		}
 		return $cnt;
@@ -215,7 +211,7 @@ abstract class Space implements \Countable{
 				}
 			}
 			if($equal){
-				$this->getLevel()->setBlock($b, $list->getRandom(), true, $update);
+				$this->getLevel()->setBlock($b, $list->getRandom(), false, $update);
 				$cnt++;
 			}
 		}
@@ -228,11 +224,6 @@ abstract class Space implements \Countable{
 	public function updateAround(){
 		foreach($this->getMarginPosList() as $pos){
 			$this->getLevel()->updateAround($pos);
-		}
-	}
-	public function undoLastTest(){
-		foreach($this->undoMap as $block){
-			$block->getLevel()->setBlock($block, $block, true, false);
 		}
 	}
 	public abstract function isInside(Vector3 $v);
