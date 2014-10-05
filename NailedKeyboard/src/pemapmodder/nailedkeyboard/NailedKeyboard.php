@@ -50,6 +50,13 @@ class NailedKeyboard extends PluginBase implements Listener{
 			case "SELECT":
 				$this->lines[$this->offset($player)]->startSelection();
 				break;
+			case "DESEL":
+				try{
+					$this->lines[$this->offset($player)]->deselect();
+				}
+				catch(\UnexpectedValueException $e){
+					return "You don't have a selection to select.";
+				}
 			case "COPY":
 				try{
 					$this->lines[$this->offset($player)]->copy();
