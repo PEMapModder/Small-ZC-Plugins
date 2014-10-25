@@ -39,7 +39,7 @@ $version = $ymlData["version"];
 exec("git add $plugin_yml");
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
 $relativePath = isset($opts["relative"]) ? rtrim(str_replace("\\", "/", realpath($opts["relative"])), "/") . "/" : $folderPath;
-$pharName = "..\\NailedKeyboard_v$version.phar";
+$pharName = "..\\NailedKeyboard_dev_build.phar";
 if(is_file($pharName)){
 	unlink($pharName);
 }
