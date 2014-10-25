@@ -1,9 +1,0 @@
-This server uses SpicyCapacitor. If you offend
-  the following rules, you will receive warning
-  points. If you don't understand the points,
-  use "/sc-help intro" for further explanation.
-- Do not use client mods that give you
-  advantages other players don't have without
-  the mods. 5 points will be issued to offenders.
-- Do not spam. 3 points will be issued
-  to offenders.
