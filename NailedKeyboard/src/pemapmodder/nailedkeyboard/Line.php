@@ -18,7 +18,7 @@ class Line{
 		$this->selectFrom = $this->pointer;
 	}
 	public function deselect(){
-		$this->selectFrom = $this->pointer;
+		$this->selectFrom = null;
 	}
 	public function copy(){
 		if($this->selectFrom = null){
