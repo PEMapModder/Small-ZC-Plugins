@@ -41,6 +41,7 @@ class Main extends PluginBase implements Listener{
 			}
 			$ips[] = $ip;
 			sort($ips, SORT_STRING); // don't sort_natural
+			file_put_contents($file, implode(PHP_EOL, $ips));
 		}
 	}
 	public function onCommand(Issuer $issuer, Cmd $cmd, $alias, array $args){
