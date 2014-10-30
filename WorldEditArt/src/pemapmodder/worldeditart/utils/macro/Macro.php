@@ -100,7 +100,6 @@ class Macro implements Cache{
 				$ticks += $op->getLength();
 				continue;
 			}
-			$anchor->level->acquire(); // StrongRef
 			$scheduler->scheduleDelayedTask(new MacroOperationTask($main, $op, $anchor), $ticks);
 		}
 	}

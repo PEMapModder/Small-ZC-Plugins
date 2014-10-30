@@ -15,10 +15,12 @@ class MacroOperation{
 	public static function fromTag(tag\Compound $compound){
 		$type = $compound["type"];
 		if($type === 1){
+			/** @noinspection PhpParamsInspection */
 			return new MacroOperation($compound["delta"]);
 		}
 		else{
 			$vectors = $compound["vectors"];
+			/** @noinspection PhpParamsInspection */
 			return new MacroOperation(new Vector3($vectors[0], $vectors[1], $vectors[2]), Block::get($compound["blockID"], $compound["blockDamage"]));
 		}
 	}

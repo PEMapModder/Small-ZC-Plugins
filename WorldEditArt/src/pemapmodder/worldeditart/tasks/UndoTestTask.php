@@ -7,13 +7,14 @@ use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\scheduler\PluginTask;
 
 class UndoTestTask extends PluginTask{
+	/** @var Space */
 	private $space;
 	public function __construct(Main $main, Space $space){
 		parent::__construct($main);
 		$this->space = clone $space;
 	}
 	public function onRun($ticks){
-		$this->space->undoLastTest();
+//		$this->space->undoLastTest();
 	}
 	public function onCancel(){
 		$this->onRun(0);

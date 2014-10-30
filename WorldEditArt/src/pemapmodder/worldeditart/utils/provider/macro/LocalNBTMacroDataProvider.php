@@ -54,6 +54,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 			}
 			else{
 				$vectors = $t["vectors"];
+				/** @noinspection PhpParamsInspection */
 				$ops[] = new MacroOperation(new Vector3($vectors[0], $vectors[1], $vectors[2]), Block::get($t["blockID"], $t["blockDamage"]));
 			}
 		}

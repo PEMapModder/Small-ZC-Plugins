@@ -101,13 +101,7 @@ class PosSubcommand extends Subcommand{
 		end:
 		$space = $this->getMain()->getSelection($player);
 		if($space instanceof Space){
-			if(IS_DEBUGGING){
-				$this->getMain()->getLogger()->info($player->getName()." has selected a selection: ".(new \ReflectionClass($space))->getShortName());
-			}
 			$cnt = count($space);
-			if(IS_DEBUGGING){
-				$this->getMain()->getLogger()->info($player->getName()." has $cnt blocks selected.");
-			}
 		}
 		return ($this->is2 ? "Second":"First")." position set to ".
 				"({$selected->x}, {$selected->y}, {$selected->z}).".

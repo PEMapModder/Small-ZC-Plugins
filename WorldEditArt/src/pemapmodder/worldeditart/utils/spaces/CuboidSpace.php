@@ -5,7 +5,6 @@ namespace pemapmodder\worldeditart\utils\spaces;
 use pemapmodder\worldeditart\Main;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
-use pocketmine\utils\MainLogger;
 
 class CuboidSpace extends Space{
 	/** @var Position  */
@@ -77,9 +76,6 @@ class CuboidSpace extends Space{
 		}
 		if($this->baked1->getFloorY() > $maxHeight or $this->baked0->getFloorY() < 0){
 			throw new SelectionExceedWorldException("CuboidSpace");
-		}
-		if(\pemapmodder\worldeditart\utils\subcommand\IS_DEBUGGING){
-			MainLogger::getLogger()->info("CuboidSpace baked: 0=>{$this->baked0}, 1=>{$this->baked1}");
 		}
 	}
 	public function get0(){

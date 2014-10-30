@@ -43,7 +43,7 @@ class Macro extends Subcommand{
 							}
 					}
 				}
-				$macro = new MacroObj(false, $anchor, $player);
+				$macro = new MacroObj(true, $anchor, $player);
 				$this->getMain()->setRecordingMacro($player, $macro);
 				return "You are now recording a macro.";
 			case "save":
