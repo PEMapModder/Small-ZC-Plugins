@@ -8,6 +8,10 @@ interface ChannelSubscriber{
 	 */
 	public function getID();
 	/**
+	 * @return string
+	 */
+	public function getDisplayName();
+	/**
 	 * @return int
 	 */
 	public function getSubscribingLevel();
@@ -17,6 +21,7 @@ interface ChannelSubscriber{
 	public function isMuted();
 	/**
 	 * @param string $message
+	 * @param Channel $channel
 	 */
-	public function sendMessage($message);
+	public function sendMessage($message, Channel $channel);
 }

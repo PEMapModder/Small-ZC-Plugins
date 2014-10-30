@@ -29,20 +29,16 @@ permissions:
       chatchannels.forcejoin:
         description: "Permission to \"break in\" (join) chat channels without getting invited or getting the specific permission to join it."
         default: op
-      chatchannels.mod:
+      chatchannels.forcemod:
         description: Permission to become a moderator in a chat channel with the command /forcemod
         default: op
-      chatchannels.admin:
+      chatchannels.forceadmin:
         description: Permission to become an admin in a chat channel with the command /forceadmin
 commands:
-  forcemod:
-    usage: /forcemod <channel name>
-    description: Makes you a moderator on a channel
-    permission: chatchannels.mod
   forceadmin:
     usage: /forceadmin <channel name>
     description: Makes you an admin on a channel
-    permission: chatchannels.admin
+    permission: chatchannels.forceadmin
   forcejoin:
     usage: /forcejoin <channel name>
     description: Force-join a channel without getting the specific permission to

@@ -14,6 +14,8 @@ class Channel{
 	const MODE_MOD = "moderator";
 	const MODE_MUTED = "muted";
 	const MODE_BANNED = "banned";
+	/** @var ChatChannels */
+	private $plugin;
 	/** @var string */
 	private $name;
 	/** @var Permission */
@@ -55,21 +57,27 @@ class Channel{
 	}
 	public function send($message, ChannelSubscriber $source){
 		if($source->isMuted()){
-			$source->sendMessage("You are muted!");
+			$source->sendMessage("You are muted!", $this);
 		}
 		if(in_array(self::MODE_MUTED, $this->getFlags($source->getID()))){
-			$source->sendMessage("You are muted on this channel!");
+			$source->sendMessage("You are muted on this channel!", $this);
 		}
-		$this->broadcast($message, self::LEVEL_CHAT);
+		$this->broadcast(sprintf("%s<%s> %s", $this->plugin->getPrefixAPI()->getPrefixes($source, $this), $source->getDisplayName(), $message), self::LEVEL_CHAT);
 	}
 	public function broadcast($message, $level){
 		foreach($this->subs as $sub){
 			if($sub->getSubscribingLevel() <= $level){
-				$sub->sendMessage($message);
+				$sub->sendMessage($message, $this);
 			}
 		}
 	}
 	public function getFlags($id){
 		return isset($this->modes[$id]) ? $this->modes[$id]:[];
+	}
+	public function setFlags($id, array $flags){
+		$this->modes[$id] = $flags;
+	}
+	public function __toString(){
+		return $this->name;
 	}
 }
