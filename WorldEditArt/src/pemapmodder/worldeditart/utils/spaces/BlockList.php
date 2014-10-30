@@ -20,9 +20,9 @@ class BlockList{
 					$damage = intval($ts[1]);
 				}
 				$block = $ts[0];
-				unset($ts); // bug warning
+				unset($ts); // 過河拆橋 :P
 				$ts = explode("%", $block);
-				unset($block); // another :P
+				unset($block); // another :D
 				if(isset($ts[1])){
 					$percent = array_shift($ts); // don't write $args again; I got too used to it.
 				}
@@ -185,7 +185,6 @@ class BlockList{
 		$tokens = explode(":", $key);
 		return Block::get($tokens[0], $tokens[1]);
 	}
-	/** @noinspection PhpInconsistentReturnPointsInspection */
 	public function getRandom(){
 		if($this->safeMode){
 			$rand = mt_rand();

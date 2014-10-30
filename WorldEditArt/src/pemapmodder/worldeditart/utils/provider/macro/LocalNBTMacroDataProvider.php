@@ -90,7 +90,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 	}
 	public function getFile($name){
 		$file = $this->getMain()->getDataFolder().str_replace("<name>", $name, $this->path);
-		@mkdir($name, 0777, true);
+		@mkdir(dirname($file), 0777, true);
 		return $file;
 	}
 }

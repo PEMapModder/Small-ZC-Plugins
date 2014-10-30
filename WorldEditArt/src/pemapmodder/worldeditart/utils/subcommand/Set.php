@@ -40,7 +40,7 @@ class Set extends Subcommand{
 		$name = array_shift($args);
 		if(strpos($name, ",") !== false){
 			try{
-				$list = new BlockList(array_shift($args));
+				$list = new BlockList($name);
 			}
 			catch(BlockPatternParseException $e){
 				return "The following pattern error occurred: ".$e->getMessage();
