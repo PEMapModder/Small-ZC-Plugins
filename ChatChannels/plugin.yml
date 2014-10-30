@@ -1,0 +1,52 @@
+name: ChatChannels
+authors:
+- PEMapModder
+- Falk
+description: Separate chat in channels
+main: ChatChannels
+api: 1.5.0
+version: 1.0.0.1.0
+# first number: edition of the plugin (after the latest Amai Beetroot-compatible version - 0.1.1), which only changes with rewrite
+# second number: version of the plugin, which changes with new features
+# third number: minor version of the plugin, which changes every update without new features, usually minor fixes
+# fourth number: PrefixAPI edition; each edition is incompatible to another one
+# fifth number: PrefixAPI version; if edition isn't changed, it is compatible to plugins that use older versions but not to plugins that use newer versions
+# sixth number: unused
+website: "https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/ChatChannels"
+prefix: ChatChannels
+permissions:
+  chatchannels:
+    description: "Grandparent permission node of ChatChannels. Setting me or some of my children's permission may lead to problems in joining chat channels, so do NOT modify me, `chatchannels.channel` or children of `chatchannels.channel`."
+    default: false
+    children:
+      chatchannels.channel:
+        description: "Parent permission node for ChatChannels chat channels. My children are dynamic; this means, every time a channel is created, I have a new child. In order for chat channels to work properly, do NOT modify me or my children."
+        default: false
+        children: []
+      chatchannels.create:
+        description: Permission to create chat channels.
+        default: true
+      chatchannels.forcejoin:
+        description: "Permission to \"break in\" (join) chat channels without getting invited or getting the specific permission to join it."
+        default: op
+      chatchannels.mod:
+        description: Permission to become a moderator in a chat channel with the command /forcemod
+        default: op
+      chatchannels.admin:
+        description: Permission to become an admin in a chat channel with the command /forceadmin
+commands:
+  forcemod:
+    usage: /forcemod <channel name>
+    description: Makes you a moderator on a channel
+    permission: chatchannels.mod
+  forceadmin:
+    usage: /forceadmin <channel name>
+    description: Makes you an admin on a channel
+    permission: chatchannels.admin
+  forcejoin:
+    usage: /forcejoin <channel name>
+    description: Force-join a channel without getting the specific permission to
+    permission: chatchannels.forcejoin
+  create:
+    usage: /create <channel name> [o|open]
+    permission: chatchannels.create

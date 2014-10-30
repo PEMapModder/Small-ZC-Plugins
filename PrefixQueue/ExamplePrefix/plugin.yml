@@ -1,5 +1,0 @@
-name: ExamplePrefix
-version: 0.0
-api: [1.4.0]
-softdepend: PrefixQueue
-main: ExamplePrefix\ExamplePrefix

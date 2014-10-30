@@ -1,5 +1,0 @@
-name: PrefixQueue
-version: 1.0.0
-api: [1.5.0]
-author: PEMapModder
-main: PrefixQueue\PrefixQueue
