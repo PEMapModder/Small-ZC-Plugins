@@ -71,11 +71,12 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 		$nbt = new NBT;
 		$nbt->setData($tag);
 		$file = $this->getFile($name);
-		$stream = @fopen($file, "wb");
+		$stream = fopen($file, "wb");
+
 		if(!is_resource($stream)){
 			throw new \RuntimeException("Unable to open stream. Maybe the macro name is not a valid filename?");
 		}
-		$compression = $this->getMain()->getConfig()["data providers"]["macro"]["mcr"]["compression"];
+		$compression = $this->getMain()->getConfig()->getAll()["data providers"]["macro"]["mcr"]["compression"];
 		if($compression === 0){
 			$data = $nbt->write();
 		}

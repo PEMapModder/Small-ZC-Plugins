@@ -2,11 +2,11 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\utils\macro\Macro as MacroObj;
+use pemapmodder\worldeditart\utils\macro\Macro;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
-class Macro extends Subcommand{
+class MacroSubcmd extends Subcommand{
 	public function getName(){
 		return "macro";
 	}
@@ -28,7 +28,7 @@ class Macro extends Subcommand{
 				if(!$player->hasPermission("wea.macro.start")){
 					return self::NO_PERM;
 				}
-				if($this->getMain()->getRecordingMacro($player) instanceof MacroObj){
+				if($this->getMain()->getRecordingMacro($player) instanceof Macro){
 					return "You are already recording a macro!";
 				}
 				$anchor = $player->getPosition();
@@ -43,7 +43,7 @@ class Macro extends Subcommand{
 							}
 					}
 				}
-				$macro = new MacroObj(true, $anchor, $player);
+				$macro = new Macro(true, $anchor, $player->getName());
 				$this->getMain()->setRecordingMacro($player, $macro);
 				return "You are now recording a macro.";
 			case "save":
@@ -78,7 +78,7 @@ class Macro extends Subcommand{
 				return self::WRONG_USE;
 		}
 		$macro = $this->getMain()->getRecordingMacro($player);
-		if(!($macro instanceof MacroObj)){
+		if(!($macro instanceof Macro)){
 			return "You don't have a recording macro!";
 		}
 		switch($sub){
@@ -93,6 +93,7 @@ class Macro extends Subcommand{
 				}
 				try{
 					$macroProvider[$name] = $macro;
+					return "Macro $name has been saved.";
 				}
 				catch(\Exception $e){
 					return "An error occurred. Type: ".(new \ReflectionClass($e))->getShortName()."; Message: ".$e->getMessage();

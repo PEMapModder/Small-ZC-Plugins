@@ -123,4 +123,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		$this->setAliases($aliases);
 
 	}
+	public function __destruct(){
+		foreach($this->subcmds as $ref){
+			$ref->release();
+			$ref = null;
+		}
+	}
 }

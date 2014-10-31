@@ -26,7 +26,7 @@ use pemapmodder\worldeditart\utils\subcommand\Cuboid;
 use pemapmodder\worldeditart\utils\subcommand\Cut;
 use pemapmodder\worldeditart\utils\subcommand\Cylinder;
 use pemapmodder\worldeditart\utils\subcommand\Desel;
-use pemapmodder\worldeditart\utils\subcommand\Macro as MacroSubcommand;
+use pemapmodder\worldeditart\utils\subcommand\MacroSubcmd as MacroSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Paste;
 use pemapmodder\worldeditart\utils\subcommand\PosSubcommand;
 use pemapmodder\worldeditart\utils\subcommand\Replace;
