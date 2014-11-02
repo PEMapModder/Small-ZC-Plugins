@@ -11,8 +11,11 @@ class PlayerSubscriber implements ChannelSubscriber{
 	public $level;
 	/** @var bool */
 	public $muted;
-	public function __construct(Player $player){
+	/** @var Channel */
+	private $writeChannel;
+	public function __construct(ChatChannels $main, Player $player){
 		$this->player = $player;
+		$this->writeChannel = $main->getDefaultChannel();
 	}
 	public function getID(){
 		return "player/" . strtolower($this->player->getName());
@@ -31,5 +34,8 @@ class PlayerSubscriber implements ChannelSubscriber{
 	}
 	public function release(){
 		$this->player = null;
+	}
+	public function onChatEvent($msg){
+		$this->writeChannel->send($msg, $this);
 	}
 }

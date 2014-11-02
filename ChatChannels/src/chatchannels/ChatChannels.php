@@ -8,6 +8,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 
 class ChatChannels extends PluginBase{
+	/** @var Configuration */
 	private $configuration;
 	/** @var ConsoleSubscriber */
 	private $console;
@@ -15,15 +16,16 @@ class ChatChannels extends PluginBase{
 	private $chanMgr;
 	/** @var PrefixAPI */
 	private $prefixes;
-	/** @var EventListener */
-	private $eventListener;
+	/** @var SessionControl */
+	private $sessions;
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$this->configuration = new Configuration($this->getConfig());
 		$this->console = new ConsoleSubscriber($this, $this->configuration->getConsoleName());
 		$this->chanMgr = new ChannelManager($this);
+		$this->chanMgr->addChannel($this->configuration->getDefaultChannel(), $this->console, true); // must be free join
 		$this->prefixes = new PrefixAPI($this);
-		$this->getServer()->getPluginManager()->registerEvents($this->eventListener = new EventListener($this), $this);
+		$this->getServer()->getPluginManager()->registerEvents($this->sessions = new SessionControl($this), $this);
 		$this->getServer()->getCommandMap()->registerAll("chan", [
 			new ForceRankCommand($this, "mod", Channel::MODE_MOD, "fa"),
 			new ForceRankCommand($this, "admin", Channel::MODE_ADMIN, "fa"),
@@ -39,7 +41,10 @@ class ChatChannels extends PluginBase{
 		return $this->console;
 	}
 	public function getPlayerSub(Player $sender){
-		return $this->eventListener->getSession($sender);
+		return $this->sessions->getSession($sender);
+	}
+	public function getDefaultChannel(){
+		return $this->chanMgr->getChannel($this->configuration->getDefaultChannel());
 	}
 	/**
 	 * @param Server $server

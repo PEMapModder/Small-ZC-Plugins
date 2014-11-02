@@ -13,4 +13,7 @@ class Configuration{
 	public function getConsoleName(){
 		return $this->config["console name"];
 	}
+	public function getDefaultChannel(){
+		return $this->config["default channel name"];
+	}
 }
