@@ -49,9 +49,10 @@ use pocketmine\math\Vector3;
 use pocketmine\network\protocol\UseItemPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+
 const IS_DEBUGGING = true;
 
-class Main extends PluginBase implements Listener{
+class WorldEditArt extends PluginBase implements Listener{
 ////////////
 // FIELDS //
 ////////////
@@ -76,6 +77,8 @@ class Main extends PluginBase implements Listener{
 	private $playerDataProvider;
 	/** @var null|\mysqli */
 	private $commonMysqli = null;
+	/** @var bool */
+	private $doJump, $doWand;
 
 // INITIALIZERS
 	public function onPreEnable(){
@@ -178,24 +181,76 @@ class Main extends PluginBase implements Listener{
 	}
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "/"]);
-		$wea->registerAll([
-			new Anchor($this),
-			new Copy($this),
-			new Cuboid($this),
-			new Cut($this),
-			new Cylinder($this),
-			new Desel($this),
-			new MacroSubcommand($this),
-			new Paste($this),
-			new PosSubcommand($this, false),
-			new PosSubcommand($this, true),
-			new Replace($this),
-			new SelectedToolSetterSubcommand($this, "jump", PlayerData::JUMP, "jump"),
-			new SelectedToolSetterSubcommand($this, "wand", PlayerData::WAND, "wand"),
-			new Set($this),
-			new Sphere($this),
-			new Test($this),
-		]);
+		$cmds = [];
+		$config = $this->getConfig()->get("beta safety")["enabled features"];
+		if($config["selecting anchors"]){
+			$cmds[] = new Anchor($this);
+		}
+		$clipboard = $config["clipboard"];
+		if($clipboard["copying"]){
+			$cmds[] = new Copy($this);
+		}
+		if($clipboard["cutting"]){
+			$cmds[] = new Cut($this);
+		}
+		if($clipboard["pasting"]){
+			$cmds[] = new Paste($this);
+		}
+		$sel = $config["selections"];
+		$selsel = $sel["selecting selections"];
+		$cubsel = $selsel["cuboid selection"];
+		$shoot = $cubsel["by shoot"];
+		$grow = $cubsel["by grow"];
+		if($shoot or $grow){
+			$cmds[] = new Cuboid($this, $shoot, $grow);
+		}
+		if($selsel["cylinder selection"]){
+			$cmds[] = new Cylinder($this);
+		}
+		if($selsel["sphere selection"]){
+			$cmds[] = new Sphere($this);
+		}
+		if($selsel["deselection"]){
+			$cmds[] = new Desel($this);
+		}
+		if($sel["testing selections"]){
+			$cmds[] = new Test($this);
+		}
+		$edit = $sel["editing selections"];
+		$set = $edit["setting blocks by command"];
+		if($set["any block types"]){
+			$twoNo = $set["two block types without percentage"];
+			$twoYes = $set["two block types with percentage"];
+			$mulNo = $set["multiple block types without percentage"];
+			$mulYes = $set["multiple block types with percentage"];
+			$cmds[] = new Set($this, $twoNo, $twoYes, $mulNo, $mulYes);
+		}
+		$rep = $edit["replacing blocks by command"];
+		if($rep["any block types"]){
+			$twoNo = ["two target block types without percentage"];
+			$twoYes = ["two target block types with percentage"];
+			$mulNo = ["multiple target block types without percentage"];
+			$mulYes = ["multiple target block types with percentage"];
+			$cmds[] = new Replace($this, $twoNo, $twoYes, $mulNo, $mulYes);
+		}
+		if($config["macros"]){
+			$cmds[] = new MacroSubcommand($this);
+		}
+		$misc = $config["miscellaneous"];
+		if($misc["selecting points by //pos1 (or //1) and //pos2 (or //2"]){
+			$cmds[] = new PosSubcommand($this, false);
+			$cmds[] = new PosSubcommand($this, true);
+		}
+		$custom = $misc["custom tool selection"];
+		if($custom["jump"]){
+			$cmds[] = new SelectedToolSetterSubcommand($this, "jump", PlayerData::JUMP, "jump");
+		}
+		if($custom["wand"]){
+			$cmds[] = new SelectedToolSetterSubcommand($this, "wand", PlayerData::WAND, "wand");
+		}
+		$wea->registerAll($cmds);
+		$this->doJump = $misc["jump"];
+		$this->doWand = $misc["wand"];
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
 	public function onDisable(){
@@ -229,6 +284,9 @@ class Main extends PluginBase implements Listener{
 		$p = $event->getPlayer();
 		/** @var PlayerData $tool */
 		$tool = $this->getPlayerDataProvider()[strtolower($p->getName())];
+		if(!$this->doWand){
+			return;
+		}
 		if($tool->getWand()->match($p->getInventory()->getItemInHand())){
 			$this->setAnchor($p, $event->getBlock());
 			$event->setCancelled();
@@ -264,6 +322,9 @@ class Main extends PluginBase implements Listener{
 		$pk = $event->getPacket();
 		$player = $event->getPlayer();
 		if($pk instanceof UseItemPacket and $pk->face === 0xff){
+			if(!$this->doJump){
+				return;
+			}
 			/** @var PlayerData $data */
 			$data = $this->getPlayerDataProvider()[$player->getName()];
 			$mode = 0;

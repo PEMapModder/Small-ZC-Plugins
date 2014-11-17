@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\provider\clip;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\clip\Clip;
 use pemapmodder\worldeditart\utils\StringReader;
 use pemapmodder\worldeditart\utils\StringWriter;
@@ -10,7 +10,7 @@ use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
 class BinaryClipboardProvider extends CachedClipboardProvider{
-	public function __construct(Main $main, $args){
+	public function __construct(WorldEditArt $main, $args){
 		parent::__construct($main);
 		$this->path = $main->getDataFolder().$args["path"];
 	}

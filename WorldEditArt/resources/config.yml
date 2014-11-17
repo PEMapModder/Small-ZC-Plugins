@@ -1,4 +1,55 @@
 ---
+beta safety:
+# this is a config file generated/updated by the beta release of (do not modify this line)
+  version: 1.0.0_beta_dev_#035
+# as a beta release, some features are not tested.
+# For the sake of your server's safety, these features are disabled by default (marked as "false" below).
+# If you want to enable these features, change them to "true".
+# However, you are warned that these features may be dangerous. The effects might include simply not working,
+# not doing exactly what you intended to, dealing damage to your world that can only be reversed by hand or
+# by backups, or even crash your server. Please do NOT report bugs of these untested features to the forums
+# release page reviews, forum release thread or the GitHub bug tracker.
+# You can also disable features by setting those default "true" to "false".
+  enabled features:
+    selecting anchors: true # enable //anchors
+    clipboard:
+      copying: false # enable //copy
+      cutting: false # enable //cut
+      pasting: false # enable //paste
+    selections:
+      selecting selections:
+        cuboid selection:
+          by shoot: true # enable //shoot
+          by grow: true # enable //grow
+          # cuboid selection by two points is listed under the "miscellaneous" section below. A cuboid selection is automatically made when both //pos1 and //pos2 are selected.
+        cylinder selection: true # enable //cylinder
+        sphere selection: true # enable //sphere
+        deselection: false # enable //desel
+      testing selections: true # enable //test
+      editing selections:
+        setting blocks by command: ## //set
+          any block types: true # if this is set to false, the command //set will not be registered and the following lines in this section are assumed "false".
+          two block types without percentage: true # like //set stone,grass to set to stone and grass, each block with 50% chance
+          two block types with percentage: true # like //set 10%stone,90%grass to set with their respective percentage chances
+          multiple block types without percentage: false # like two block types except having at least three
+          multiple block types with percentage: false # like two block types except having at least three
+        replacing blocks by command: ## //replace
+          # "target block type(s)" same as above for the block type to replace with (final block)
+          any block types: true # if this is set to false, the command //replace will not be registered and the following lines in this section are assumed "false".
+          two target block types without percentage: true
+          two target block types with percentage: true
+          multiple target block types without percentage: false
+          multiple target block types with percentage: false
+    macros: false # enable //macro
+    miscellaneous:
+      selecting points by //pos1 (or //1) and //pos2 (or //2): true # enable //pos1 and //pos2
+      custom tool selection:
+        jump: false # enable //jump
+        wand: false # enable //wand
+      jump: true # enable the feature of teleporting player to the block his crosshair is pointing at when he long-clicks air with the item of "jump-id":"jump-damage" below.
+      # Note: jump is a bit buggy but safe enough to use.
+      wand: false # enable the feature of making cuboid selections by clicking blocks with wands (equivalent to //pos1 and //pos2)
+
 #### Data providers
 ## Data providers provide the plugin storages to store data
 data providers:

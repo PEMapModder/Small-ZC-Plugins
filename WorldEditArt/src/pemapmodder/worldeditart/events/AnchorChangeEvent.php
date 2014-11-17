@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\events;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
@@ -12,7 +12,7 @@ class AnchorChangeEvent extends CancellableWorldEditArtEvent{
 	private $player;
 	/** @var Position */
 	private $anchor;
-	public function __construct(Main $main, Player $player, Position $anchor){
+	public function __construct(WorldEditArt $main, Player $player, Position $anchor){
 		parent::__construct($main);
 		$this->player = $player;
 		$this->anchor = clone $anchor;

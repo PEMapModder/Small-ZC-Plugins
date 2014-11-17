@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
@@ -27,11 +27,11 @@ abstract class Subcommand{
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
 	/**
-	 * @param Main $main
+	 * @param WorldEditArt $main
 	 * @param string $callable
 	 * @param string $permCheck
 	 */
-	public function __construct(Main $main, $callable = "onRun", $permCheck = "checkPermission"){
+	public function __construct(WorldEditArt $main, $callable = "onRun", $permCheck = "checkPermission"){
 		$this->main = $main;
 		$rc = new \ReflectionClass($this);
 		$this->callable = $callable;

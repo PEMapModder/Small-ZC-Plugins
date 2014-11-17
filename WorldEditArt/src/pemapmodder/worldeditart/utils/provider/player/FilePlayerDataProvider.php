@@ -2,11 +2,11 @@
 
 namespace pemapmodder\worldeditart\utils\provider\player;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 
 abstract class FilePlayerDataProvider extends PlayerDataProvider{
 	private $path;
-	public function __construct(Main $main, $path){
+	public function __construct(WorldEditArt $main, $path){
 		parent::__construct($main);
 		$this->path = $path;
 	}

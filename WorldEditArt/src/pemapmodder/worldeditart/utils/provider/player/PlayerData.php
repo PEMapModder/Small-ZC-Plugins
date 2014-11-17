@@ -2,20 +2,20 @@
 
 namespace pemapmodder\worldeditart\utils\provider\player;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 
 class PlayerData{
 	const USE_DEFAULT = true;
 	const ALLOW_ANY = false;
 	const WAND = 1;
 	const JUMP = 2;
-	/** @var Main */
+	/** @var WorldEditArt */
 	private $main;
 	/** @var string */
 	private $name;
 	/** @var SelectedTool[] */
 	private $tools = [];
-	public function __construct(Main $main, $name, SelectedTool $wand = null, SelectedTool $jump = null){
+	public function __construct(WorldEditArt $main, $name, SelectedTool $wand = null, SelectedTool $jump = null){
 		$config = $main->getConfig();
 		if($wand === null){
 			$wand = new SelectedTool(PlayerData::USE_DEFAULT, PlayerData::USE_DEFAULT, $config->get("wand-id"), $config->get("wand-damage"));

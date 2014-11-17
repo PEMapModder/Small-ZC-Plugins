@@ -5,11 +5,24 @@ namespace pemapmodder\worldeditart\utils\subcommand;
 use pemapmodder\worldeditart\utils\spaces\BlockList;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
+use pemapmodder\worldeditart\utils\spaces\SingleList;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\spaces\SphereSpace;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\Player;
 
 class Replace extends Subcommand{
+	/** @var bool */
+	private $twoNo, $twoYes;
+	/** @var bool */
+	private $mulNo, $mulYes;
+	public function __construct(WorldEditArt $main, $twoNo, $twoYes, $mulNo, $mulYes){
+		parent::__construct($main);
+		$this->twoNo = $twoNo;
+		$this->twoYes = $twoYes;
+		$this->mulNo = $mulNo;
+		$this->mulYes = $mulYes;
+	}
 	public function getName(){
 		return "replace";
 	}
@@ -36,7 +49,31 @@ class Replace extends Subcommand{
 			return self::WRONG_USE;
 		}
 		$from = BlockList::getBlockArrayFromString(array_shift($args));
-		$to = new BlockList(array_shift($args));
+		$targets = array_shift($args);
+		$perc = strpos($targets, "%") !== false;
+		$pos = strpos($targets, ",");
+		if($pos === false){
+			if(strpos(substr($targets, $pos), ",") === false){
+				if(!$this->twoNo and !$perc){
+					return "Replacing blocks into two block types without percentage is disabled on this server.";
+				}
+				if(!$this->twoYes and $perc){
+					return "Replacing blocks into two block types with percentage is disabled on this server.";
+				}
+			}
+			else{
+				if(!$this->mulNo and !$perc){
+					return "Replacing blocks into multiple block types without percentage is disabled on this server.";
+				}
+				if(!$this->mulYes and $perc){
+					return "Replacing blocks into multiple block types with percentage is disabled on this server.";
+				}
+			}
+			$to = new BlockList(array_shift($args));
+		}
+		else{
+			$to = new SingleList(BlockList::getBlockFronString($targets));
+		}
 		$hollow = false;
 		$update = true;
 		while(isset($args[0])){

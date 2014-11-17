@@ -9,9 +9,21 @@ use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pemapmodder\worldeditart\utils\spaces\SingleList;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pemapmodder\worldeditart\utils\spaces\SphereSpace;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\Player;
 
 class Set extends Subcommand{
+	/** @var bool */
+	private $twoNo, $twoYes;
+	/** @var bool */
+	private $mulNo, $mulYes;
+	public function __construct(WorldEditArt $main, $twoNo, $twoYes, $mulNo, $mulYes){
+		parent::__construct($main);
+		$this->twoNo = $twoNo;
+		$this->twoYes = $twoYes;
+		$this->mulNo = $mulNo;
+		$this->mulYes = $mulYes;
+	}
 	public function getName(){
 		return "set";
 	}
@@ -38,7 +50,22 @@ class Set extends Subcommand{
 			return self::WRONG_USE;
 		}
 		$name = array_shift($args);
-		if(strpos($name, ",") !== false){
+		$perc = strpos($name, "%") !== false;
+		if(($pos = strpos($name, ",")) !== false){
+			if(strpos(substr($name, $pos), ",") === false){
+				if(!$this->twoNo and !$perc){
+					return "Setting two block types without percentage is disabled on this server.";
+				}
+				if(!$this->twoYes and $perc){
+					return "Setting two block types with percentage is disabled on this server.";
+				}
+				if(!$this->mulNo and !$perc){
+					return "Setting multiple block types without percentage is disabled on this server.";
+				}
+				if(!$this->mulYes and $perc){
+					return "Setting multiple block types with percentage is disabled on this server.";
+				}
+			}
 			try{
 				$list = new BlockList($name);
 			}

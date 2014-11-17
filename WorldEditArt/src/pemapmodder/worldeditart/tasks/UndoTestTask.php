@@ -2,14 +2,14 @@
 
 namespace pemapmodder\worldeditart\tasks;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\scheduler\PluginTask;
 
 class UndoTestTask extends PluginTask{
 	/** @var Space */
 	private $space;
-	public function __construct(Main $main, Space $space){
+	public function __construct(WorldEditArt $main, Space $space){
 		parent::__construct($main);
 		$this->space = clone $space;
 	}

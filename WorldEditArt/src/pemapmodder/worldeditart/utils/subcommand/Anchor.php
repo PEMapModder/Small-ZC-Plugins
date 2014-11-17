@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -29,7 +29,7 @@ class Anchor extends Subcommand{
 			switch($arg){
 				case "c":
 				case "crosshair":
-					$target = Main::getCrosshairTarget($player);
+					$target = WorldEditArt::getCrosshairTarget($player);
 					if(!($target instanceof Block)){
 						return "The block is too far/in the void/sky!";
 					}
@@ -43,13 +43,13 @@ class Anchor extends Subcommand{
 		switch($mode){
 			case 0:
 				$this->getMain()->setAnchor($player, $target);
-				return "Your anchor has been set to ".Main::posToStr($target).".";
+				return "Your anchor has been set to ".WorldEditArt::posToStr($target).".";
 			case 1:
 				$anchor = $this->getMain()->getAnchor($player);
 				if(!($anchor instanceof Position)){
 					return "You don't have an anchor selected!";
 				}
-				return "Your anchor is at ".Main::posToStr($anchor).".";
+				return "Your anchor is at ".WorldEditArt::posToStr($anchor).".";
 			default:
 				return null;
 		}

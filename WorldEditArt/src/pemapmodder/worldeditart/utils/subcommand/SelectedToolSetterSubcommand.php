@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\player\PlayerData;
 use pemapmodder\worldeditart\utils\provider\player\SelectedTool;
 use pocketmine\block\Air;
@@ -16,12 +16,12 @@ class SelectedToolSetterSubcommand extends Subcommand{
 	/** @var string */
 	private $defaultPrefix;
 	/**
-	 * @param Main $main
+	 * @param WorldEditArt $main
 	 * @param string $name
 	 * @param int $id
 	 * @param string $defaultPrefix
 	 */
-	public function __construct(Main $main, $name, $id, $defaultPrefix){
+	public function __construct(WorldEditArt $main, $name, $id, $defaultPrefix){
 		parent::__construct($main);
 		$this->name = $name;
 		$this->id = $id;

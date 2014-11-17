@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\macro;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\Cache;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
@@ -93,7 +93,7 @@ class Macro implements Cache{
 		}
 		return $this->anchor;
 	}
-	public function execute(ServerScheduler $scheduler, Position $anchor, Main $main){
+	public function execute(ServerScheduler $scheduler, Position $anchor, WorldEditArt $main){
 		$ticks = 0;
 		foreach($this->ops as $op){
 			if($op->getType() === MacroOperation::TYPE_WAIT){

@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
@@ -11,18 +11,18 @@ use pocketmine\utils\TextFormat;
 const IS_DEBUGGING = \pemapmodder\worldeditart\IS_DEBUGGING;
 
 class SubcommandMap extends Command implements PluginIdentifiableCommand{
-	/** @var Main */
+	/** @var WorldEditArt */
 	private $main;
 	/** @var \WeakRef[] */
 	private $subcmds = [];
 	/**
 	 * @param string $name
-	 * @param Main $main
+	 * @param WorldEditArt $main
 	 * @param string $desc
 	 * @param string $mainPerm
 	 * @param string[]|string $aliases
 	 */
-	public function __construct($name, Main $main, $desc, $mainPerm, $aliases = []){
+	public function __construct($name, WorldEditArt $main, $desc, $mainPerm, $aliases = []){
 		$this->main = $main;
 		parent::__construct($name, $desc, null, (array) $aliases);
 		$this->setPermission($mainPerm);

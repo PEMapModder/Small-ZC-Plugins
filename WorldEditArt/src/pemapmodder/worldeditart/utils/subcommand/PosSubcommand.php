@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\level\Position;
@@ -12,10 +12,10 @@ class PosSubcommand extends Subcommand{
 	/** @var bool */
 	protected $is2;
 	/**
-	 * @param Main $main
+	 * @param WorldEditArt $main
 	 * @param bool $is2
 	 */
-	public function __construct(Main $main, $is2){
+	public function __construct(WorldEditArt $main, $is2){
 		parent::__construct($main);
 		$this->is2 = $is2;
 	}
@@ -62,7 +62,7 @@ class PosSubcommand extends Subcommand{
 			}
 		}
 		if($flag === 2){
-			$selected = Main::getCrosshairTarget($player);
+			$selected = WorldEditArt::getCrosshairTarget($player);
 			if(!($selected instanceof Position)){
 				return "The block is too far/in the void/in the sky.";
 			}

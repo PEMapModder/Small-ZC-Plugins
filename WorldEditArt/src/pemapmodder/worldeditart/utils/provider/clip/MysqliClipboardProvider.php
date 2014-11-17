@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\provider\clip;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\clip\Clip;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
@@ -10,7 +10,7 @@ use pocketmine\math\Vector3;
 class MysqliClipboardProvider extends CachedClipboardProvider{
 	/** @var \mysqli */
 	private $db;
-	public function __construct(Main $main, \mysqli $db){
+	public function __construct(WorldEditArt $main, \mysqli $db){
 		parent::__construct($main);
 		$db->query("CREATE TABLE IF NOT EXISTS clipboard_blocks (
 				name VARCHAR(64),

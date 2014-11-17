@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\events\space;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\BlockList;
 use pemapmodder\worldeditart\utils\spaces\Space;
 use pocketmine\Player;
@@ -13,7 +13,7 @@ class SpaceReplaceEvent extends SpaceEvent{
 	private $from;
 	/** @var BlockList */
 	private $to;
-	public function __construct(Main $main, Space $space, Player $player, array $from, BlockList $to){
+	public function __construct(WorldEditArt $main, Space $space, Player $player, array $from, BlockList $to){
 		parent::__construct($main, $space, $player);
 		$this->from = $from;
 		$this->to = $to;

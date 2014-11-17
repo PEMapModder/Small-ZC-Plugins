@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\spaces;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
@@ -177,6 +177,6 @@ class CuboidSpace extends Space{
 		return $this->baked0->getLevel();
 	}
 	public function __toString(){
-		return "a cuboid from ".Main::v3ToStr($this->raw0)." to ".Main::posToStr($this->raw1);
+		return "a cuboid from ".WorldEditArt::v3ToStr($this->raw0)." to ".WorldEditArt::posToStr($this->raw1);
 	}
 }
