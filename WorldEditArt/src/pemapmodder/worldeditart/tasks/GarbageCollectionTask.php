@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\tasks;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\Cached;
 use pocketmine\scheduler\PluginTask;
 
@@ -11,7 +11,7 @@ class GarbageCollectionTask extends PluginTask{
 	private $cached;
 	/** @var number */
 	private $expiry;
-	public function __construct(Main $main, Cached $cached){
+	public function __construct(WorldEditArt $main, Cached $cached){
 		parent::__construct($main);
 		$this->cached = $cached;
 		$this->expiry = $main->getConfig()->get("data providers")["cache time"];

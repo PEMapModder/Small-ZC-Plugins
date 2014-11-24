@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\provider\macro;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\tasks\GarbageCollectionTask;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\provider\Cached;
@@ -10,7 +10,7 @@ use pemapmodder\worldeditart\utils\provider\Cached;
 abstract class CachedMacroDataProvider extends MacroDataProvider implements Cached{
 	/** @var Macro[] */
 	private $caches = [];
-	public function __construct(Main $main){
+	public function __construct(WorldEditArt $main){
 		parent::__construct($main);
 		$this->initGC();
 	}

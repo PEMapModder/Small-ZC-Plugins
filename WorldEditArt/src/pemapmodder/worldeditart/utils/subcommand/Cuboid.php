@@ -2,6 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
@@ -9,6 +10,13 @@ use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
 class Cuboid extends Subcommand{
+	private $shootEnabled;
+	private $growEnabled;
+	public function __construct(WorldEditArt $main, $shoot, $grow){
+		parent::__construct($main);
+		$this->shootEnabled = $shoot;
+		$this->growEnabled = $grow;
+	}
 	public function getName(){
 		return "cuboid";
 	}

@@ -2,12 +2,12 @@
 
 namespace pemapmodder\worldeditart\utils\provider\player;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 
 class SQLite3PlayerDataProvider extends SQLPlayerDataProvider{
 	/** @var \SQLite3 */
 	private $db;
-	public function __construct(Main $main, $path){
+	public function __construct(WorldEditArt $main, $path){
 		parent::__construct($main);
 		$this->db = new \SQLite3($main->getDataFolder().$path);
 		$this->db->query("CREATE TABLE IF NOT EXISTS selected_tools (

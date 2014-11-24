@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\provider\macro;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\macro\MacroOperation;
 use pocketmine\block\Block;
@@ -13,7 +13,7 @@ use pocketmine\nbt\tag;
 class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 	/** @var string */
 	private $path;
-	public function __construct(Main $main, $path){
+	public function __construct(WorldEditArt $main, $path){
 		parent::__construct($main);
 		$this->path = $path;
 	}

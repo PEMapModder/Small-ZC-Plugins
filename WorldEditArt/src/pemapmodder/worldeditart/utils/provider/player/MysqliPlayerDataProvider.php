@@ -2,12 +2,12 @@
 
 namespace pemapmodder\worldeditart\utils\provider\player;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 
 class MysqliPlayerDataProvider extends SQLPlayerDataProvider{
 	/** @var \mysqli */
 	private $db;
-	public function __construct(Main $main, \mysqli $db){
+	public function __construct(WorldEditArt $main, \mysqli $db){
 		parent::__construct($main);
 		$this->db = $db;
 		$this->db->query("CREATE TABLE IF NOT EXISTS selected_tools (

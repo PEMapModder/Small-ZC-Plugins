@@ -1,0 +1,4 @@
+name: VotifierPe
+author: PEMapModder
+main: votifierpe\VotifierPE
+api: [1.4.0]

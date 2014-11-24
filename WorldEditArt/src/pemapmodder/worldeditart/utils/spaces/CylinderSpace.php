@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\spaces;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
@@ -116,7 +116,7 @@ class CylinderSpace extends Space{
 		return $out;
 	}
 	public function __toString(){
-		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".Main::posToStr($this->base)." with {$this->height} blocks long, with a total of ".count($this->getPosList())." blocks.";
+		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".WorldEditArt::posToStr($this->base)." with {$this->height} blocks long, with a total of ".count($this->getPosList())." blocks.";
 	}
 	public static function axisToStr($axis){
 		if($axis === self::X){

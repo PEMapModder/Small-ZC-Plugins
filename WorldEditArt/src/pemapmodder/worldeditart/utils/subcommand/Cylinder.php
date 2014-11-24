@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -29,7 +29,7 @@ class Cylinder extends Subcommand{
 		$level = $player->getLevel();
 		$radius = floatval(array_shift($args));
 		$height = (int) array_shift($args);
-		$axis = Main::directionNumber2Array($player->getDirection());
+		$axis = WorldEditArt::directionNumber2Array($player->getDirection());
 		while(count($args) > 0){
 			$arg = array_shift($args);
 			switch($arg){
@@ -57,15 +57,15 @@ class Cylinder extends Subcommand{
 							break;
 						case "l":
 						case "left":
-							$axis = Main::directionNumber2Array(Main::rotateDirectionNumberClockwise($player->getDirection(), 3));
+							$axis = WorldEditArt::directionNumber2Array(WorldEditArt::rotateDirectionNumberClockwise($player->getDirection(), 3));
 							break;
 						case "r":
 						case "right":
-							$axis = Main::directionNumber2Array(Main::rotateDirectionNumberClockwise($player->getDirection(), 1));
+							$axis = WorldEditArt::directionNumber2Array(WorldEditArt::rotateDirectionNumberClockwise($player->getDirection(), 1));
 							break;
 						case "b":
 						case "back":
-							$axis = Main::directionNumber2Array(Main::rotateDirectionNumberClockwise($player->getDirection(), 2));
+							$axis = WorldEditArt::directionNumber2Array(WorldEditArt::rotateDirectionNumberClockwise($player->getDirection(), 2));
 							break;
 
 					}

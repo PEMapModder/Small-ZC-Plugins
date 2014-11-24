@@ -2,16 +2,16 @@
 
 namespace pemapmodder\worldeditart\utils\provider\clip;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\DataProvider;
 
 abstract class ClipboardProvider implements DataProvider{
 	private $main;
-	public function __construct(Main $main){
+	public function __construct(WorldEditArt $main){
 		$this->main = $main;
 	}
 	/**
-	 * @return Main
+	 * @return WorldEditArt
 	 */
 	public function getMain(){
 		return $this->main;

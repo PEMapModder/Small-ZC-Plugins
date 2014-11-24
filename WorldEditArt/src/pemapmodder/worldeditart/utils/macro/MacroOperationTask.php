@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\macro;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\scheduler\PluginTask;
 
@@ -11,7 +11,7 @@ class MacroOperationTask extends PluginTask{
 	private $op;
 	/** @var Position */
 	private $anchor;
-	public function __construct(Main $main, MacroOperation $op, Position $anchor){
+	public function __construct(WorldEditArt $main, MacroOperation $op, Position $anchor){
 		parent::__construct($main);
 		$this->op = $op;
 		$this->anchor = $anchor;

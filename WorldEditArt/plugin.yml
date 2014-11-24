@@ -1,11 +1,11 @@
 ---
 name: WorldEditArt
 author: PEMapModder
-version: 1.0.0_dev_#034
+version: 1.0.0_beta_dev_#036
 api:
 - 1.0.0
 load: POSTWORLD
-main: pemapmodder\worldeditart\Main
+main: pemapmodder\worldeditart\WorldEditArt
 description: A powerful advanced world editor
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/WorldEditArt
 permissions:

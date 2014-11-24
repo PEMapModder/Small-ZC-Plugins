@@ -2,7 +2,7 @@
 
 namespace pemapmodder\worldeditart\utils\provider\macro;
 
-use pemapmodder\worldeditart\Main;
+use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\macro\MacroOperation;
 use pocketmine\block\Block;
@@ -11,7 +11,7 @@ use pocketmine\math\Vector3;
 class MysqliMacroDataProvider extends CachedMacroDataProvider{
 	/** @var \mysqli */
 	private $db;
-	public function __construct(Main $main, \mysqli $db){
+	public function __construct(WorldEditArt $main, \mysqli $db){
 		parent::__construct($main);
 		$this->db = $db;
 		$this->db->query("CREATE TABLE IF NOT EXISTS macros (
