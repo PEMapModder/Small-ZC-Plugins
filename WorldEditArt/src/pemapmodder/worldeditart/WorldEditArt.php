@@ -237,7 +237,7 @@ class WorldEditArt extends PluginBase implements Listener{
 			$cmds[] = new MacroSubcommand($this);
 		}
 		$misc = $config["miscellaneous"];
-		if($misc["selecting points by //pos1 (or //1) and //pos2 (or //2"]){
+		if($misc["selecting points by //pos1 (or //1) and //pos2 (or //2)"]){
 			$cmds[] = new PosSubcommand($this, false);
 			$cmds[] = new PosSubcommand($this, true);
 		}

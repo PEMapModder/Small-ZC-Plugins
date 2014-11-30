@@ -1,7 +1,7 @@
 ---
 beta safety:
 # this is a config file generated/updated by the beta release of (do not modify this line)
-  version: 1.0.0_beta_dev_#035
+  version: 1.0.0_beta_dev_#044
 # as a beta release, some features are not tested.
 # For the sake of your server's safety, these features are disabled by default (marked as "false" below).
 # If you want to enable these features, change them to "true".
