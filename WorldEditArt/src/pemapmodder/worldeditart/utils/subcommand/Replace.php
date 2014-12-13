@@ -69,7 +69,7 @@ class Replace extends Subcommand{
 					return "Replacing blocks into multiple block types with percentage is disabled on this server.";
 				}
 			}
-			$to = new BlockList(array_shift($args));
+			$to = new BlockList($targets);
 		}
 		else{
 			$to = new SingleList(BlockList::getBlockFronString($targets));
