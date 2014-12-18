@@ -1,8 +1,7 @@
 name: NumericRanks
-main: pemapmodder\numranks\Main
-load: POSTWORLD
+main: NumericRanks\NumericRanks
 author: PEMapModder
-api: [1.0.0]
-version: 3.1
+api: [1.9.0]
+version: 3.2
 prefix: NumRanks
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/NumericRanks
