@@ -1,4 +1,4 @@
-WorldEditArt ![https://github.com/PEMapModder/Small-ZC-Plugins/raw/master/WorldEditArt/plugin_icon.png]()
+WorldEditArt - ![WorldEditArt](https://raw.githubusercontent.com/PEMapModder/Small-ZC-Plugins/master/WorldEditArt/plugin_icon.png)
 ===
 
 License: 
