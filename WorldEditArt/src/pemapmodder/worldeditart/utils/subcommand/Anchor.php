@@ -54,4 +54,7 @@ class Anchor extends Subcommand{
 				return null;
 		}
 	}
+	public function getAliases(){
+		return ["anc"];
+	}
 }

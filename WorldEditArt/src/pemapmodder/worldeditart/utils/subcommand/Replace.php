@@ -96,4 +96,7 @@ class Replace extends Subcommand{
 		}
 		return "$cnt block(s) have been changed.";
 	}
+	public function getAliases(){
+		return ["rpl"];
+	}
 }
