@@ -14,7 +14,7 @@ class Paste extends Subcommand{
 		return "Paste your current clip or a global clip";
 	}
 	public function getUsage(){
-		return "[clip name = default]";
+		return "[clip name = default] [g] [a|anchor]";
 	}
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.paste");
