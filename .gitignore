@@ -7,3 +7,6 @@ commit-msg.txt
 *.lnk
 
 NailedKeyboard/bin/NailedKeyboard_v*.phar
+
+WorldEditArt/changes.txt
+WorldEditArt/commit.php
