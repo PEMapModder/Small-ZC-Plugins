@@ -41,7 +41,7 @@ class NumericRanks extends PluginBase
 	{
 		$rank = new Rank($this, $rankName);
 		
-		if($rank->getData() == null) return null;
+		if($rank->getData() == null) throw new \RuntimeException("Rank $rankName does NOT exist");
 		
 		return $rank;
 	}
