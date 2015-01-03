@@ -4,19 +4,62 @@ namespace NumericRanks;
 
 use pocketmine\plugin\PluginBase;
 
+use NumericRanks\data\Rank;
+
+use pocketmine\utils\Config;
+
+/*
+
+	##    ## ##     ## ##     ## ######## ########  ####  ######  ########     ###    ##    ## ##    ##  ######  #### 
+	###   ## ##     ## ###   ### ##       ##     ##  ##  ##    ## ##     ##   ## ##   ###   ## ##   ##  ##    ## #### 
+	####  ## ##     ## #### #### ##       ##     ##  ##  ##       ##     ##  ##   ##  ####  ## ##  ##   ##       #### 
+	## ## ## ##     ## ## ### ## ######   ########   ##  ##       ########  ##     ## ## ## ## #####     ######   ##  
+	##  #### ##     ## ##     ## ##       ##   ##    ##  ##       ##   ##   ######### ##  #### ##  ##         ##      
+	##   ### ##     ## ##     ## ##       ##    ##   ##  ##    ## ##    ##  ##     ## ##   ### ##   ##  ##    ## #### 
+	##    ##  #######  ##     ## ######## ##     ## ####  ######  ##     ## ##     ## ##    ## ##    ##  ######  #### 
+
+*/
+
 class NumericRanks extends PluginBase
 {
-	private $cfg;
-	
 	public function onEnable()
 	{
-		$this->loadConfig();
+		$this->saveDefaultConfig();
 	}
 	
-	public function loadConfig()
+	/*
+		   ###    ########  #### 
+		  ## ##   ##     ##  ##  
+		 ##   ##  ##     ##  ##  
+		##     ## ########   ##  
+		######### ##         ##  
+		##     ## ##         ##  
+		##     ## ##        #### 
+	*/
+	
+	public function getRank($rankName)
 	{
-		$this->saveDefaultConfig();
+		$rank = new Rank($this, $rankName);
 		
-		$this->cfg = $this->getConfig();
+		if($rank->getData() == null) return null;
+		
+		return $rank;
+	}
+	
+	public function getRanks()
+	{
+		$ranks = [];
+		
+		foreach(array_keys($this->getConfig()->get("ranks")) as $rankName)
+		{
+			array_push($ranks, new Rank($this, $rankName));
+		}
+		
+		return $ranks;
+	}
+	
+	public function reload()
+	{
+		$this->reloadConfig();
 	}
 }
