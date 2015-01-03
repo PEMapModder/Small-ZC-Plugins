@@ -287,7 +287,7 @@ class WorldEditArt extends PluginBase implements Listener{
 		if(!$this->doWand){
 			return;
 		}
-		if($tool->getWand()->match($p->getInventory()->getItemInHand())){
+		if($tool->getWand()->match($p->getInventory()->getItemInHand()) and !$event->getBlock()->getId())){
 			$this->setAnchor($p, $event->getBlock());
 			$event->setCancelled();
 		}
