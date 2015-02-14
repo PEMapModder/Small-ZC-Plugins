@@ -1,2 +1,12 @@
 ---
+ranks:
+  Player:
+    defaultRank: true
+    index: 0
+  Trusted:
+    index: 100
+  Admin: 
+    index: 150
+  Owner:
+    index: 200
 ...
