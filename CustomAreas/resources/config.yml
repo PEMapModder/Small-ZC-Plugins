@@ -1,0 +1,13 @@
+---
+database:
+  # type `sqlite` or `mysql` below
+  type: sqlite
+  sqlite:
+    file: data/areas.sq3
+  mysql:
+    host: localhost
+    username: root
+    password: ""
+    schema: customareas
+    port: 3306
+...

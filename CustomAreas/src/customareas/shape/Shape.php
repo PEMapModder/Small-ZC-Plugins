@@ -3,9 +3,13 @@
 namespace customareas\shape;
 
 use pocketmine\level\Position;
+use pocketmine\Server;
 
-interface Shape{
-	public function __construct($data);
+interface Shape extends \Serializable{
 	public function isInside(Position $pos);
-	public function export();
+	public function init(Server $server);
+	/**
+	 * @return \pocketmine\level\Level
+	 */
+	public function getLevel();
 }
