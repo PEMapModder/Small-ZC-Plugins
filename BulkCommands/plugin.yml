@@ -1,14 +1,18 @@
+---
 name: BulkCommands
-version: 1.0.0
-api: [1.6.0]
+version: 1.0-build#007
+api:
+- 1.6.0
 main: pemapmodder\bulkcommands\BulkCommands
 author: PEMapModder
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/BulkCommands
 commands:
   bulkcmd:
-    aliases: [bc]
+    aliases:
+    - bc
     description: Enable/Disable BulkCommands
-    usage: /bc <format> - Use %s to represent the content input; Use %% to represent %; Using %s multiple times is OK.
+    usage: /bc <format> - Use %s to represent the content input; Use %% to represent
+      %; Using %s multiple times is OK.
     permission: bulkcommands.cmd
 permissions:
   bulkcommands:
@@ -19,8 +23,12 @@ permissions:
         description: Permission to use the command
         default: true
       bulkcommands.noslash:
-        description: Permission to enable BulkCommands without starting with a slash. Giving this permission may make spamming easier.
+        description: Permission to enable BulkCommands without starting with a slash.
+          Giving this permission may make spamming easier.
         default: op
       bulkcommands.silent:
-        description: If a player has this permission node on and uses the /bc command, no messages will be sent to him. However, error messages (not warning messages) will still be sent.
+        description: If a player has this permission node on and uses the /bc command,
+          no messages will be sent to him. However, error messages (not warning messages)
+          will still be sent.
         default: false
+...

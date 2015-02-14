@@ -15,6 +15,7 @@ class BulkCommands extends PluginBase implements Listener{
 	/** @var BulkCommandSession[] */
 	private $sessions = [];
 	public function onEnable(){
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		foreach($this->getServer()->getOnlinePlayers() as $p){
 			$this->startSession($p);
 		}
@@ -63,7 +64,7 @@ class BulkCommands extends PluginBase implements Listener{
 			return false;
 		}
 		$format = implode(" ", $args);
-		if(substr($format, 0, -1) !== "/" and !$sender->hasPermission("bulkcommands.noslash")){
+		if(substr($format, 0, 1) !== "/" and !$sender->hasPermission("bulkcommands.noslash")){
 			if($send){
 				$sender->sendMessage("You don't have permission to use BulkCommands without the format starting with a slash!");
 			}
@@ -90,7 +91,7 @@ class BulkCommands extends PluginBase implements Listener{
 	}
 	public function onPlayerCmdPreprocess(PlayerCommandPreprocessEvent $event){
 		$session = $this->getSession($event->getPlayer());
-		if($session->format !== null){
+		if($session->format !== null and substr($event->getMessage(), 0, 1) !== "/"){
 			$event->setMessage($session->format($event->getMessage()));
 		}
 	}
