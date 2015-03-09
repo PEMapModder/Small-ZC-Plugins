@@ -254,9 +254,15 @@ class WorldEditArt extends PluginBase implements Listener{
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
 	public function onDisable(){
-		$this->macroDataProvider->close();
-		$this->playerDataProvider->close();
-		$this->clipboardProvider->close();
+		if($this->macroDataProvider){
+			$this->macroDataProvider->close();
+		}
+		if($this->playerDataProvider){
+			$this->playerDataProvider->close();
+		}
+		if($this->clipboardProvider){
+			$this->clipboardProvider->close();
+		}
 	}
 
 ////////////////////
