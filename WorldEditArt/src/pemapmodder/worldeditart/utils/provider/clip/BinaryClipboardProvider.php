@@ -38,7 +38,7 @@ class BinaryClipboardProvider extends CachedClipboardProvider{
 		$blocks = [];
 		for($i = 0; $i < $length; $i++){
 			if($reader->feof()){
-				throw new \Exception("Unexpected end of file");
+				throw new \UnderflowException("Unexpected end of file");
 			}
 			$x = $reader->readInt();
 			$y = $reader->readShort();

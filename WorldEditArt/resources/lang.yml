@@ -1,0 +1,83 @@
+provider.mysqli.fail-and-use-dummy: Cannot connect to MySQLi remote database. The database will be assumed blank and read-only.
+provider.player.unknown: Unknown player data provider type $type. The database will be assumed blank and read-only.
+provider.clipboard.unknown: Unknown clipboard provider type $type A temporary-memory clipboard provider will be used.
+provider.macro.mysqli.fail-and-use-dummy: Unable to connect to the MySQLi database of macros. A RAM database will be used.
+command.main.description: WorldEditArt main command
+jump.too-far: The block is too far/in the void/sky; can't jump there!
+common.mysqli.failure: Error trying to connect to common MySQLi database
+expr.v3: $x, $y, $z
+expr.pos: $x, $y, $z in world $level
+event.cancel-message: rejected by another plugin
+error.stringreader.unexpected-eof: Unexpected end of file
+clip.default-name: default
+error.macro.append-non-appendable: Trying to append to non-appendable macro
+error.macro.hibernate-non-appendable: Trying to set hibernating mode of non-appendable macro
+error.macro.get-anchor-non-appendable: Trying to get anchor of non-appendable macro
+error.macro.wait-time-outofbounds: Macro wait time cannot exceed (0x100000000 / 20) seconds
+error.macro.wait-cant-operate: MacroOperation is of type TRUE (wait) not FALSE (operate) thus cannot be operated
+error.macro.operate-no-length: MacroOperation is of type FALSE (operate) not TRUE (wait) thus no length can be resolved
+error.clip.parse.message: Error parsing global clip $name: $message
+error.clip.parse.unexpected-eol: Unexpected end of file
+error.clip.invalid-type: Trying to set clipboard value to non-clip
+error.clip.clip-name-overflow: Clip names must not exceed 64 characters!
+error.macro.invalid-type: Trying to set macro data provider value to non-macro
+error.macro.save-non-appendable: Trying to save non-appendable macro $name into macro data provider
+error.macro.mcr.cannot-open-write-stream: Unable to open stream. Maybe the macro name is not a valid filename?
+error.player.invalid-type: Player data passed to FilePlayerDataProvider must be instance of PlayerData, $type given
+error.selected-tool.constructor-invalid-type: Invalid arguments passed to SelectedTool constructor!
+error.block-pattern.parse.unknown-block: Block '$block' cannot be resolved.
+error.block-pattern.parse.percentage-overflow: Total percentage cannot be larger than 100%.
+error.block-list.no-blocks: BlockList::getRandom() got no blocks returned!
+error.space.cuboid.different-levels: Attempt to set CuboidSpace to two positions of different levels ("$levelA" and "$levelB")!
+space.cuboid.list-pos-status: "\nListed instances: $count"
+error.space.exceedworld: Unexpected parameters passed to $class such that a selection that is larger than the world has been reached. This is NOT a critical error. This will NOT affect your world.
+space.sphere.name: a sphere centered at $pos of radius $radius
+subcmd.anchor.name: anchor
+subcmd.anchor.desc: Set/View your anchor
+subcmd.anchor.usage: "[v|view|c|crosshair]"
+subcmd.anchor.crosshair.aliases: [c, crosshair]
+subcmd.anchor.crosshair.block-too-far: The block is too far/in the void/sky!
+subcmd.anchor.view.aliases: [v, view]
+subcmd.anchor.set.confirm: Your anchor has been set to $pos.
+subcmd.anchor.view.none-selected: You don't have an anchor selected!
+subcmd.anchor.view.info: Your anchor is at $pos.
+subcmd.anchor.aliases: [anc]
+subcmd.copy.name: copy
+subcmd.copy.desc: Copy your selection
+subcmd.copy.usage: "[-a|-anchor [name=default] [g|global]"
+subcmd.copy.anchor-args: ["-a", "-anchor"]
+subcmd.copy.default-name: default
+subcmd.copy.global-args: '["-g", "-global]'
+subcmd.copy.confirm: Clip $name copied.
+subcmd.cuboid.name: cuboid
+subcmd.cuboid.desc: Make a cuboid selection using your crosshair
+subcmd.cuboid.usage: "<s|shoot> <diagonal length> [a|adverse] OR  <g|grow> <x+> <y+> <z+> [x-=x+] [y-=y+] [z-=z+]"
+subcmd.cuboid.aliases: [cub]
+subcmd.cuboid.shoot-args: [s, shoot]
+subcmd.cuboid.grow-args: [g, grow]
+subcmd.cuboid.body-outside-building-height: You must be inside the building height!
+subcmd.cuboid.selection-outside-building-height: The selected area exceeded the world height limit!
+subcmd.cuboid.shoot.adverse-args: [a, adverse]
+subcmd.cuboid.confirm: Cuboid selection set: $selection ($count blocks)
+subcmd.cuboid.grow.reverse: [r, reverse]
+subcmd.cut.name: cut
+subcmd.cut.desc: Copy your selection and delete the blocks inside it
+subcmd.cylinder.name: cylinder
+subcmd.cylinder.desc: Make a cylinder selection
+subcmd.cylinder.usage: "<radius> <height> [d <m|me|u|up|d|down|l|left|r|right|b|back>] [a|anchor]"
+subcmd.cylinder.arg.anchor: [a, anchor]
+subcmd.cylinder.arg.direction: [d, dir, direction]
+subcmd.cylinder.arg.dir.current-direction: [m, me]
+subcmd.cylinder.arg.dir.up: [u, up]
+subcmd.cylinder.arg.dir.down: [d, down]
+subcmd.cylinder.arg.dir.left: [l, left]
+subcmd.cylinder.arg.dir.right: [r, right]
+subcmd.cylinder.arg.dir.back: [b, back]
+subcmd.cylinder.confirm: Your selection is now $selection
+subcmd.cylinder.aliases: [cyl]
+subcmd.desel.name: desel
+subcmd.desel.desc: Remove your selection
+subcmd.desel.usage: ""
+subcmd.macro.name: macro
+subcmd.macro.desc: Manage macros
+subcmd.macro.usage: "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>"

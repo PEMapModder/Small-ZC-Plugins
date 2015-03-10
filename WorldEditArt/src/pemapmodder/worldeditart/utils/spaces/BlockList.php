@@ -207,7 +207,7 @@ class BlockList{
 				}
 			}
 			trigger_error("BlockList::getRandom() got no blocks returned", E_USER_WARNING);
-			return array_rand($this->blocks)[0];
+			return array_values($this->blocks)[0];
 		}
 	}
 }

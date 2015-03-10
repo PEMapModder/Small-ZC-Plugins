@@ -39,7 +39,7 @@ class MysqliClipboardProvider extends CachedClipboardProvider{
 	}
 	public function setClip($name, Clip $clip){
 		if(strlen($name) >= 64){
-			throw new \InvalidArgumentException("Clip names must not exceed 64 characters!"); // This exception will be caught at SubcommandMap.php
+			throw new \OverflowException("Clip names must not exceed 64 characters!"); // This exception will be caught at SubcommandMap.php
 		}
 		$blocks = $clip->getBlocks();
 		$this->deleteClip($name);

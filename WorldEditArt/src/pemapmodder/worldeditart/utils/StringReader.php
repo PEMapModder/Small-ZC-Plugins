@@ -19,7 +19,7 @@ class StringReader{
 	public function read($length = 1){
 		for($buffer = ""; $length > 0; $length--){
 			if($this->feof()){
-				throw new \Exception("Unexpected end of file");
+				throw new \UnderflowException("Unexpected end of file");
 			}
 			$buffer .= array_shift($this->buffer);
 		}
