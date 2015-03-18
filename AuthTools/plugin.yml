@@ -1,0 +1,7 @@
+name: AuthTools
+version: 1.0.0_build_#001
+api: 1.8.0
+depends: [SimpleAuth]
+author: PEMapModder
+main: authtools\AuthTools
+description: A plugin that works around with SimpleAuth to add different featuers

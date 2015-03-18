@@ -1,0 +1,42 @@
+---
+registerAction: passwordPrompt
+loginAction: loginPrompt
+actions:
+  loginPrompt:
+    message: Please login by opening chat box, typing in your password and pressing enter.
+    inputHandler: passwordVerify
+    successAction: authenticate
+    failureAction: sendBadAuth
+  sendBadAuth:
+    message: Password is incorrect! Try again!
+    inputHandler: none
+    successAction: loginPrompt
+    failureAction: null
+
+  passwordPrompt:
+    message: "Please register by opening chat box, typing in your password and pressing enter.\nOther players won't be able to read your password."
+    inputHandler: passwordValidate
+    successAction: passwordConfirm
+    failureAction: passwordPrompt
+  passwordConfirm:
+    message: Please enter your password again to confirm.
+    inputHandler: passwordCheck
+    successAction: emailPrompt
+    failureAction: badPasswordRegister
+  badPasswordRegister:
+    message: The two passwords are different! Let's start again.
+    inputHandler: none
+    successAction: passwordPrompt
+    failureAction: null
+  # native actions:
+  # authenticate: set the player as SimpleAuth-authenticated, then ends the current process (i.e. logging-in or registering)
+  # register: register the player using the saved details
+  # null: placeholder action when you want to do nothing
+  #
+  # default input handlers:
+  # none: do nothing; result is always success
+  # passwordCheck: check if the password is same as the saved password (previously saved by passwordValidate)
+  # passwordValidate: check if the password is of correct syntax, i.e. not too long or short, and save the password (hash) if it is success
+  # passwordVerify: check if the input matches the password record, and adds the counter of failures. If the number of failures is larger than the maxLoginFailures specified below, the player is kicked.
+maxLoginFailures: 1
+...

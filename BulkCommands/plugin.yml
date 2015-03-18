@@ -1,6 +1,6 @@
 ---
 name: BulkCommands
-version: 1.0-build#007
+version: 1.0-build#011
 api:
 - 1.6.0
 main: pemapmodder\bulkcommands\BulkCommands

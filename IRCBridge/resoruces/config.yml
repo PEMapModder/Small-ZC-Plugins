@@ -1,0 +1,9 @@
+---
+server:
+#  ip: 0.0.0.0 # don't uncomment and change this unless you know what you're doing
+  port: 6667
+# Configure service providers used by the plugin
+integration:
+  auth: pemapmodder\ircbridge\integration\auth\DummyAuthIntegration # If you have the SimpleAuth plugin, you are strongly advised to change this to pemapmodder\ircbridge\integration\auth\SimpleAuthAuthIntegration
+  channels: pemapmodder\ircbridge\integration\channels\DefaultChannelsIntegration # If you have the ChatChannels plugin, you are strongly encouraged to change thish to pemapmodder\ircbridge\integration\channels\ChatChannelsChannelsIntegration
+...

@@ -1,3 +1,3 @@
-bin
+BulkCommands/bin
 ===
-A directory that stores compiled binaries (.phar files) of commits
+This directory stores a .phar build of the latest built version, but not necessarily the latest commit.
