@@ -1,0 +1,7 @@
+---
+name: RARFix
+version: "1.007"
+api: 1.11.0
+main: rarfix\RARFix
+author: PEMapModder
+...
