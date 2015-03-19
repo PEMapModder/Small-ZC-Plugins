@@ -3,6 +3,7 @@
 namespace pemapmodder\ircbridge\bridge\protocol;
 
 class NickCommand extends Command{
+	public static $name = "NICK";
 	/** @var string */
 	public $user = false, $nick;
 	protected function init($args, $prefix){

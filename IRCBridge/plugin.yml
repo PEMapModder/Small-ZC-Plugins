@@ -1,6 +1,6 @@
 ---
 name: IRCBridge
-version: "1.001"
+version: "1.003"
 api: 1.7.0
 main: pemapmodder\ircbridge\IRCBridge
 author: PEMapModder

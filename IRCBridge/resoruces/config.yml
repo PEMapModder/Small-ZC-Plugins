@@ -2,6 +2,8 @@
 server:
 #  ip: 0.0.0.0 # don't uncomment and change this unless you know what you're doing
   port: 6667
+  # Server name displayed when client connects (as part of the RPL_YOURHOST message and possibly other uses)
+  name: PocketMine IRCBridge Network
 # Configure service providers used by the plugin
 integration:
   auth: pemapmodder\ircbridge\integration\auth\DummyAuthIntegration # If you have the SimpleAuth plugin, you are strongly advised to change this to pemapmodder\ircbridge\integration\auth\SimpleAuthAuthIntegration

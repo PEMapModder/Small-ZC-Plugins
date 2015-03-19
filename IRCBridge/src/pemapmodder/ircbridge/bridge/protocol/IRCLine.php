@@ -7,8 +7,8 @@ class IRCLine{
 	private $prefix, $cmd;
 	/** @var string[] */
 	private $args;
+	/** @var bool */
 	public static $init = false;
-	public static $cmds = [];
 	public function __construct($line){
 		if(preg_match("/(:([^ ]+) )?([A-Z0-9]+) (.*)\$/i", trim($line), $matches)){
 			list(, , $this->prefix, $this->cmd, $args) = $matches;
@@ -29,7 +29,16 @@ class IRCLine{
 		return $this->cmd;
 	}
 	public function getCommand(){
-
+		if(!self::$init){
+			self::init();
+		}
+		if(!isset(Command::$cmds[strtoupper($this->cmd)])){
+			return null;
+		}
+		$class = Command::$cmds[strtoupper($this->cmd)];
+		/** @var Command $instance */
+		$instance = new $class($this);
+		return $instance;
 	}
 	public function getArguments(){
 		return $this->args;
@@ -50,9 +59,12 @@ class IRCLine{
 	}
 	public static function init(){
 		self::$init = true;
-		self::$cmds = [
+		Command::$cmds = [
 			"PASS" => PassCommand::class,
-			// etc.
+			"NICK" => NickCommand::class,
+			"USER" => UserCommand::class,
+
+			// TODO more
 		];
 	}
 }

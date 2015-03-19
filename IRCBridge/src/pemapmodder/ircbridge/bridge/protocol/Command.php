@@ -3,6 +3,7 @@
 namespace pemapmodder\ircbridge\bridge\protocol;
 
 abstract class Command{
+	public static $cmds = [];
 	/** @var string */
 	private $name;
 	public function __construct(IRCLine $line){

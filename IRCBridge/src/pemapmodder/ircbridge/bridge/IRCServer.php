@@ -53,11 +53,11 @@ class IRCServer extends Thread{
 			while(($newSock = socket_accept($this->serverSocket)) !== false){
 				socket_getpeername($newSock, $address, $port);
 				$identifier = "$address:$port";
-				$this->buffer->addRead(IRCLine::SIGNAL_OPEN_SESSION . $identifier);
+				$this->buffer->addRead(chr(IRCLine::SIGNAL_OPEN_SESSION) . $identifier);
 				$this->sockets[$identifier] = $newSock;
 			}
 			while(($line = $this->readLine($identifier)) !== false){
-				$this->buffer->addRead(IRCLine::SIGNAL_STD_LINE . "$identifier $line");
+				$this->buffer->addRead(chr(IRCLine::SIGNAL_STD_LINE) . "$identifier $line");
 			}
 		}
 		foreach($this->sockets as $socket){
@@ -74,7 +74,7 @@ class IRCServer extends Thread{
 			}elseif(($err = socket_last_error($sk)) >= SOCKET_ENOTSOCK){
 				socket_write($sk, "ERROR :Read error: " . socket_strerror($err) . "\r\n");
 				socket_close($sk);
-				$this->buffer->addRead(IRCLine::SIGNAL_CLOSE_SESSION . $identifier);
+				$this->buffer->addRead(chr(IRCLine::SIGNAL_CLOSE_SESSION) . $identifier);
 			}
 		}
 		return false;
