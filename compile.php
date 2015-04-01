@@ -110,11 +110,15 @@ function fail($reason, $code = 2){
 	exit($code);
 }
 function console($msg){
-	clearLine();
+//	clearLine();
 	echo $msg;
 	echo PHP_EOL;
 }
 function status($msg){
+	if(true){
+		console(trim($msg));
+		return;
+	}
 	global $statusPadding;
 	clearLine();
 	echo $msg;
