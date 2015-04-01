@@ -2,68 +2,32 @@
 
 namespace customareas\shape;
 
-use pocketmine\level\Level;
-use pocketmine\level\Position;
-use pocketmine\Server;
+use pocketmine\math\Vector3;
 
 class RectangularShape implements Shape{
-	/**
-	 * @var MVector2
-	 */
-	private $pos1;
-	/**
-	 * @var MVector2
-	 */
-	private $pos2;
-	private $minx;
-	private $minz;
-	private $maxx;
-	private $maxz;
-	private $levelName;
-	/**
-	 * @var Level
-	 */
-	private $level;
-	public function __construct(MVector2 $pos1, MVector2 $pos2, Level $level){
-		$this->levelName = $level->getName();
-		$this->level = $level;
-		$this->pos1 = $pos1;
-		$this->pos2 = $pos2;
-		$this->updateMaxMin();
-	}
-	public function isInside(Position $pos){
-		return ($pos->level === $this->level) and
-				($this->minx <= $pos->x) and ($pos->z <= $this->maxz) and
-				($this->minz <= $pos->z) and ($pos->x <= $this->maxx);
-	}
+	/** @var number */
+	public $fromx, $tox, $fromz, $toz;
+	/** @var string */
+	public $levelName;
 	public function serialize(){
-		return serialize([
-			$this->pos1, $this->pos2, $this->levelName
-		]);
+		$data = ["fx" => $this->fromx, "fz" => $this->fromz, "tox" => $this->tox, "toz" => $this->toz, "lv" => $this->levelName];
+		return serialize($data);
 	}
-	public function unserialize($str){
-		list($this->pos1, $this->pos2, $this->levelName) = unserialize($str);
+	public function unserialize($d){
+		$d = unserialize($d);
+		$this->fromx = $d["fx"];
+		$this->fromz = $d["fz"];
+		$this->tox = $d["tx"];
+		$this->toz = $d["tz"];
+		$this->levelName = $d["lv"];
 	}
-	/**
-	 * @param Server $server
-	 * @throws \UnexpectedValueException
-	 */
-	public function init(Server $server){
-		$this->level = $server->getLevelByName($this->levelName);
-		if(!($this->level instanceof Level)){
-			throw new \UnexpectedValueException("Level $this->levelName not found");
-		}
+	public static function getName(){
+		return "rect";
 	}
-	/**
-	 * @return \pocketmine\level\Level
-	 */
-	public function getLevel(){
-		return $this->level;
+	public function isInside(Vector3 $pos){
+		return ($this->fromx <= $pos->x) and ($this->fromz <= $pos->z) and ($this->tox >= $pos->x) and ($this->toz >= $pos->z);
 	}
-	private function updateMaxMin(){
-		$this->minx = min($this->pos1->getX(), $this->pos2->getX());
-		$this->maxx = max($this->pos1->getX(), $this->pos2->getX());
-		$this->minz = min($this->pos1->getZ(), $this->pos2->getZ());
-		$this->maxz = max($this->pos1->getZ(), $this->pos2->getZ());
+	public function getLevelName(){
+		return $this->levelName;
 	}
 }

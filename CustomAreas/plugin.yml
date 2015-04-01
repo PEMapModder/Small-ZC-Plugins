@@ -2,7 +2,8 @@
 name: CustomAreas
 authors:
 - PEMapModder
-version: 1.0.0
-api: [1.4.0]
+version: "1.001"
+api:
+- 1.4.0
 main: customareas\CustomAreas
 ...

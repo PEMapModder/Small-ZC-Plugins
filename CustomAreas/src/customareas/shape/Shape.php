@@ -2,14 +2,20 @@
 
 namespace customareas\shape;
 
-use pocketmine\level\Position;
-use pocketmine\Server;
+use pocketmine\math\Vector3;
 
 interface Shape extends \Serializable{
-	public function isInside(Position $pos);
-	public function init(Server $server);
 	/**
-	 * @return \pocketmine\level\Level
+	 * @return string
 	 */
-	public function getLevel();
+	public static function getName();
+	/**
+	 * @param Vector3 $p
+	 * @return bool
+	 */
+	public function isInside(Vector3 $p);
+	/**
+	 * @return string
+	 */
+	public function getLevelName();
 }
