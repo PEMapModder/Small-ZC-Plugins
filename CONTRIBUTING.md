@@ -16,3 +16,6 @@ Gudielines for Creating Issues
   * Confirm, if possible, that the feature is possible.
 * Do not use the issue conversation as a forum.
 * If you offend these rules, your issue may be edited, closed, locked, or even your account may be blocked from interacting with the repositories of @PEMapModder.
+* For pull requests,
+  * Please test your changes, or specify that it is untested if you don't want to or cannot
+  * Please conform to the [PocketMine contribution guidelines code style](https://github.com/PocketMine/PocketMine-MP/blob/master/CONTRIBUTING.md)

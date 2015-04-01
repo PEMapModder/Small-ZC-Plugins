@@ -1,7 +1,26 @@
 name: AuthTools
 version: 1.0.0_build_#001
 api: 1.8.0
-depends: [SimpleAuth]
+depend: [SimpleAuth]
 author: PEMapModder
 main: authtools\AuthTools
 description: A plugin that works around with SimpleAuth to add different featuers
+permission:
+  authtools:
+    description: AuthTools main permission node
+    default: false
+    children:
+      authtools.directauth:
+        description: Allow using DirectAuth (only for players)
+        default: true
+      authtools.changepw:
+        description: Allow using /changepw (only for players)
+        default: true
+      authtools.chatpw:
+        description: Allow speaking his own password in chat directly (only for players)
+        default: false
+commands:
+  changepw:
+    description: Change your password
+    usage: /changepw <oldpass> <new pass>
+    permission: authtools.changepw

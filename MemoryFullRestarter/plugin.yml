@@ -1,7 +1,7 @@
 ---
 name: MemoryFullRestarter
 author: PEMapModder
-version: 1.0#003
+version: 1.0#009
 api:
 - 1.0.0
 main: memfullrestart\MemFullRestarter

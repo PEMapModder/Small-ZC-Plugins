@@ -1,3 +1,10 @@
 ---
-limit: 768M
+limit: 1280M
+mysql: true
+host: 127.0.0.1
+user: root
+pass: ""
+schema: "mfr"
+port: 3306
+serverid: 1
 ...
