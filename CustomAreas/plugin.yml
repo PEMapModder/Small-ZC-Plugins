@@ -1,9 +1,69 @@
 ---
 name: CustomAreas
-authors:
-- PEMapModder
-version: 2.0#008
-api:
-- 1.10.0
+author: PEMapmodder
+version: 2.0#009
+api: 1.10.0
 main: customareas\CustomAreas
+permissions:
+  customareas:
+    description: CustomAreas main permission node
+    children:
+      customareas.operator:
+        description: CustomAreas operator main permission node
+        children:
+          customareas.operator.bypass:
+            description: Bypass all permission checks
+          customareas.operator.asuser:
+            description: Become a user in all areas
+      customareas.create:
+        description: Create a CustomAreas area
+        children:
+          customareas.create.free:
+            description: Create a CustomAreas area without paying
+          customareas.create.paid:
+            description: Pay and create a CustomAreas area
+            default: true
+          customareas.create.shape:
+            description: Parent node for shapes creation in CustomAreas. The permissible
+              must have the corresponding customareas.create.free or customareas.create.paid
+              node PLUS the corresponding shape permission node to create a free/paid
+              area of the specified shape.
+            children:
+              customareas.create.shape.rectangular:
+                description: Allows creating areas of rectangular shapes.
+                default: true
+              customareas.create.shape.circular:
+                description: Allows creating areas of circular shapes.
+                default: true
+              customareas.create.shape.irregular:
+                description: Allows creating areas of irregular shapes (may be laggy).
+                default: op
+      customareas.flags:
+        description: Allows setting flags for an area
+        children:
+          customareas.flags.place:
+            description: Allows setting the place flag
+            default: true
+          customareas.flags.break:
+            description: Allows setting the break flag
+            default: true
+          customareas.flags.tnt:
+            description: Allows setting the tnt flag
+            default: true
+          customareas.flags.liquid:
+            description: Allows setting the liquid flag
+            default: true
+          customareas.flags.edit:
+            description: Allows setting the edit flag
+            default: true
+          customareas.flags.openchest:
+            description: Allows setting the openchest flag
+          customareas.flags.openfurnace:
+            description: Allows setting the openfurnace flag
+          customareas.flags.open:
+            description: Allows setting the open flag
+          customareas.flags.miscinteract:
+            description: Allows setting the miscinteract flag
+          customareas.flags.touch:
+            description: Allows setting the touch flag
 ...

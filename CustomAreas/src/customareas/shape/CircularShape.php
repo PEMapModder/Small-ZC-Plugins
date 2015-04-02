@@ -19,7 +19,8 @@ class CircularShape implements Shape{
 			"rad" => $this->radius,
 			"x" => $this->centerx,
 			"z" => $this->centerz,
-			"lv" => $this->levelName
+			"lv" => $this->levelName,
+			"v" => 0
 		]);
 	}
 	public function unserialize($serialized){

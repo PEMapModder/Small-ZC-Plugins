@@ -20,7 +20,7 @@ class Line{
 		return ($this->toz - $this->fromz) / ($this->tox - $this->fromx);
 	}
 	public function getZInterceptByX($x0){
-		return $this->fromz - ($this->fromx - $x0) * $this->getSlope(); // c=mx-y
+		return $this->fromz - ($this->fromx - $x0) * $this->getSlope();
 	}
 	public function isAbsolutelyAbove(Vector2 $pt){
 		$intercept = $this->getZInterceptByX($pt->x);
@@ -33,8 +33,3 @@ class Line{
 		return self::BELOW;
 	}
 }
-
-/*
- * y=mx+c
- * c=y-mx
- */

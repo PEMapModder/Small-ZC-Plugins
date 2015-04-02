@@ -10,7 +10,7 @@ class RectangularShape implements Shape{
 	/** @var string */
 	public $levelName;
 	public function serialize(){
-		$data = ["fx" => $this->fromx, "fz" => $this->fromz, "tox" => $this->tox, "toz" => $this->toz, "lv" => $this->levelName];
+		$data = ["fx" => $this->fromx, "fz" => $this->fromz, "tox" => $this->tox, "toz" => $this->toz, "lv" => $this->levelName, "v" => 0];
 		return serialize($data);
 	}
 	public function unserialize($d){

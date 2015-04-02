@@ -5,12 +5,14 @@ namespace customareas\shape;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 
-class IrregularShape implements Shape{
+class IrregularShape implements Shape, Cached{
 	/** @var Vector2[] */
 	private $points = [];
 	/** @var Line[] */
 	private $lines;
 	private $levelName;
+	/** @var string[] */
+	private $cache = [];
 	/**
 	 * @return \pocketmine\math\Vector2[]
 	 */
@@ -34,12 +36,12 @@ class IrregularShape implements Shape{
 		}
 	}
 	public function serialize(){
-		return serialize(array_map(function(Vector2 $c){
+		return ["p" => serialize(array_map(function(Vector2 $c){
 			return "$c->x:$c->y";
-		}, $this->points));
+		}, $this->points)), "v" => 0];
 	}
 	public function unserialize($serialized){
-		$d = unserialize($serialized);
+		$d = unserialize($serialized)["p"];
 		$this->setPoints(array_map(function($str){
 			list($x, $y) = explode(":", $str);
 			return new Vector2($x, $y);
@@ -50,13 +52,29 @@ class IrregularShape implements Shape{
 	}
 	public function isInside(Vector3 $p){
 		$v2 = new Vector2($p->x, $p->z);
+		$hash = $this->hash($v2);
+		if(isset($this->cache[$hash])){
+			return $this->cache[$hash];
+		}
 		$intersects = 0;
 		foreach($this->lines as $line){
 			$intersects += $line->isAbsolutelyAbove($v2);
 		}
-		return (bool) ($intersects & 1);
+		$this->cache[$hash] = $result = (bool) ($intersects & 1);
+		return $result;
 	}
 	public function getLevelName(){
 		return $this->levelName;
+	}
+	public function hash($x, $z = null){
+		if($x instanceof Vector2){
+			return $this->hash($x->x, $x->y);
+		}
+		$x = round($x, 1);
+		$z = round($z, 1);
+		return "$x:$z";
+	}
+	public function cleanCache(){
+		$this->cache = [];
 	}
 }

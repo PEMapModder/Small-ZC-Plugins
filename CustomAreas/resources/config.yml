@@ -1,13 +1,21 @@
 ---
 database:
-  # type `sqlite` or `mysql` below
-  type: sqlite
-  sqlite:
-    file: data/areas.sq3
+  # database type to use. Options: local, mysql (MySQL IS NOT SUPPORTED YET! DON'T SELECT IT!)
+  type: local
+  # LocalDatabase creates a file for each area, and also a file for indexing.
+  local:
+    # directories will be automatically created if they do not exist.
+    index-file: areas/.index
+    # $${areaname} will be replaced by the area's lowercase name
+    # You may need to delete the index file or just rename existing area files if you modified this option, because the areas are loaded according to this option.
+    area-file: "areas/$${areaname}.dat"
+  # MySQLDatabase stores data to a MySQL database. It is more effective to use a LocalDatabase.
   mysql:
     host: localhost
+    port: 3306
     username: root
     password: ""
     schema: customareas
-    port: 3306
+    # you most likely don't want to change this
+    socket: ""
 ...
