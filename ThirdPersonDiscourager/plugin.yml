@@ -1,6 +1,6 @@
 ---
 name: ThirdPersonDiscourager
-version: "1.003"
+version: "1.005"
 api: 1.5.0
 author: PEMapModder
 main: thirdpersondiscour\ThirdPersonDiscour
@@ -10,7 +10,7 @@ permissions:
     default: op
 commands:
   3pdc:
-    description: Discourage/Un-discourage a player from using third person
-    usage: /3pdc <player>
+    description: Discourage/Un-discourage/Check a player from using third person
+    usage: /3pdc <player> [.check]
     permission: thirdpersondiscour
 ...

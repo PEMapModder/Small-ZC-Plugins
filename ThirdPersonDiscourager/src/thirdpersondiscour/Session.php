@@ -126,4 +126,7 @@ class Session{
 		$this->enabled = false;
 		$this->resetOverriden();
 	}
+	public function __toString(){
+		return $this->player->getName();
+	}
 }

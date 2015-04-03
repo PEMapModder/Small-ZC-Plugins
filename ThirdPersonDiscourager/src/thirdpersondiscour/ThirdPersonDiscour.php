@@ -3,6 +3,8 @@
 namespace thirdpersondiscour;
 
 use pocketmine\block\Block;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
@@ -70,5 +72,33 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 	}
 	public function getSession(Player $player){
 		return isset($this->sessions[$id = $player->getId()]) ? $this->sessions[$id] : null;
+	}
+	public function onCommand(CommandSender $sender, Command $c, $l, array $args){
+		if($c->getName() === "3pdc"){
+			if(($name = array_shift($args)) === null){
+				return false;
+			}
+			if(!(($player = $this->getServer()->getPlayer($name)) instanceof Player)){
+				$sender->sendMessage("There is no player online by that name.");
+				return true;
+			}
+			if(!(($ses = $this->getSession($player)) instanceof Session)){
+				$sender->sendMessage("That player is still building terrain.");
+				return true;
+			}
+			if(($arg = array_shift($args)) === ".check" or $arg === ".c"){
+				$sender->sendMessage("ThirdPersonDiscourager is " . ($ses->isEnabled() ? "enabled":"disabled") . " for $ses.");
+				return true;
+			}
+			if($ses->isEnabled()){
+				$ses->disable();
+				$sender->sendMessage("ThirdPersonDiscourager has been disabled for $ses.");
+			}else{
+				$ses->enable();
+				$sender->sendMessage("ThirdPersonDiscourager has been enabled for $ses.");
+			}
+			return true;
+		}
+		return false;
 	}
 }
