@@ -57,7 +57,7 @@ class Session{
 		}else{
 			$face = self::$conversionTable[$this->player->getDirection()];
 		}
-		$center = $this->player->subtract($dir->multiply($this->main->getDistance()));
+		$center = $this->player->subtract($dir->multiply($this->main->getDistance()))->add(0, $this->player->eyeHeight);
 		$l = $this->player->getLevel();
 		if($face === self::Y){
 			$this->overridenBlocks = [
