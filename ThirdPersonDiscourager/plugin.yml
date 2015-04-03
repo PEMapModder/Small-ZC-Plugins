@@ -1,6 +1,6 @@
 ---
 name: ThirdPersonDiscourager
-version: "1.005"
+version: "1.006"
 api: 1.5.0
 author: PEMapModder
 main: thirdpersondiscour\ThirdPersonDiscour

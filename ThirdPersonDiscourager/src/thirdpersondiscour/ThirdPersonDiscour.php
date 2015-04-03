@@ -29,6 +29,7 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 		foreach($this->getServer()->getOnlinePlayers() as $p){
 			$this->onJoin(new PlayerJoinEvent($p, ""));
 		}
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
 	public function onDisable(){
 		foreach($this->sessions as $ses){
