@@ -83,7 +83,7 @@ class Session{
 				$l->getBlock($center->add(0, -1, 0)),
 				$l->getBlock($center->add(0, -1, -1)),
 			];
-		}elseif($face === self::X){
+		}elseif($face === self::Z){
 			$this->overridenBlocks = [
 				$l->getBlock($center->add(1, 1, 0)),
 				$l->getBlock($center->add(1, 0, 0)),
