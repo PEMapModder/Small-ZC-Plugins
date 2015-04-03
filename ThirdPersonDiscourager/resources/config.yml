@@ -1,0 +1,10 @@
+---
+#Enable 3pdc for a player when he/she joins the server
+auto-enable: true
+# which discourage block type to use
+block-type:
+  id: 7
+  damage: 0
+# distance of the discourager block behind the player
+block-distance: 2
+...
