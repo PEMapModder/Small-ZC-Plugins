@@ -5,7 +5,9 @@ namespace thirdpersondiscour;
 use pocketmine\block\Block;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
 class ThirdPersonDiscour extends PluginBase implements Listener{
@@ -39,7 +41,14 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 		}
 	}
 	public function onQuit(PlayerQuitEvent $event){
-		unset($this->sessions[$event->getPlayer()->getId()]);
+		if(isset($this->sessions[$id = $event->getPlayer()->getId()])){
+			unset($this->sessions[$id]);
+		}
+	}
+	public function onMove(PlayerMoveEvent $event){
+		if(isset($this->sessions[$id = $event->getPlayer()->getId()])){
+			$this->sessions[$id]->update();
+		}
 	}
 	/**
 	 * @return boolean
@@ -58,5 +67,8 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 	 */
 	public function getDistance(){
 		return $this->distance;
+	}
+	public function getSession(Player $player){
+		return isset($this->sessions[$id = $player->getId()]) ? $this->sessions[$id] : null;
 	}
 }
