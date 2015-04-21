@@ -1,0 +1,7 @@
+---
+name: ConsolePush
+version: "1.002"
+api: 1.0.0
+author: PEMapModder
+main: ConsolePush\ConsolePush
+...
