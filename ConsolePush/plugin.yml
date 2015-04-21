@@ -1,6 +1,6 @@
 ---
 name: ConsolePush
-version: "1.002"
+version: "1.003"
 api: 1.0.0
 author: PEMapModder
 main: ConsolePush\ConsolePush
