@@ -9,4 +9,13 @@ ranks:
     index: 150
   Owner:
     index: 200
+permissions:
+  pocketmine.command.list: 0
+  pocketmine.command.me: 100
+  pocketmine.command.broadcast: 150
+  pocketmine.command.kick: 150
+  pocketmine.command.teleport: 150
+  pocketmine.command.time: 150
+  pocketmine.command: 200
+  mwahahaha.noonewouldbeabletousethisperm: 1000
 ...

@@ -43,7 +43,6 @@ class NumericRanks extends PluginBase
         ##     ## ##        #### 
     */
     
-    // From PurePerms
     public function getAttachment(Player $player)
     {
         if(!isset($this->attachments[$player->getName()]))
