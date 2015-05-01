@@ -26,6 +26,8 @@ use pocketmine\utils\Config;
 
 class NumericRanks extends PluginBase
 {
+    private $attachments = [];
+    
     public function onEnable()
     {
         $this->saveDefaultConfig();
@@ -113,7 +115,6 @@ class NumericRanks extends PluginBase
         $this->reloadConfig();
     }
     
-    // From PurePerms
     public function removeAttachment(Player $player)
     {
         $attachment = $this->getAttachment($player);
@@ -122,7 +123,6 @@ class NumericRanks extends PluginBase
         
         unset($this->attachments[$player->getName()]);
     }
-    
     public function removeAttachments()
     {
         foreach($this->attachments as $attachment)
