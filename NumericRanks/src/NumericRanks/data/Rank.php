@@ -21,6 +21,25 @@ class Rank
 	{
 		return $this->rankName;
 	}
+    
+    public function getPermissions()
+    {
+        $perms = [];
+        
+        foreach($this->plugin->getRegisteredPermissions() as $perm => $index)
+        {
+            if($this->getRankIndex() >= $index)
+            {
+                $perms[$perm] = true;
+            }
+            else
+            {
+                $perms[$perm] = false;
+            }
+        }
+        
+        return $perms;
+    }
 	
 	public function getRankIndex()
 	{

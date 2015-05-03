@@ -2,11 +2,16 @@
 
 namespace NumericRanks;
 
+use pocketmine\IPlayer;
+
 use pocketmine\Player;
 
 use pocketmine\plugin\PluginBase;
 
 use NumericRanks\data\Rank;
+use NumericRanks\data\User;
+use NumericRanks\provider\NumRanksProvider;
+use NumericRanks\provider\YamlProvider;
 
 use pocketmine\utils\Config;
 
@@ -28,9 +33,21 @@ class NumericRanks extends PluginBase
 {
     private $attachments = [];
     
+    private $provider;
+    
     public function onEnable()
     {
         $this->saveDefaultConfig();
+        
+        // TEST
+        $this->provider = new YamlProvider($this);
+        
+        $this->getServer()->getPluginManager()->registerEvents(new PlayerListener($this), $this);
+    }
+    
+    public function onDisable()
+    {
+        if($this->provider instanceof NumRanksProvider) $this->provider->close();
     }
     
     /*
@@ -45,10 +62,7 @@ class NumericRanks extends PluginBase
     
     public function getAttachment(Player $player)
     {
-        if(!isset($this->attachments[$player->getName()]))
-        {
-            $this->attachments[$player->getName()] = $player->addAttachment($this);
-        }
+        if(!isset($this->attachments[$player->getName()])) $this->attachments[$player->getName()] = $player->addAttachment($this);
         
         return $this->attachments[$player->getName()];
     }
@@ -73,7 +87,7 @@ class NumericRanks extends PluginBase
             
             default:
                 
-                if(count($defaultRanks) > 1))
+                if(count($defaultRanks) > 1)
                 {
                     throw new \RuntimeException("More than one default rank was declared in config.yml");
                 }
@@ -86,6 +100,11 @@ class NumericRanks extends PluginBase
         }
         
         return $defaultRank;
+    }
+    
+    public function getProvider()
+    {
+        return $this->provider;
     }
     
     public function getRank($rankName)
@@ -101,12 +120,22 @@ class NumericRanks extends PluginBase
     {
         $ranks = [];
         
-        foreach(array_keys($this->getConfig()->get("ranks")) as $rankName)
+        foreach(array_keys($this->getConfig()->getNested("ranks")) as $rankName)
         {
             array_push($ranks, new Rank($this, $rankName));
         }
         
         return $ranks;
+    }
+    
+    public function getRegisteredPermissions()
+    {
+        return $this->getConfig()->getNested("permissions");
+    }
+    
+    public function getUser(IPlayer $player)
+    {
+        return new User($this, $player);
     }
     
     public function reload()
@@ -122,11 +151,22 @@ class NumericRanks extends PluginBase
         
         unset($this->attachments[$player->getName()]);
     }
+    
     public function removeAttachments()
     {
-        foreach($this->attachments as $attachment)
-        {
-            unset($this->attachments[$attachment]);
-        }
+        $this->attachments = [];
+    }
+    
+    public function setPermissions(Player $player)
+    {
+        $attachment = $this->getAttachment($player);
+            
+        $attachment->clearPermissions();
+        
+        $perms = $this->getUser($player)->getPermissions();
+        
+        ksort($perms);
+        
+        $attachment->setPermissions($perms);
     }
 }

@@ -1,4 +1,5 @@
 ---
+data-provider: yaml
 ranks:
   Player:
     defaultRank: true
