@@ -6,12 +6,26 @@ use NumericRanks\NumericRanks;
 
 use pocketmine\IPlayer;
 
+/*
+    
+    NumericRanks v1.0.0 by PEMapModder & 64FF00 :3
+
+    ##    ## ##     ## ##     ## ######## ########  ####  ######  ########     ###    ##    ## ##    ##  ######  #### 
+    ###   ## ##     ## ###   ### ##       ##     ##  ##  ##    ## ##     ##   ## ##   ###   ## ##   ##  ##    ## #### 
+    ####  ## ##     ## #### #### ##       ##     ##  ##  ##       ##     ##  ##   ##  ####  ## ##  ##   ##       #### 
+    ## ## ## ##     ## ## ### ## ######   ########   ##  ##       ########  ##     ## ## ## ## #####     ######   ##  
+    ##  #### ##     ## ##     ## ##       ##   ##    ##  ##       ##   ##   ######### ##  #### ##  ##         ##      
+    ##   ### ##     ## ##     ## ##       ##    ##   ##  ##    ## ##    ##  ##     ## ##   ### ##   ##  ##    ## #### 
+    ##    ##  #######  ##     ## ######## ##     ## ####  ######  ##     ## ##     ## ##    ## ##    ##  ######  #### 
+
+*/
+
 class User
 {
 	public function __construct(NumericRanks $plugin, IPlayer $player)
 	{
         $this->player = $player;
-		$this->plugin = $plugin;
+        $this->plugin = $plugin;
 	}
     
     public function getConfig()
