@@ -1,0 +1,34 @@
+---
+# settings of the command
+cmd:
+  name: remchat
+  aliases:
+    - rc
+  description: Send chat to a player from another server with RemoteChat enabled.
+  usage-message: "/rc <ip> <port> <message ...>"
+  # Warning: modifying this message will not change the format of the command, but only the usage message shown to the player!
+
+listener:
+  # The port to listen to messages from.
+  # You MUST have this port forwarded (TCP) in order to make it work! Also, this port must not be used for other uses, such as PocketMine query, RCon, HTTP servers, etc.
+  port: 44746
+  # You can change this value to a hostname that points to your EXTERNAL IP. If the value isn't empty and doesn't point to your IP, the target server will ignore this. If this value is empty, the target server will use your external IP instead.
+  display-ip: ""
+
+# IPs to refuse messages to be sent from
+# Wildcard characters * and _ are allowed.
+blacklist:
+# Examples:
+# - 127.0.0.1
+# - *.example.com
+# - 192.168.*.*
+
+# If whitelist is enabled, only messages sent from servers of the same IP as any of the whitelisted IPs.
+# Two hostnames that point to the same IP will be considered as equal, so both hostnames and IPs are allowed here.
+whitelist:
+  enabled: false
+  ips:
+  # Examples:
+  # - 127.0.0.1
+  # - example.com
+...
