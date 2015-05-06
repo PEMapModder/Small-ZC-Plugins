@@ -4,6 +4,8 @@ namespace NumericRanks\data;
 
 use NumericRanks\NumericRanks;
 
+use pocketmine\IPlayer;
+
 /*
     
     NumericRanks v1.0.0 by PEMapModder & 64FF00 :3
@@ -18,52 +20,34 @@ use NumericRanks\NumericRanks;
 
 */
 
-class Rank
+class User
 {
-	public function __construct(NumericRanks $plugin, $rankName)
+	public function __construct(NumericRanks $plugin, IPlayer $player)
 	{
-		$this->plugin = $plugin;
-		$this->rankName = $rankName;
+        $this->player = $player;
+        $this->plugin = $plugin;
 	}
-	
-	public function getData()
-	{
-		return $this->plugin->getConfig()->getNested("ranks." . $this->rankName);
-	}
-	
-	public function getName()
-	{
-		return $this->rankName;
-	}
+    
+    public function getConfig()
+    {
+        return $this->plugin->getProvider()->getPlayerConfig($this->player);
+    }
     
     public function getPermissions()
     {
-        $perms = [];
-        
-        foreach($this->plugin->getRegisteredPermissions() as $perm => $index)
-        {
-            if($this->getRankIndex() >= $index)
-            {
-                $perms[$perm] = true;
-            }
-            else
-            {
-                $perms[$perm] = false;
-            }
-        }
-        
-        return $perms;
+        return $this->getRank()->getPermissions();
     }
-	
-	public function getRankIndex()
-	{
-		return $this->getData()["index"];
-	}
-	
-	public function isDefault()
-	{
-		$result = isset($this->getData()["defaultRank"]) and $this->getData()["defaultRank"] == true;
-		
-		return $result;
-	}
+    
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+    
+    public function getRank()
+    {
+        $rankName = $this->getConfig()->getNested("rank");
+        $rank = $this->plugin->getRank($rankName);
+        
+        return $rank;
+    }
 }

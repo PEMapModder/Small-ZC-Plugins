@@ -1,8 +1,12 @@
 <?php
 
-namespace NumericRanks\data;
+namespace NumericRanks\provider;
 
 use NumericRanks\NumericRanks;
+
+use pocketmine\IPlayer;
+
+use pocketmine\utils\Config;
 
 /*
     
@@ -18,52 +22,38 @@ use NumericRanks\NumericRanks;
 
 */
 
-class Rank
+class YamlProvider implements NumRanksProvider
 {
-	public function __construct(NumericRanks $plugin, $rankName)
-	{
-		$this->plugin = $plugin;
-		$this->rankName = $rankName;
-	}
-	
-	public function getData()
-	{
-		return $this->plugin->getConfig()->getNested("ranks." . $this->rankName);
-	}
-	
-	public function getName()
-	{
-		return $this->rankName;
-	}
-    
-    public function getPermissions()
+    public function __construct(NumericRanks $plugin)
     {
-        $perms = [];
+        $this->plugin = $plugin;
         
-        foreach($this->plugin->getRegisteredPermissions() as $perm => $index)
-        {
-            if($this->getRankIndex() >= $index)
-            {
-                $perms[$perm] = true;
-            }
-            else
-            {
-                $perms[$perm] = false;
-            }
-        }
-        
-        return $perms;
+        $this->init();
     }
-	
-	public function getRankIndex()
-	{
-		return $this->getData()["index"];
-	}
-	
-	public function isDefault()
-	{
-		$result = isset($this->getData()["defaultRank"]) and $this->getData()["defaultRank"] == true;
-		
-		return $result;
-	}
+    
+    public function init()
+    {
+        @mkdir($this->plugin->getDataFolder() . "players/", 0777, true);
+    }
+    
+    public function getPlayerConfig(IPlayer $player)
+    {
+        $fileName = $this->plugin->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml";
+        
+        if(!(file_exists($fileName)))
+        {
+            return new Config($fileName, Config::YAML, [
+                "name" => $player->getName(),
+                "rank" => $this->plugin->getDefaultRank()->getName(),
+            ]);
+        }
+        else
+        {
+            return new Config($fileName, Config::YAML, []);
+        }
+    }
+    
+    public function close()
+    {
+    }
 }
