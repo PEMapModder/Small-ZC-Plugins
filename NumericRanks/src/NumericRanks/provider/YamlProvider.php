@@ -24,6 +24,9 @@ use pocketmine\utils\Config;
 
 class YamlProvider implements NumRanksProvider
 {
+    /**
+     * @param NumericRanks $plugin
+     */
     public function __construct(NumericRanks $plugin)
     {
         $this->plugin = $plugin;
@@ -35,7 +38,11 @@ class YamlProvider implements NumRanksProvider
     {
         @mkdir($this->plugin->getDataFolder() . "players/", 0777, true);
     }
-    
+
+    /**
+     * @param IPlayer $player
+     * @return Config
+     */
     public function getPlayerConfig(IPlayer $player)
     {
         $fileName = $this->plugin->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml";

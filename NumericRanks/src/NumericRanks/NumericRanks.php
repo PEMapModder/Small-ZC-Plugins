@@ -34,7 +34,7 @@ class NumericRanks extends PluginBase
     private $attachments = [];
     
     private $provider;
-    
+
     public function onEnable()
     {
         $this->saveDefaultConfig();
@@ -59,14 +59,21 @@ class NumericRanks extends PluginBase
         ##     ## ##         ##  
         ##     ## ##        #### 
     */
-    
+
+    /**
+     * @param Player $player
+     * @return mixed
+     */
     public function getAttachment(Player $player)
     {
         if(!isset($this->attachments[$player->getName()])) $this->attachments[$player->getName()] = $player->addAttachment($this);
         
         return $this->attachments[$player->getName()];
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getDefaultRank()
     {
         $defaultRanks = [];
@@ -101,12 +108,19 @@ class NumericRanks extends PluginBase
         
         return $defaultRank;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getProvider()
     {
         return $this->provider;
     }
-    
+
+    /**
+     * @param $rankName
+     * @return Rank
+     */
     public function getRank($rankName)
     {
         $rank = new Rank($this, $rankName);
@@ -115,7 +129,10 @@ class NumericRanks extends PluginBase
         
         return $rank;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getRanks()
     {
         $ranks = [];
@@ -127,22 +144,32 @@ class NumericRanks extends PluginBase
         
         return $ranks;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getRegisteredPermissions()
     {
         return $this->getConfig()->getNested("permissions");
     }
-    
+
+    /**
+     * @param IPlayer $player
+     * @return User
+     */
     public function getUser(IPlayer $player)
     {
         return new User($this, $player);
     }
-    
+
     public function reload()
     {
         $this->reloadConfig();
     }
-    
+
+    /**
+     * @param Player $player
+     */
     public function removeAttachment(Player $player)
     {
         $attachment = $this->getAttachment($player);
@@ -156,7 +183,10 @@ class NumericRanks extends PluginBase
     {
         $this->attachments = [];
     }
-    
+
+    /**
+     * @param Player $player
+     */
     public function setPermissions(Player $player)
     {
         $attachment = $this->getAttachment($player);
