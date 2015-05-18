@@ -83,7 +83,6 @@ class NumericRanks extends PluginBase
             if($rank->isDefault()) array_push($defaultRanks, $rank);
         }
         
-        // Checks whether two or more default ranks are set
         switch(count($defaultRanks))
         {
             case 1:
