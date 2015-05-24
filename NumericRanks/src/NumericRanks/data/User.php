@@ -22,27 +22,43 @@ use pocketmine\IPlayer;
 
 class User
 {
+    /**
+     * @param NumericRanks $plugin
+     * @param IPlayer $player
+     */
 	public function __construct(NumericRanks $plugin, IPlayer $player)
 	{
         $this->player = $player;
         $this->plugin = $plugin;
 	}
-    
+
+    /**
+     * @return mixed
+     */
     public function getConfig()
     {
         return $this->plugin->getProvider()->getPlayerConfig($this->player);
     }
-    
+
+    /**
+     * @return array
+     */
     public function getPermissions()
     {
         return $this->getRank()->getPermissions();
     }
-    
+
+    /**
+     * @return IPlayer
+     */
     public function getPlayer()
     {
         return $this->player;
     }
-    
+
+    /**
+     * @return Rank
+     */
     public function getRank()
     {
         $rankName = $this->getConfig()->getNested("rank");
