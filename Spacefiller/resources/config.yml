@@ -1,0 +1,8 @@
+---
+rules:
+  - from: /[ \t\n\r]+/ # replace matches of this regular expression
+    to: " " # with this string ($n is accepted)
+    # you can also add this to limit the number of occurrences replaced:
+    # limit: 2
+process-priority: LOWEST # don't modify this unless you know what you are doing. This modifies the event handler's registered priority. Available options include LOWEST, LOW, NORMAL, HIGH and HIGHEST.
+...
