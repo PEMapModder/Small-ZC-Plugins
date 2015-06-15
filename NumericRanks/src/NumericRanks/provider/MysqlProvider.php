@@ -2,11 +2,9 @@
 
 namespace NumericRanks\provider;
 
+use mysqli;
 use NumericRanks\NumericRanks;
-
 use pocketmine\IPlayer;
-
-use pocketmine\utils\Config;
 
 /*
 
@@ -22,8 +20,10 @@ use pocketmine\utils\Config;
 
 */
 
-class YamlProvider implements NumRanksProvider
+class MysqlProvider implements NumRanksProvider
 {
+    /** @var mysqli */
+    private $db;
     /**
      * @param NumericRanks $plugin
      */
@@ -36,39 +36,31 @@ class YamlProvider implements NumRanksProvider
 
     public function init()
     {
-        @mkdir($this->plugin->getDataFolder() . "players/", 0777, true);
+        $config = $this->plugin->getConfig();
+        $host = $config->getNested("dataProvider.mysql.host", "127.0.0.1");
+        $user = $config->getNested("dataProvider.mysql.username", "root");
+        $pw = $config->getNested("dataProvider.mysql.password", "");
+        $db = $config->getNested("dataProvider.mysql.database", "numranks");
+        $port = $config->getNested("dataProvider.mysql.port", 3306);
+        $this->db = new mysqli($host, $user, $pw, $db, $port);
+        $this->db->query("CREATE TABLE IF NOT EXISTS numranks (name VARCHAR(32) PRIMARY KEY, rank VARCHAR(255))");
     }
 
     /**
      * @param IPlayer $player
-     * @return Config
+     * @return array
      */
     public function getPlayerConfig(IPlayer $player)
     {
-        $fileName = $this->plugin->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml";
-
-        if(!(file_exists($fileName)))
-        {
-            return [
-                "name" => $player->getName(),
-                "rank" => $this->plugin->getDefaultRank()->getName(),
-            ];
-        }
-        return (new Config($fileName, Config::YAML))->getAll();
+        // TODO
     }
-
     public function setPlayer(IPlayer $player, $rank)
     {
-        $fileName = $this->plugin->getDataFolder() . "players/" . strtolower($player->getName()) . ".yml";
-        $config = new Config($fileName, Config::YAML, [
-            "name" => $player->getName(),
-            "rank" => $rank
-        ]);
-        $config->set("rank", $rank);
-        $config->save(true);
+        // TODO
     }
 
     public function close()
     {
+        $this->db->close();
     }
 }

@@ -1,5 +1,14 @@
 ---
-dataProvider: yaml
+dataProvider:
+  name: yaml
+  mysql: # ignore if you aren't using MySQL provider
+    host: 127.0.0.1
+    username: root
+    password: ""
+    database: numranks
+    port: 3306
+    async: false # unimplemented
+    # TODO we need to think about how to let async work with our current API. What about returning null if the value is not yet returned?
 ranks:
   Player:
     defaultRank: true
@@ -10,6 +19,7 @@ ranks:
     index: 150
   Owner:
     index: 200
+  # WARNING if you use a MySQL provider, these ranks must not exceed 255 characters in length.
 defaultPermissionIndex:
   true: 0
   notOp: 0

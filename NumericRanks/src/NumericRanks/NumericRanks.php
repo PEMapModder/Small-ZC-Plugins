@@ -4,6 +4,7 @@ namespace NumericRanks;
 
 use NumericRanks\data\Rank;
 use NumericRanks\data\User;
+use NumericRanks\provider\MysqlProvider;
 use NumericRanks\provider\NumRanksProvider;
 use NumericRanks\provider\YamlProvider;
 use pocketmine\IPlayer;
@@ -43,10 +44,20 @@ class NumericRanks extends PluginBase
 
         $this->permsConfig = new Config($this->getDataFolder() . "perms.yml", Config::YAML);
 
-        $dataProvider = $this->getConfig()->get("dataProvider");
+        $dataProvider = $this->getConfig()->getNested("dataProvider.name", "yaml");
         switch($dataProvider){
+            case "mysql":
+                $this->getLogger()->notice("Enabling MySQL provider...");
+                try{
+                    $this->provider = new MysqlProvider($this);
+                    break;
+                }catch(\Exception $e){
+                    $this->getLogger()->critical("Could not connect to MySQL server: " . $e->getMessage());
+                    $this->getLogger()->notice("Changing to YAML provider");
+                }
             case "yaml":
             case "yml":
+                $this->getLogger()->notice("Enabling YAML provider...");
                 $this->provider = new YamlProvider($this);
                 break;
         }
@@ -54,6 +65,8 @@ class NumericRanks extends PluginBase
         $this->updatePerms();
 
         $this->getServer()->getPluginManager()->registerEvents(new PlayerListener($this), $this);
+
+        $this->getLogger()->info("Enabled " . $this->getDescription()->getFullName() . " with " . (new \ReflectionClass($this->provider))->getShortName() . " as data provider.");
     }
 
     public function onDisable()
