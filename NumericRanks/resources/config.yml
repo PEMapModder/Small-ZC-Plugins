@@ -1,22 +1,18 @@
 ---
-data-provider: yaml
+dataProvider: yaml
 ranks:
   Player:
     defaultRank: true
     index: 0
   Trusted:
     index: 100
-  Admin: 
+  Admin:
     index: 150
   Owner:
     index: 200
-permissions:
-  pocketmine.command.list: 0
-  pocketmine.command.me: 100
-  pocketmine.command.broadcast: 150
-  pocketmine.command.kick: 150
-  pocketmine.command.teleport: 150
-  pocketmine.command.time: 150
-  pocketmine.command: 200
-  mwahahaha.noonewouldbeabletousethisperm: 1000
+defaultPermissionIndex:
+  true: 0
+  notOp: 0
+  op: 150
+  false: 999
 ...

@@ -1,10 +1,26 @@
 name: NumericRanks
 main: NumericRanks\NumericRanks
-version: "INDEV"
+version: "INDEV build 0.1"
 api: [1.9.0]
-author: PEMapModder
+authors: [64FF00, PEMapModder]
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/NumericRanks
 prefix: NumRanks
 permissions:
   numranks:
-    children: []
+    children:
+      numranks.player:
+        children:
+          numranks.player.view:
+            default: true
+          numranks.player.set:
+      numranks.perm:
+        children:
+          numranks.perm.list:
+            default: true
+          numranks.perm.set:
+      numranks.rank:
+        children:
+          numranks.rank.list:
+            default: true
+          numranks.rank.add:
+          numranks.rank.remove:
