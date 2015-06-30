@@ -70,17 +70,18 @@ class NameCorrector extends PluginBase implements Listener{
 		if(!$this->multibyte){
 			$this->getLogger()->notice("The PHP extension \"multibyte\" is not available on this server. Multi-byte characters in player names may get replaced into multiple, instead of single, underscores.");
 		}
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
 	/**
 	 * @param DataPacketReceiveEvent $event
 	 * @priority LOW
-	 * @ignoreCancelled true
 	 */
 	public function onReceivePacket(DataPacketReceiveEvent $event){
 		$pk = $event->getPacket();
 		if($pk->pid() === ProtocolInfo::LOGIN_PACKET){
 			/** @var \pocketmine\network\protocol\LoginPacket $pk */
 			$pk->username = $this->correctName($pk->username);
+//			var_dump($pk->username);
 		}
 	}
 	public function correctName($name){
