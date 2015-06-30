@@ -60,7 +60,7 @@ class NameCorrector extends PluginBase implements Listener{
 			$this->getLogger()->warning("The \"default\" property in config.yml has an error - the value is too long! Assuming as \"_\".");
 			$this->default = "_";
 		}
-		$this->padding = $this->correctName($this->getConfig()->get("padding", "_"));
+		$this->padding = $this->getConfig()->get("padding", "_");
 		$this->min = $this->getConfig()->get("min", 3);
 		$this->max = $this->getConfig()->get("truncate", 16);
 		if($this->max === -1 or $this->max === "-1"){
@@ -102,11 +102,14 @@ class NameCorrector extends PluginBase implements Listener{
 		}
 		$name = preg_replace('/[^A-Za-z0-9_]/', $this->default, $name);
 		$name = substr($name, 0, min($this->max, strlen($name)));
+		var_dump($name);
 		if($this->padding !== ""){
 			while(strlen($name) < $this->min){
+				var_dump($this->padding, strlen($name), $this->min, $name);
 				$name .= $this->padding;
 			}
 		}
+		var_dump($name);
 		return $name;
 	}
 	public static function num_addOrdinal($num){
