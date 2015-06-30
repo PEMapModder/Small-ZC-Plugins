@@ -1,6 +1,6 @@
 ---
 name: NameCorrector
-version: "1.0.0#build001"
+version: 1.0.0#build002
 api:
 - 1.8.0
 main: NameCorrector\NameCorrector
