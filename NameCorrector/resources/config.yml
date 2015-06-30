@@ -1,0 +1,78 @@
+# IMPORTANT: View/Edit this file with the encoding "UTF-8", or strange errors may occur!!!
+
+# DEFINITION OF TERMS
+# "String": a text of one or more of any characters, including normal ones (those in ASCII) and multibyte ones (like Chinese chracters). The encoding for all characters in this file are assumed as UTF-8.
+# "StdChar" means ONE character that is allowed in PocketMine player names. It must be a capital Latin character (A to Z), a small Latin character (a to z), an Arabian number digit (0 to 9) or an underscore (_).
+# "StdString" means a text of one or more characters that are StdChar's.
+
+# convert String into StdChar/nothing
+specials:
+    # from: a String to convert from, or an array of String's to convert from
+  - from: "!"
+    # to: a StdChar to convert into, or put "" if you want to delete it
+    to: "1"
+  - from: ["À", "Á", "Â", "Ã", "ã", "Ä", "Å", "Æ"]
+    to: "A"
+  - from: ["à", "á", "â", "ã", "ä", "å", "æ"]
+    to: "a"
+  - from: "ß"
+    to: "B" # or should this be S?
+  - from: ["Ç", "€", "©"]
+    to: "C"
+  - from: "c"
+    to: "c"
+  - from: "Ð"
+    to: "D"
+  - from: "ð"
+    to: "d"
+  - from: ["È", "É","Ê", "Ë"]
+    to: "E"
+  - from: ["è", "é", "ê", "ë"]
+    to: "e"
+  - from: "ƒ"
+    to: "f"
+  - from: ["Ì", "Í", "Î", "Ï"]
+    to: "I"
+  - from: ["ì", "í", "î", "ï"]
+    to: "i"
+  - from: "Ñ"
+    to: "N"
+  - from: "ñ"
+    to: "n"
+  - from: ["Ò", "Ó", "Ô", "Õ", "Ö", "Ø"]
+    to: "O"
+  - from: ["ò", "ó", "ô", "õ", "ö", "ø"]
+    to: "o"
+  - from: "®"
+    to: "R"
+  - from: ["§", "Š"]
+    to: "S"
+  - from: "š"
+    to: "s"
+  - from: ["Ù", "Ú", "Û", "Ü"]
+    to: "U"
+  - from: ["ù", "ú", "û", "ü", "µ"]
+    to: "u"
+  - from: ["Ý", "Ÿ"]
+    to: "Y"
+  - from: ["ý", "ÿ"]
+    to: "y"
+  - from: "Ž"
+    to: "Z"
+  _ from: "ž"
+    to: "z"
+  - from: "¡"
+    to: "!"
+  - from: "¿"
+    to: "?"
+
+# convert other non-StdChar (multibyte or not) characters into this character, or put "" if you want to delete those characters
+default: "_"
+
+# Add this StdChar or StdString behind the username until it is at least 2 characters, the requirement for PocketMine servers usernames. Put "" if you want to disable this feature.
+padding: "_"
+
+# If the username is longer than X characters, only leave the first X characters in the username.
+# What is X?
+# Put -1 if you want to disable this feature.
+truncate: 16

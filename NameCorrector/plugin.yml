@@ -1,0 +1,8 @@
+---
+name: NameCorrector
+version: "1.001"
+api:
+- 1.8.0
+main: NameCorrector\NameCorrector
+author: PEMapModder
+...
