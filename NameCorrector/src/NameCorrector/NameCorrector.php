@@ -102,14 +102,11 @@ class NameCorrector extends PluginBase implements Listener{
 		}
 		$name = preg_replace('/[^A-Za-z0-9_]/', $this->default, $name);
 		$name = substr($name, 0, min($this->max, strlen($name)));
-		var_dump($name);
 		if($this->padding !== ""){
 			while(strlen($name) < $this->min){
-				var_dump($this->padding, strlen($name), $this->min, $name);
 				$name .= $this->padding;
 			}
 		}
-		var_dump($name);
 		return $name;
 	}
 	public static function num_addOrdinal($num){
