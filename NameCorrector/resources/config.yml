@@ -59,7 +59,7 @@ specials:
     to: "y"
   - from: "Ž"
     to: "Z"
-  _ from: "ž"
+  - from: "ž"
     to: "z"
   - from: "¡"
     to: "!"
