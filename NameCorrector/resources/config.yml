@@ -2,7 +2,7 @@
 
 # DEFINITION OF TERMS
 # "String": a text of one or more of any characters, including normal ones (those in ASCII) and multibyte ones (like Chinese chracters). The encoding for all characters in this file are assumed as UTF-8.
-# "StdChar" means ONE character that is allowed in PocketMine player names. It must be a capital Latin character (A to Z), a small Latin character (a to z), an Arabian number digit (0 to 9) or an underscore (_).
+# "StdChar" means ONE character that is allowed in PocketMine player names. It must be a capital Latin alphabet (A to Z), a small Latin alphabet (a to z), an Arabian number digit (0 to 9) or an underscore (_).
 # "StdString" means a text of one or more characters that are StdChar's.
 
 # convert String into StdChar/nothing
@@ -69,10 +69,12 @@ specials:
 # convert other non-StdChar (multibyte or not) characters into this character, or put "" if you want to delete those characters
 default: "_"
 
-# Add this StdChar or StdString behind the username until it is at least 2 characters, the requirement for PocketMine servers usernames. Put "" if you want to disable this feature.
-padding: "_"
-
 # If the username is longer than X characters, only leave the first X characters in the username.
 # What is X?
 # Put -1 if you want to disable this feature.
 truncate: 16
+
+# Add this StdChar or StdString behind the username until it is at least Y characters long, the requirement for PocketMine servers usernames. Put "" if you want to disable this feature.
+padding: "_"
+# Hence, what is Y?
+min: 3

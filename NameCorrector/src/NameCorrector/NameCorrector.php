@@ -31,7 +31,9 @@ class NameCorrector extends PluginBase implements Listener{
 	/** @var string */
 	private $padding;
 	/** @var int */
-	private $max;
+	private $min, $max;
+	/** @var bool */
+	private $multibyte;
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		/** @var string[]|string[][] $special */
@@ -59,11 +61,21 @@ class NameCorrector extends PluginBase implements Listener{
 			$this->default = "_";
 		}
 		$this->padding = $this->correctName($this->getConfig()->get("padding", "_"));
-		$this->max = $this->getConfig()->get("truncate");
+		$this->min = $this->getConfig()->get("min", 3);
+		$this->max = $this->getConfig()->get("truncate", 16);
 		if($this->max === -1 or $this->max === "-1"){
 			$this->max = PHP_INT_MAX;
 		}
+		$this->multibyte = function_exists("mb_substr") and function_exists("mb_strlen");
+		if(!$this->multibyte){
+			$this->getLogger()->notice("The PHP extension \"multibyte\" is not available on this server. Multi-byte characters in player names may get replaced into multiple, instead of single, underscores.");
+		}
 	}
+	/**
+	 * @param DataPacketReceiveEvent $event
+	 * @priority LOW
+	 * @ignoreCancelled true
+	 */
 	public function onReceivePacket(DataPacketReceiveEvent $event){
 		$pk = $event->getPacket();
 		if($pk->pid() === ProtocolInfo::LOGIN_PACKET){
@@ -75,7 +87,7 @@ class NameCorrector extends PluginBase implements Listener{
 		foreach($this->specials as $special){
 			$name = str_replace($special->from, $special->to, $name);
 		}
-		if(function_exists("mb_substr") and function_exists("mb_strlen") and mb_strlen($name) !== strlen($name)){
+		if($this->multibyte and mb_strlen($name) !== strlen($name)){
 			$length = mb_strlen($name, "UTF-8");
 			$new = "";
 			for($i = 0; $i < $length; $i++){
@@ -88,10 +100,13 @@ class NameCorrector extends PluginBase implements Listener{
 			$name = $new;
 		}
 		$name = preg_replace('/[^A-Za-z0-9_]/', $this->default, $name);
-		while(strlen($name) < 3){
-			$name .= $this->padding;
+		$name = substr($name, 0, min($this->max, strlen($name)));
+		if($this->padding !== ""){
+			while(strlen($name) < $this->min){
+				$name .= $this->padding;
+			}
 		}
-		return substr($name, 0, min($this->max, strlen($name)));
+		return $name;
 	}
 	public static function num_addOrdinal($num){
 		return $num . self::num_getOrdinal($num);
