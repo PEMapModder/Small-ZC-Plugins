@@ -8,15 +8,24 @@ use pemapmodder\cmdsel\event\ServerCommandEvent_sub;
 use pemapmodder\cmdsel\selector\RecursiveSelector;
 use pemapmodder\cmdsel\selector\Selector;
 
+use pemapmodder\cmdsel\selector\AllRecursiveSelector;
+
+use pemapmodder\cmdsel\selector\NearestSelector;
+use pemapmodder\cmdsel\selector\RandomSelector;
+use pemapmodder\cmdsel\selector\UsernameSelector;
+use pemapmodder\cmdsel\selector\WorldSelector;
+
 use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
+use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\server\RemoteServerCommandEvent;
 use pocketmine\event\server\ServerCommandEvent;
 use pocketmine\level\Position;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
+use pocketmine\event\Timings;
 
 const DEBUGGING = true;
 
@@ -27,6 +36,11 @@ class CmdSel extends PluginBase implements Listener{
 	private $recursiveSelectors = [];
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		$this->registerRecursiveSelector(new AllRecursiveSelector);
+		$this->registerSelector(new NearestSelector);
+		$this->registerSelector(new RandomSelector);
+		$this->registerSelector(new UsernameSelector);
+		$this->registerSelector(new WorldSelector);
 	}
 	public function registerSelector(Selector $selector){
 		$this->selectors[$selector->getName()] = $selector;
@@ -60,10 +74,13 @@ class CmdSel extends PluginBase implements Listener{
 				var_dump($cmd);
 				echo PHP_EOL;
 			}
+			$event->setCancelled();
 			if(count($cmd) > 0){
-				$event->setCommand(array_shift($cmd));
 				foreach($cmd as $c){
-					$this->getServer()->getPluginManager()->callEvent(new ServerCommandEvent_sub($event->getSender(), $c));
+					$this->getServer()->getPluginManager()->callEvent($ev = new ServerCommandEvent_sub($event->getSender(), $c));
+					if(!$ev->isCancelled()){
+						$this->getServer()->dispatchCommand($ev->getSender(), $ev->getCommand());
+					}
 				}
 			}
 		}
@@ -87,9 +104,13 @@ class CmdSel extends PluginBase implements Listener{
 		$cmd = $event->getCommand();
 		if($this->proceedCommand($event->getSender(), $cmd)){
 			if(count($cmd) > 0){
-				$event->setCommand(array_shift($cmd));
+				//$event->setCommand(array_shift($cmd));
+				$event->setCancelled();
 				foreach($cmd as $c){
-					$this->getServer()->getPluginManager()->callEvent(new RemoteServerCommandEvent_sub($event->getSender(), $c));
+					$this->getServer()->getPluginManager()->callEvent($ev = new RemoteServerCommandEvent_sub($event->getSender(), $c));
+					if(!$ev->isCancelled()){
+						$this->getServer()->dispatchCommand($ev->getSender(), $ev->getCommand());
+					}
 				}
 			}
 		}
@@ -106,9 +127,16 @@ class CmdSel extends PluginBase implements Listener{
 			$cmd = substr($line, 1);
 			if($this->proceedCommand($event->getPlayer(), $cmd)){ // if recursive; $cmd must be changed to array
 				if(count($cmd) > 0){
-					$event->setMessage("/".array_shift($cmd));
+					$event->setCancelled();
+					//$event->setMessage("/".array_shift($cmd));
 					foreach($cmd as $c){
-						$this->getServer()->getPluginManager()->callEvent(new PlayerCommandPreprocessEvent_sub($event->getPlayer(), $c));
+						$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($event->getPlayer(), ".".$c));
+						if($ev->isCancelled()){
+							continue;
+						}
+						Timings::$playerCommandTimer->startTiming();
+						$this->getServer()->dispatchCommand($ev->getPlayer(), substr($ev->getMessage(), 1));
+						Timings::$playerCommandTimer->stopTiming();
 					}
 				}
 				else{
