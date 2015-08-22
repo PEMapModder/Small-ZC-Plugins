@@ -1,0 +1,10 @@
+name: PlotIt
+description: A plugin that spawns particles to plot a graph
+version: 1.0.0
+api: 1.12.0
+author: PEMapModder
+main: plotit\PlotIt
+commands:
+  plot:
+    description: Plot a graph
+    usage: /plotit <function in x> ; <particle> [data] <x> <y> <z> <from x> <from y> <to x> <to y> <scale>

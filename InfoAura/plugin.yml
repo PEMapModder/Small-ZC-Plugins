@@ -1,0 +1,5 @@
+name: InfoAura
+author: PEMapModder
+version: 1.0.0_indev_build#000
+api: 1.12.0
+main: InfoAura\InfoAura
