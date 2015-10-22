@@ -1,0 +1,3 @@
+[submodule "WorldEditArt"]
+	path = WorldEditArt
+	url = https://github.com/PEMapModder/WorldEditArt.git
