@@ -91,7 +91,6 @@ if($hasRes){
 }
 
 console("Compressing files...");
-$phar->compressFiles(Phar::GZ);
 $phar->stopBuffering();
 
 console("Done! Phar created at \x1b[33;1m$path\x1b[0m.");
