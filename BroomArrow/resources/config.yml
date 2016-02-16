@@ -1,0 +1,65 @@
+---
+# This section defines broom types
+# Lines with one indent (1 indent = 2 spaces) define the broom type name,
+# and lines with two indents (4 spaces) define the broom type's properties.
+## MaxPitch defines how many degrees below the horizontal can a broomstick fly towards.
+### If it is 90, the broomstick is able to fly vertically downwards.
+## MinPitch should always be negative, unless you want the broom to be unable to fly upwards.
+### If it is -90, the broomstick is able to fly vertically upwards.
+### MaxPitch must always be greater than or equal to MinPitch.
+### MaxPitch and MinPitch must be (inclusively) between 90 and -90.
+## MaxSpeed defines the maximum blocks-per-second a broom can move at when it is flying horizontally.
+### For reference, the walking speed of a player in standard conditions is 4.3, and a minecart's max speed is 8
+### Beware less smooth movement at high speed.
+### The speed may be inaccurate due to server lag.
+## Accel defines the acceleration each time the acceleration button is clicked.
+### It is measured in blocks per second per button click.
+### The acceleration button can only be clicked once a second.
+### If it is clicked too frequently, the button will be automatically clicked when the one-second cooldown ends.
+### If MaxSpeed is 8 and Accel is 0.5, you have to click the acceleration button 16 times.
+## Decel is the opposite of Accel.
+## Gravity defines the percentage vertical speed decrease when flying upwards and increase when downwards.
+### It does not affect the horizontal speed component.
+## Brake defines the maximum blocks-per-second a broom can brake at.
+### If Brake is 4 and the current speed is 8, it takes 2 seconds to completely brake.
+### Decel is gradual deceleration while Brake is sudden deceleration.
+## Durability defines how far the broom can travel horizontally without recharging before breaking.
+### If set to -1, the broom will never break.
+## Disobedience is the percentage probability that the broom disobeys your order.
+### If disobedience is 5, it means that every 100 times you click a button, there are 5 times the button doesn't respond.
+## HorizontalTurnUnit is the angle to increase/decrease your left-/right-turn every time you click the Left/Right turn buttons.
+### Its unit is degrees-per-second.
+## MaxHorizontalTurn is the maximum angle you can left/right turn.
+BroomTypes:
+  Nimbus:
+    MaxPitch: 90
+    MinPitch: -90
+    MaxSpeed: 8
+    Accel: 1
+    Gravity: 25
+    Brake: 6
+    Durability: 1000
+    Disobedience: 1
+# If the database finds out an outdated
+FallbackType: Nimbus
+
+# When a player is on a broom, his inventory gets changed.
+# The first slot in the inventory is set to air.
+# The second slot in the inventory is set to the item the player was holding before mounting the broom.
+# From the third slot onwards, they are set to inventory button controls like below.
+# By default, the player can only
+## When a player
+ItemControls:
+  - Type: dismount
+  - Type: accelerate
+    Item: {Id: 288, Damage: 0}
+    Name: Speed up
+  - Type: decelerate
+    Item: {Id: 30, Damage: 0}
+    Name: Slow down
+  - Type: brake
+    Item: {Id: 7, Damage: 0}
+    Name: Brake
+  - Type: Left turn
+    # TODO
+...
