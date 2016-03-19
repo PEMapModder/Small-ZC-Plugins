@@ -1,3 +1,7 @@
+IMPORTANT
+===
+This source remains here for legacy purposes. It is being rewritten at https://github.com/LegendOfMCPE/WorldEditArt. This edition is obsolete, and is no longer supported.
+
 WorldEditArt - ![WorldEditArt](https://raw.githubusercontent.com/PEMapModder/Small-ZC-Plugins/master/WorldEditArt/plugin_icon.png)
 ===
 
