@@ -5,10 +5,10 @@ namespace customareas\db;
 use customareas\area\Area;
 use customareas\CustomAreas;
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
-use pocketmine\nbt\tag\Int;
-use pocketmine\nbt\tag\String;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\StringTag;
 
 class LocalDatabase extends Database{
 	private $indexFile;
@@ -67,7 +67,7 @@ class LocalDatabase extends Database{
 		$userFlags = $data->UserFlags->getValue();
 		$nonUserFlags = $data->NonUserFlags->getValue();
 		$owner = $data->Owner->getValue();
-		$users = array_map(function (String $tag){
+		$users = array_map(function (StringTag $tag){
 			return $tag->getValue();
 		}, $data->Users->getValue());
 		return new Area($name, $shape, $userFlags, $nonUserFlags, $owner, $users);
@@ -75,14 +75,14 @@ class LocalDatabase extends Database{
 
 	public function saveArea(Area $area){
 		$nbt = new NBT(NBT::BIG_ENDIAN);
-		$data = new Compound();
-		$data->CaseName = new String("CaseName", $area->getName());
-		$data->SerializedShape = new String("SerializedShape", serialize($area->getShape()));
-		$data->UserFlags = new Int("UserFlags", $area->getUserFlags());
-		$data->NonUserFlags = new Int("NonUserFlags", $area->getNonUserFlags());
-		$data->Owner = new String("Owner", $area->getOwner());
-		$data->Users = new Enum("Users", array_map(function ($user){
-			return new String("", $user);
+		$data = new CompoundTag();
+		$data->CaseName = new StringTag("CaseName", $area->getName());
+		$data->SerializedShape = new StringTag("SerializedShape", serialize($area->getShape()));
+		$data->UserFlags = new IntTag("UserFlags", $area->getUserFlags());
+		$data->NonUserFlags = new IntTag("NonUserFlags", $area->getNonUserFlags());
+		$data->Owner = new StringTag("Owner", $area->getOwner());
+		$data->Users = new ListTag("Users", array_map(function ($user){
+			return new StringTag("", $user);
 		}, $area->getUsers()));
 		$file = str_replace('$${areaname}', strtolower($area->getName()), $this->areaFile);
 		file_put_contents($file, $nbt->writeCompressed());

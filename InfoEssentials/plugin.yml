@@ -1,6 +1,6 @@
 name: InfoEssentials
 version: 6.6 # gravitational constant: 6.671281903963040991511534289
-api: [1.0.0]
+api: [2.0.0]
 author: PEMapModder
 prefix: InfoEss
 main: pemapmodder\infoess\InfoEss

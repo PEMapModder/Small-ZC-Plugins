@@ -1,7 +1,7 @@
 name: DynamicSignTechnology
 author: PEMapModder
 version: 3.1
-api: [1.0.0]
+api: [2.0.0]
 main: pemapmodder\dst\Main
 load: POSTWORLD
 prefix: DST
