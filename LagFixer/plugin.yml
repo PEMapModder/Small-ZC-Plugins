@@ -1,6 +1,6 @@
 name: LagFixer
 description: Get rid of invisible players and get your correct health
-api: [1.0.0]
+api: [2.0.0]
 author: PEMapModder
 version: 1.0
 main: pemapmodder\lagfixer\LagFixer

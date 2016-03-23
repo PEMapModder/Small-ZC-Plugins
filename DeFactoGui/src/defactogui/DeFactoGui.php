@@ -20,7 +20,7 @@ namespace defactogui;
 
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\EnumTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
@@ -38,8 +38,8 @@ class DeFactoGui extends PluginBase{
 		$spawn = $lv->getSpawnLocation()->floor();
 		$chunk = $lv->getChunk($spawn->x >> 4, $spawn->z >> 4);
 		$nbt = new CompoundTag;
-		$nbt->Items = new EnumTag("Items", []);
-		$nbt->Items->setTagType(NBT::TAG_Enum);
+		$nbt->Items = new ListTag("Items", []);
+		$nbt->Items->setTagType(NBT::TAG_List);
 		$nbt->id = new StringTag("id", Tile::CHEST);
 		$nbt->x = new IntTag("x", $spawn->x);
 		$nbt->y = new IntTag("y", $spawn->y);

@@ -1,6 +1,6 @@
 name: ChatLineBreaker
 version: 3.2
-api: [1.0.0]
+api: [2.0.0]
 main: pemapmodder\clb\Main
 author: PEMapModder
 prefix: CLB

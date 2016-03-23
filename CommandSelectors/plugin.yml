@@ -2,7 +2,7 @@
 name: CommandSelectors
 version: 1.0.0_dev_build_#014
 api:
-- 1.0.0
+- 2.0.0
 main: pemapmodder\cmdsel\CmdSel
 permissions:
   cmdsel:

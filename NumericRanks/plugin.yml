@@ -1,7 +1,7 @@
 name: NumericRanks
 main: NumericRanks\NumericRanks
 version: "INDEV build 0.1"
-api: [1.9.0]
+api: [2.0.0]
 authors: [64FF00, PEMapModder]
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/NumericRanks
 prefix: NumRanks

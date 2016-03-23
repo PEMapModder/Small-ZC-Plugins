@@ -1,6 +1,6 @@
 name: DeFactoGui
 version: 2.0.0_build#000
-api: 1.12.0
+api: 2.0.0
 main: defactogui\DeFactoGui
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/DeFactoGui
 author: PEMapModder
