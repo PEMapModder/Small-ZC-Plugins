@@ -1,8 +1,9 @@
 ---
 name: BulkCommands
-version: 1.0-build#011
+version: 1.0-build#013
 api:
 - 1.6.0
+- 2.0.0
 main: pemapmodder\bulkcommands\BulkCommands
 author: PEMapModder
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/BulkCommands

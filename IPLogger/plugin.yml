@@ -1,27 +1,34 @@
+---
 name: IPLogger
 main: pemapmodder\iplogger\Main
-version: "1.3"
-api: [1.0.0]
+version: "002"
+api:
+- 1.0.0
+- 2.0.0
 author: PEMapModder
 load: PostWorld
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/IPLogger
 commands:
- iplog:
-  aliases: [iphist, ipl, iph]
-  description: "View the IP log of yours or other players'"
-  usage: /iplog [player = yourself]
-  permission: iplogger.iplog
+  iplog:
+    aliases:
+    - iphist
+    - ipl
+    - iph
+    description: View the IP log of yours or other players'
+    usage: /iplog [player = yourself]
+    permission: iplogger.iplog
 permissions:
- iplogger:
-  description: Allow using everything of IPLogger
-  default: false
-  children:
-   iplogger.iplog:
-    description: Allow using command /iplog
-    default: true
-   iplogger.self.read:
-    description: Allow reading self's IP log
-    default: true
-   iplogger.other.read:
-    description: Allow reading others' IP log
-    default: op
+  iplogger:
+    description: Allow using everything of IPLogger
+    default: false
+    children:
+      iplogger.iplog:
+        description: Allow using command /iplog
+        default: true
+      iplogger.self.read:
+        description: Allow reading self's IP log
+        default: true
+      iplogger.other.read:
+        description: Allow reading others' IP log
+        default: op
+...

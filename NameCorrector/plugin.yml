@@ -1,8 +1,9 @@
 ---
 name: NameCorrector
-version: 1.0.0#build010
+version: 1.0.0#build011
 api:
 - 1.8.0
+- 2.0.0
 main: NameCorrector\NameCorrector
 author: PEMapModder
 ...

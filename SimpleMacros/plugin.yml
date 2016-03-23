@@ -1,15 +1,19 @@
+---
 name: SimpleMacros
 author: PEMapModder
 description: Make macros of commands and run them in a once!
 main: pemapmodder\simplemacros\Main
-version: 0.4_dev
+version: 0.4_dev_#001
 load: POSTWORLD
-api: [1.0.0]
+api:
+- 1.0.0
+- 2.0.0
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/SimpleMacros
 commands:
   macro:
     usage: /macro <start|end|pause|resume|run|sudo> [name] [player]
-    description: Start/end recording a macro, or run a macro (optionally sudoing a player)
+    description: Start/end recording a macro, or run a macro (optionally sudoing a
+      player)
     permission: simplemacros.record;simplemacros.run;simplemacros.sudo
 permissions:
   simplemacros:
@@ -22,4 +26,7 @@ permissions:
       simplemacros.sudo:
         description: Allow sudoing other players with a macro
       simplemacros.opsudo:
-        description: Allow sudoing other players with a macro while the target player can run all the commands in the macro, whether they already have permission to them or not
+        description: Allow sudoing other players with a macro while the target player
+          can run all the commands in the macro, whether they already have permission
+          to them or not
+...

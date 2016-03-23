@@ -1,8 +1,9 @@
 ---
 name: NailedKeyboard
-version: 1.1.0_dev_build_001
+version: 1.1.0_dev_build_002
 api:
 - 1.0.0
+- 2.0.0
 main: pemapmodder\nailedkeyboard\NailedKeyboard
 permissions:
   nailedkeyboard:
