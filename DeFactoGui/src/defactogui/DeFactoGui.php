@@ -19,10 +19,10 @@
 namespace defactogui;
 
 use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Enum;
-use pocketmine\nbt\tag\Int;
-use pocketmine\nbt\tag\String;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\EnumTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Chest;
 use pocketmine\tile\Tile;
@@ -37,13 +37,13 @@ class DeFactoGui extends PluginBase{
 		$lv = $this->getServer()->getDefaultLevel();
 		$spawn = $lv->getSpawnLocation()->floor();
 		$chunk = $lv->getChunk($spawn->x >> 4, $spawn->z >> 4);
-		$nbt = new Compound;
-		$nbt->Items = new Enum("Items", []);
+		$nbt = new CompoundTag;
+		$nbt->Items = new EnumTag("Items", []);
 		$nbt->Items->setTagType(NBT::TAG_Enum);
-		$nbt->id = new String("id", Tile::CHEST);
-		$nbt->x = new Int("x", $spawn->x);
-		$nbt->y = new Int("y", $spawn->y);
-		$nbt->z = new Int("z", $spawn->z);
+		$nbt->id = new StringTag("id", Tile::CHEST);
+		$nbt->x = new IntTag("x", $spawn->x);
+		$nbt->y = new IntTag("y", $spawn->y);
+		$nbt->z = new IntTag("z", $spawn->z);
 		$this->fakeTile = new Chest($chunk, $nbt);
 	}
 
