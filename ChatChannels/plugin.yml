@@ -4,7 +4,7 @@ authors:
 - PEMapModder
 - Falk
 description: Separate chat in channels
-main: ChatChannels
+main: chatchannels/ChatChannels
 api: 1.5.0
 version: INDEV_#002
 website: https://github.com/PEMapModder/Small-ZC-Plugins/tree/master/ChatChannels
