@@ -8,7 +8,7 @@ class LagFixer extends PluginBase{
 	public function onEnable(){
 		$this->getServer()->getCommandMap()->registerAll("lagfixer", [
 			new ShowCommand($this),
-			new HealthCommand($this)
+			new HealthCommand($this),
 		]);
 	}
 }

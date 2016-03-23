@@ -13,9 +13,11 @@ class ConsolePush extends PluginBase implements Listener{
 	const CHAR_NORMAL = "n";
 	// since we only have one console, one cache is enough, no need for session management :)
 	public $currentLine;
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
+
 	public function onConsoleCmd(ServerCommandEvent $event){
 		if(isset($this->currentLine)){
 			$event->setCommand($this->currentLine . $event->getCommand());
@@ -41,6 +43,7 @@ class ConsolePush extends PluginBase implements Listener{
 			}
 		}
 	}
+
 	public function simulateInput($input){
 		echo $input;
 		$this->currentLine = $input;

@@ -10,9 +10,11 @@ class AllRecursiveSelector implements RecursiveSelector{
 	public function getName(){
 		return "all";
 	}
+
 	public function getAliases(){
 		return ["a"];
 	}
+
 	public function format(Server $server, CommandSender $sender, $name, array $args){
 		$result = [];
 		foreach($server->getOnlinePlayers() as $p){

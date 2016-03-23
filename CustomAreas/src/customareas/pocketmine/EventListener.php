@@ -16,25 +16,31 @@ use pocketmine\Player;
 class EventListener implements Listener{
 	/** @var CustomAreas */
 	private $main;
+
 	public function __construct(CustomAreas $main){
 		$this->main = $main;
 	}
+
 	public function onInteract(PlayerInteractEvent $event){
 		// TODO
 	}
+
 	public function onBlockPlace(BlockPlaceEvent $event){
 		if($this->areaHasFlag($event->getPlayer(), Area::FLAG_PLACE, true, true, $event->getBlock())){
 			$event->setCancelled();
 		}
 	}
+
 	public function onBlockBreak(BlockBreakEvent $event){
 		if($this->areaHasFlag($event->getPlayer(), Area::FLAG_BREAK, true, true, $event->getBlock())){
 			$event->setCancelled();
 		}
 	}
+
 	/**
 	 * @param EntityDamageEvent $event
-	 * @priority HIGH
+	 *
+	 * @priority        HIGH
 	 * @ignoreCancelled true
 	 */
 	public function onDamage(EntityDamageEvent $event){
@@ -94,12 +100,14 @@ class EventListener implements Listener{
 			}
 		}
 	}
+
 	/**
-	 * @param Player $player
-	 * @param int $flag
-	 * @param bool $default
-	 * @param bool $partial
+	 * @param Player        $player
+	 * @param int           $flag
+	 * @param bool          $default
+	 * @param bool          $partial
 	 * @param Position|null $loc
+	 *
 	 * @return bool
 	 */
 	private function areaHasFlag(Player $player, $flag, $default, $partial = true, $loc = null){

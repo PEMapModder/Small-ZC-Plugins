@@ -17,14 +17,17 @@ class Main extends PluginBase implements Listener{
 	private $paused = [];
 	/** @var \pocketmine\permission\PermissionAttachment[] */
 	private $atts = [];
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		@mkdir($this->getDataFolder());
-		@mkdir($this->getDataFolder()."macros/");
+		@mkdir($this->getDataFolder() . "macros/");
 	}
+
 	/**
 	 * @param PlayerCommandPreprocessEvent $event
-	 * @priority MONITOR
+	 *
+	 * @priority        MONITOR
 	 * @ignoreCancelled true
 	 */
 	public function onPreCmd(PlayerCommandPreprocessEvent $event){
@@ -34,14 +37,17 @@ class Main extends PluginBase implements Listener{
 		}
 		$this->onCmd($event->getPlayer()->getID(), substr($line, 1));
 	}
+
 	/**
 	 * @param ServerCommandEvent $event
-	 * @priority MONITOR
+	 *
+	 * @priority        MONITOR
 	 * @ignoreCancelled true
 	 */
 	public function onConsoleCmd(ServerCommandEvent $event){
 		$this->onCmd("pocketmine\\command\\ConsoleCommandSender", $event->getCommand());
 	}
+
 	private function onCmd($id, $line){
 		if(strtolower(substr($line, 0, strlen("macro"))) === "macro" and strtolower(substr($line, 0, strlen("macro run"))) !== "macro run"){
 			return;
@@ -50,15 +56,20 @@ class Main extends PluginBase implements Listener{
 			$this->stack[$id] .= "$line\n";
 		}
 	}
+
 	public function onJoin(PlayerJoinEvent $event){
 		$this->atts[$event->getPlayer()->getID()] = $event->getPlayer()->addAttachment($this);
 	}
+
 	public function onQuit(PlayerQuitEvent $event){
 		$this->finalizePlayer($event->getPlayer(), true);
 	}
+
 	public function onCommand(CommandSender $sender, Command $cmd, $alias, array $args){
-		if(!isset($args[0])) return false;
-		$k = ($sender instanceof Player) ? $sender->getID():get_class($sender);
+		if(!isset($args[0])){
+			return false;
+		}
+		$k = ($sender instanceof Player) ? $sender->getID() : get_class($sender);
 		switch($subcmd = array_shift($args)){
 			case "stop":
 				if(!isset($this->stack[$k])){
@@ -73,8 +84,7 @@ class Main extends PluginBase implements Listener{
 				if(strtolower($name = array_shift($args)) === "ng"){
 					$sender->sendMessage("This NG macro has been discarded.");
 					// continue to run: unset stack
-				}
-				else{
+				}else{
 					if($this->getMacro($name) !== false){
 						$sender->sendMessage("There is already a macro called \"$name\"!");
 						$sender->sendMessage("Don't worry, this command will not be recorded.");
@@ -169,7 +179,7 @@ class Main extends PluginBase implements Listener{
 						}
 					}
 				}
-				$sender->sendMessage("Command run as ".$p->getName().".");
+				$sender->sendMessage("Command run as " . $p->getName() . ".");
 				break;
 			case "run":
 				if(!$sender->hasPermission("simplemacros.run")){
@@ -189,29 +199,32 @@ class Main extends PluginBase implements Listener{
 		}
 		return true;
 	}
+
 	public function saveMacro($name, $lines){
-		$success = file_put_contents($this->getDataFolder()."macros/$name.txt", $lines);
+		$success = file_put_contents($this->getDataFolder() . "macros/$name.txt", $lines);
 		return ($success !== false);
 	}
+
 	public function getMacro($name){
-		if(is_file($path = $this->getDataFolder()."macros/$name.txt")){
+		if(is_file($path = $this->getDataFolder() . "macros/$name.txt")){
 			return explode("\n", file_get_contents($path));
 		}
 		return false;
 	}
+
 	public function onDisable(){
 		foreach($this->getServer()->getOnlinePlayers() as $p){
 			$this->finalizePlayer($p, false);
 		}
 	}
+
 	public function finalizePlayer(Player $player, $isQuit){
 		if(isset($this->stack[$id = $player->getID()])){
 			unset($this->stack[$id]); // avoid bugs if the entity ID gets reused
 			if($isQuit){
-				$this->getLogger()->alert($player->getDisplayName()." has quit, so his recording macro has been discarded.");
-			}
-			else{
-				$this->getLogger()->alert("Discarding recording macro of ".$player->getDisplayName()." due to plugin disable.");
+				$this->getLogger()->alert($player->getDisplayName() . " has quit, so his recording macro has been discarded.");
+			}else{
+				$this->getLogger()->alert("Discarding recording macro of " . $player->getDisplayName() . " due to plugin disable.");
 				$player->sendMessage("Your recording macro has been discarded due to SimpleMacros being disabled.");
 			}
 		}

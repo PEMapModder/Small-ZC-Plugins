@@ -10,9 +10,11 @@ class RandomSelector implements Selector{
 	public function getName(){
 		return "random";
 	}
+
 	public function getAliases(){
 		return ["r"];
 	}
+
 	public function format(Server $server, CommandSender $sender, $name, array $args){
 		$players = [];
 		foreach($sender->getServer()->getOnlinePlayers() as $player){

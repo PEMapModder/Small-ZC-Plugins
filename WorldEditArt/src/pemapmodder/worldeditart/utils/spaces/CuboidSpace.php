@@ -7,10 +7,11 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 
 class CuboidSpace extends Space{
-	/** @var Position  */
+	/** @var Position */
 	protected $raw0, $raw1;
 	/** @var Position */
 	protected $baked0, $baked1;
+
 	public static function createFromPos_Rot(Position $pos, $yaw, $pitch){
 		$y = -sin(deg2rad($pitch));
 		$xz = cos(deg2rad($pitch));
@@ -20,6 +21,7 @@ class CuboidSpace extends Space{
 		$newPos = $pos->add($x, $y, $z);
 		return new CuboidSpace($pos, $newPos);
 	}
+
 	public function __construct(Position $a, Vector3 $b){
 		$this->raw0 = $a;
 		if(!($b instanceof Position)){
@@ -27,11 +29,12 @@ class CuboidSpace extends Space{
 		}
 		$this->raw1 = $b;
 		if($a->getLevel()->getName() !== $b->getLevel()->getName()){
-			trigger_error("Positions of different levels (\"".$a->getLevel()->getName()."\" and \"".$b->getLevel()->getName()."\" passed to constructor of ".get_class($this), E_USER_WARNING);
+			trigger_error("Positions of different levels (\"" . $a->getLevel()->getName() . "\" and \"" . $b->getLevel()->getName() . "\" passed to constructor of " . get_class($this), E_USER_WARNING);
 		}
 		$this->bake();
 		parent::__construct(); // call this at the last because it has to bake before acquiring
 	}
+
 	public function set0(Vector3 $v){
 		if($v instanceof Position and $v->getLevel()->getName() !== $this->baked0->getLevel()->getName()){
 			trigger_error("Trying to set CuboidSpace to different level by CuboidSpace::set0()", E_USER_ERROR);
@@ -40,6 +43,7 @@ class CuboidSpace extends Space{
 		$this->raw0 = new Position($v->x, $v->y, $v->z, $this->baked0->getLevel());
 		$this->bake();
 	}
+
 	public function set1(Vector3 $v){
 		if($v instanceof Position and $v->getLevel()->getName() !== $this->baked0->getLevel()->getName()){
 			trigger_error("Trying to set CuboidSpace to different level by CuboidSpace::set1()", E_USER_ERROR);
@@ -48,15 +52,18 @@ class CuboidSpace extends Space{
 		$this->raw1 = new Position($v->x, $v->y, $v->z, $this->baked0->getLevel());
 		$this->bake();
 	}
+
 	public function getRaw0(){
 		return $this->raw0;
 	}
+
 	public function getRaw1(){
 		return $this->raw1;
 	}
+
 	public function bake(){
 		if($this->raw0->getLevel()->getName() !== $this->raw1->getLevel()->getName()){
-			throw new \InvalidArgumentException("Positions of different levels (\"".$this->raw0->getLevel()->getName()."\" and \"".$this->raw1->getLevel()->getName()."\" passed to constructor of ".get_class($this));
+			throw new \InvalidArgumentException("Positions of different levels (\"" . $this->raw0->getLevel()->getName() . "\" and \"" . $this->raw1->getLevel()->getName() . "\" passed to constructor of " . get_class($this));
 		}
 		$this->baked0 = new Position(
 			min($this->raw0->getFloorX(), $this->raw1->getFloorX()),
@@ -78,14 +85,17 @@ class CuboidSpace extends Space{
 			throw new SelectionExceedWorldException("CuboidSpace");
 		}
 	}
+
 	public function get0(){
 		$this->bake();
 		return $this->baked0;
 	}
+
 	public function get1(){
 		$this->bake();
 		return $this->baked1;
 	}
+
 	public function getPosList(){
 		if(\pemapmodder\worldeditart\utils\subcommand\IS_DEBUGGING){
 			echo "Fetching position of CuboidSpace...\n";
@@ -99,9 +109,10 @@ class CuboidSpace extends Space{
 				}
 			}
 		}
-		echo "\nCompleted: ".count($pos)." instances\n";
+		echo "\nCompleted: " . count($pos) . " instances\n";
 		return $pos;
 	}
+
 	public function getBlockList(){
 		$blocks = [];
 		for($x = $this->baked0->getX(); $x <= $this->baked1->getX(); $x++){
@@ -113,6 +124,7 @@ class CuboidSpace extends Space{
 		}
 		return $blocks;
 	}
+
 	public function getMarginPosList(){
 		$out = [];
 		for($x = $this->baked0->x; $x <= $this->baked1->x; $x++){
@@ -135,6 +147,7 @@ class CuboidSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function getMarginBlockList(){
 		$level = $this->raw0->getLevel();
 		$out = [];
@@ -158,6 +171,7 @@ class CuboidSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function isInside(Vector3 $v){
 		$out = true;
 		$out = ($out and $this->baked0->getFloorX() <= $v->getX() and $v->getX() <= $this->baked1->getFloorX());
@@ -168,15 +182,18 @@ class CuboidSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function count(){
 		return ($this->baked1->x - $this->baked0->x + 1) *
 		($this->baked1->y - $this->baked0->y + 1) *
 		($this->baked1->z - $this->baked0->z + 1);
 	}
+
 	public function getLevel(){
 		return $this->baked0->getLevel();
 	}
+
 	public function __toString(){
-		return "a cuboid from ".WorldEditArt::v3ToStr($this->raw0)." to ".WorldEditArt::posToStr($this->raw1);
+		return "a cuboid from " . WorldEditArt::v3ToStr($this->raw0) . " to " . WorldEditArt::posToStr($this->raw1);
 	}
 }

@@ -15,6 +15,7 @@ class PlayerData{
 	private $name;
 	/** @var SelectedTool[] */
 	private $tools = [];
+
 	public function __construct(WorldEditArt $main, $name, SelectedTool $wand = null, SelectedTool $jump = null){
 		$config = $main->getConfig();
 		if($wand === null){
@@ -27,21 +28,25 @@ class PlayerData{
 		$this->name = $name;
 		$this->tools = [
 			self::WAND => $wand,
-			self::JUMP => $jump
+			self::JUMP => $jump,
 		];
 	}
+
 	public function update(){
 		$this->main->getPlayerDataProvider()[$this->name] = $this;
 	}
+
 	public function __toString(){
 		return $this->name;
 	}
+
 	/**
 	 * @return SelectedTool
 	 */
 	public function getWand(){
 		return $this->tools[self::WAND];
 	}
+
 	/**
 	 * @param SelectedTool $wand
 	 */
@@ -49,12 +54,14 @@ class PlayerData{
 		$this->tools[self::WAND] = $wand;
 		$this->update();
 	}
+
 	/**
 	 * @return SelectedTool
 	 */
 	public function getJump(){
 		return $this->tools[self::JUMP];
 	}
+
 	/**
 	 * @param $jump
 	 */
@@ -62,9 +69,11 @@ class PlayerData{
 		$this->tools[self::JUMP] = $jump;
 		$this->update();
 	}
+
 	public function getTool($id){
-		return isset($this->tools[$id]) ? $this->tools[$id]:null;
+		return isset($this->tools[$id]) ? $this->tools[$id] : null;
 	}
+
 	public function setTool($id, SelectedTool $tool){
 		$this->tools[$id] = $tool;
 		$this->update();

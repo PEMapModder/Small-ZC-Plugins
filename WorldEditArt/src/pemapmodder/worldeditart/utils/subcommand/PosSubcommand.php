@@ -2,43 +2,49 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
 class PosSubcommand extends Subcommand{
 	/** @var bool */
 	protected $is2;
+
 	/**
 	 * @param WorldEditArt $main
-	 * @param bool $is2
+	 * @param bool         $is2
 	 */
 	public function __construct(WorldEditArt $main, $is2){
 		parent::__construct($main);
 		$this->is2 = $is2;
 	}
+
 	public function getName(){
-		return "pos".($this->is2 ? "2":"1");
+		return "pos" . ($this->is2 ? "2" : "1");
 	}
+
 	public function getDescription(){
-		return "Set your position ".($this->is2 ? "2":"1");
+		return "Set your position " . ($this->is2 ? "2" : "1");
 	}
+
 	public function getUsage(){
 		return "[me|here|a|anchor|c|crosshair]";
 	}
+
 	public function getAliases(){
 		if($this->is2){
 			return ["p2", "2"];
-		}
-		else{
+		}else{
 			return ["p1", "1"];
 		}
 	}
+
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.pos");
 	}
+
 	public function onRun(array $args, Player $player){
 		$flag = 0; // 0 for me, 1 for anchor, 2 for crosshair
 		if(isset($args[0])){
@@ -67,7 +73,7 @@ class PosSubcommand extends Subcommand{
 				return "The block is too far/in the void/in the sky.";
 			}
 		}
-		if($selected->y < 0 or $selected->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path):127)){
+		if($selected->y < 0 or $selected->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path) : 127)){
 			return "The selected point is too high/too low.";
 		}
 		$selected->getLevel()->loadChunk($selected->x >> 4, $selected->z >> 4);
@@ -76,8 +82,7 @@ class PosSubcommand extends Subcommand{
 		if($space instanceof CuboidSpace and $space->getLevel() === $selected->getLevel()){
 			if($this->is2){
 				$space->set1($selected);
-			}
-			else{
+			}else{
 				$space->set0($selected);
 			}
 			goto end;
@@ -89,8 +94,7 @@ class PosSubcommand extends Subcommand{
 			if($pos->getLevel() === $selected->getLevel()){
 				if($this->is2){
 					$this->getMain()->setSelection($player, new CuboidSpace($pos, $selected));
-				}
-				else{
+				}else{
 					$this->getMain()->setSelection($player, new CuboidSpace($selected, $pos));
 				}
 				goto end;
@@ -103,8 +107,8 @@ class PosSubcommand extends Subcommand{
 		if($space instanceof Space){
 			$cnt = count($space);
 		}
-		return ($this->is2 ? "Second":"First")." position set to ".
-				"({$selected->x}, {$selected->y}, {$selected->z}).".
-				(isset($cnt) ? "\n  (Cuboid selected with $cnt blocks)":"");
+		return ($this->is2 ? "Second" : "First") . " position set to " .
+		"({$selected->x}, {$selected->y}, {$selected->z})." .
+		(isset($cnt) ? "\n  (Cuboid selected with $cnt blocks)" : "");
 	}
 }

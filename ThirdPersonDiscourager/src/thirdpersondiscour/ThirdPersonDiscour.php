@@ -21,6 +21,7 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 	private $blockType;
 	/** @var number */
 	private $distance;
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$this->defaultEnable = $this->getConfig()->get("auto-enable", true);
@@ -31,49 +32,58 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
+
 	public function onDisable(){
 		foreach($this->sessions as $ses){
 			$ses->disable();
 		}
 		$this->sessions = [];
 	}
+
 	public function onJoin(PlayerJoinEvent $event){
 		$this->sessions[$id = $event->getPlayer()->getId()] = new Session($this, $event->getPlayer());
 		if($this->defaultEnable){
 			$this->sessions[$id]->enable();
 		}
 	}
+
 	public function onQuit(PlayerQuitEvent $event){
 		if(isset($this->sessions[$id = $event->getPlayer()->getId()])){
 			unset($this->sessions[$id]);
 		}
 	}
+
 	public function onMove(PlayerMoveEvent $event){
 		if(isset($this->sessions[$id = $event->getPlayer()->getId()])){
 			$this->sessions[$id]->update();
 		}
 	}
+
 	/**
 	 * @return boolean
 	 */
 	public function isDefaultEnable(){
 		return $this->defaultEnable;
 	}
+
 	/**
 	 * @return Block
 	 */
 	public function getBlockType(){
 		return $this->blockType;
 	}
+
 	/**
 	 * @return number
 	 */
 	public function getDistance(){
 		return $this->distance;
 	}
+
 	public function getSession(Player $player){
 		return isset($this->sessions[$id = $player->getId()]) ? $this->sessions[$id] : null;
 	}
+
 	public function onCommand(CommandSender $sender, Command $c, $l, array $args){
 		if($c->getName() === "3pdc"){
 			if(($name = array_shift($args)) === null){
@@ -88,7 +98,7 @@ class ThirdPersonDiscour extends PluginBase implements Listener{
 				return true;
 			}
 			if(($arg = array_shift($args)) === ".check" or $arg === ".c"){
-				$sender->sendMessage("ThirdPersonDiscourager is " . ($ses->isEnabled() ? "enabled":"disabled") . " for $ses.");
+				$sender->sendMessage("ThirdPersonDiscourager is " . ($ses->isEnabled() ? "enabled" : "disabled") . " for $ses.");
 				return true;
 			}
 			if($ses->isEnabled()){

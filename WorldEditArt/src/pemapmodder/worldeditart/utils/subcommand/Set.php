@@ -17,6 +17,7 @@ class Set extends Subcommand{
 	private $twoNo, $twoYes;
 	/** @var bool */
 	private $mulNo, $mulYes;
+
 	public function __construct(WorldEditArt $main, $twoNo, $twoYes, $mulNo, $mulYes){
 		parent::__construct($main);
 		$this->twoNo = $twoNo;
@@ -24,15 +25,19 @@ class Set extends Subcommand{
 		$this->mulNo = $mulNo;
 		$this->mulYes = $mulYes;
 	}
+
 	public function getName(){
 		return "set";
 	}
+
 	public function getDescription(){
 		return "Set all the blocks in your selection";
 	}
+
 	public function getUsage(){
 		return "<blocks> [h|hollow] [nu|no-update]";
 	}
+
 	public function checkPermission(Space $space, Player $player){
 		if($space instanceof CuboidSpace){
 			return $player->hasPermission("wea.set.cuboid");
@@ -45,6 +50,7 @@ class Set extends Subcommand{
 		}
 		return $player->hasPermission("wea.set.*");
 	}
+
 	public function onRun(array $args, Space $space){
 		if(!isset($args[0])){
 			return self::WRONG_USE;
@@ -68,12 +74,10 @@ class Set extends Subcommand{
 			}
 			try{
 				$list = new BlockList($name);
+			}catch(BlockPatternParseException $e){
+				return "The following pattern error occurred: " . $e->getMessage();
 			}
-			catch(BlockPatternParseException $e){
-				return "The following pattern error occurred: ".$e->getMessage();
-			}
-		}
-		else{
+		}else{
 			$block = BlockList::getBlockFronString($name);
 			if($block === null){
 				return self::NO_BLOCK;
@@ -96,8 +100,7 @@ class Set extends Subcommand{
 		}
 		if($hollow){
 			$cnt = $space->randomHollow($list, $update);
-		}
-		else{
+		}else{
 			$cnt = $space->randomPlaces($list, $update);
 		}
 		return "$cnt block(s) have been changed.";

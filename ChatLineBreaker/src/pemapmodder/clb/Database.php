@@ -9,14 +9,17 @@ class Database{
 	const API = 2;
 	private $path;
 	private $data = [];
+
 	public function __construct($path){
 		$this->path = $path;
 		$this->dummyData();
 		$this->load();
 	}
+
 	public function dummyData(){
 		$this->data["console"] = 0xFF;
 	}
+
 	public function load(){
 		$data = @file_get_contents($this->path);
 		if($data === false){
@@ -49,6 +52,7 @@ class Database{
 			return;
 		}
 	}
+
 	public function save(){
 		$res = fopen($this->path, "wb");
 		foreach($this->data as $name => $length){

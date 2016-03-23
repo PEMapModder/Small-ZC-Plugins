@@ -24,10 +24,11 @@ use pocketmine\event\player\PlayerJoinEvent;
 class EventListener implements Listener{
 	/** @var DeFactoGui */
 	private $main;
+
 	public function __construct(DeFactoGui $main){
 		$this->main = $main;
 	}
-	public function onJoin(PlayerJoinEvent $event){
 
+	public function onJoin(PlayerJoinEvent $event){
 	}
 }

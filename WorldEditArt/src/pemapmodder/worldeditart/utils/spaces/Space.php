@@ -12,12 +12,15 @@ use pocketmine\Player;
 abstract class Space implements \Countable{
 	/** @var Block[] */
 	protected $undoMap = [];
+
 	public function __construct(){
 	}
+
 	/**
 	 * @return Position[]
 	 */
 	public abstract function getPosList();
+
 	/**
 	 * @return Block[]
 	 */
@@ -28,6 +31,7 @@ abstract class Space implements \Countable{
 		}
 		return $out;
 	}
+
 	/**
 	 * @return Position[]
 	 */
@@ -48,6 +52,7 @@ abstract class Space implements \Countable{
 		}
 		return $out;
 	}
+
 	/**
 	 * @return Block[]
 	 */
@@ -58,10 +63,12 @@ abstract class Space implements \Countable{
 		}
 		return $out;
 	}
+
 	/**
-	 * @param Block $block
+	 * @param Block       $block
 	 * @param Player|bool $test
-	 * @param bool $update
+	 * @param bool        $update
+	 *
 	 * @return int
 	 */
 	public function setBlocks(Block $block, $test = false, $update = true){
@@ -77,8 +84,7 @@ abstract class Space implements \Countable{
 					$pk->y = $b->y;
 					$pk->z = $b->z;
 					$test->dataPacket($pk);
-				}
-				else{
+				}else{
 					$b->getLevel()->setBlock($b, $block, false, false); // w** shoghicp
 				}
 				$cnt++;
@@ -89,17 +95,21 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	/**
 	 * @param Player|bool $test
-	 * @param bool $update
+	 * @param bool        $update
 	 */
 	public function clear($test = false, $update = true){
 		$this->setBlocks(new Air, $test, $update);
 	}
+
 	/**
 	 * Note: This method doesn't support /w test since it is random.
+	 *
 	 * @param BlockList $blocks
-	 * @param bool $update
+	 * @param bool      $update
+	 *
 	 * @return int the number of bocks replaced
 	 */
 	public function randomPlaces(BlockList $blocks, $update = true){
@@ -113,12 +123,14 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	/**
 	 * @param Block|Block[] $oorig
-	 * @param Block $new
-	 * @param bool $checkMeta
-	 * @param Player|bool $test
-	 * @param bool $update
+	 * @param Block         $new
+	 * @param bool          $checkMeta
+	 * @param Player|bool   $test
+	 * @param bool          $update
+	 *
 	 * @return int
 	 */
 	public function replaceBlocks($oorig, Block $new, $checkMeta = true, $test = false, $update = true){
@@ -146,8 +158,7 @@ abstract class Space implements \Countable{
 					$pk->y = $b->y;
 					$pk->z = $b->z;
 					$test->dataPacket($pk);
-				}
-				else{
+				}else{
 					$b->getLevel()->setBlock($b, $new, false, false); // w** shoghicp
 				}
 				$cnt++;
@@ -158,11 +169,13 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	/**
 	 * @param Block|Block[] $ofroms
-	 * @param BlockList $to
-	 * @param bool $checkMeta
-	 * @param bool $update
+	 * @param BlockList     $to
+	 * @param bool          $checkMeta
+	 * @param bool          $update
+	 *
 	 * @return int
 	 */
 	public function randomReplaces($ofroms, BlockList $to, $checkMeta = true, $update = true){
@@ -192,6 +205,7 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	public function randomHollow(BlockList $blocks, $update = true){
 		$cnt = 0;
 		foreach($this->getMarginPosList() as $pos){
@@ -200,6 +214,7 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	public function randomHollowReplace($froms, BlockList $list, $update = true){
 		$cnt = 0;
 		foreach($this->getMarginBlockList() as $b){
@@ -217,19 +232,24 @@ abstract class Space implements \Countable{
 		}
 		return $cnt;
 	}
+
 	/**
 	 * @return \pocketmine\level\Level
 	 */
 	public abstract function getLevel();
+
 	public function updateAround(){
 		foreach($this->getMarginPosList() as $pos){
 			$this->getLevel()->updateAround($pos);
 		}
 	}
+
 	public abstract function isInside(Vector3 $v);
+
 	/**
 	 * @param Vector3 $v0
 	 * @param Vector3 $v1
+	 *
 	 * @return bool
 	 */
 	protected final function equals(Vector3 $v0, Vector3 $v1){
@@ -242,8 +262,10 @@ abstract class Space implements \Countable{
 		}
 		return $out;
 	}
+
 	public function count(){
 		return count($this->getPosList());
 	}
+
 	public abstract function __toString();
 }

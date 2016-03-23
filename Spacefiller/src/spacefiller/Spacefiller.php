@@ -27,9 +27,10 @@ use pocketmine\plugin\PluginBase;
 class Spacefiller extends PluginBase implements Listener{
 	/** @var Rule[] */
 	private $rules = [];
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
-		$this->rules = array_map(function($config){
+		$this->rules = array_map(function ($config){
 			return new Rule($config["from"], $config["to"], isset($config["limit"]) ? $config["limit"] : -1);
 		}, $this->getConfig()->get("rules"));
 		$priorityString = $this->getConfig()->get("process-priority", "LOWEST");
@@ -41,6 +42,7 @@ class Spacefiller extends PluginBase implements Listener{
 		}
 		$this->getServer()->getPluginManager()->registerEvent(PlayerChatEvent::class, $this, $priority, new MethodEventExecutor("onChat"), $this, true);
 	}
+
 	public function onChat(PlayerChatEvent $event){
 		$msg = $event->getMessage();
 		foreach($this->rules as $rule){

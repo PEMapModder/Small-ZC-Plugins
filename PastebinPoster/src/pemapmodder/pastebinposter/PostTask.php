@@ -13,6 +13,7 @@ class PostTask extends AsyncTask{
 	/** @var int */
 	private $timeout;
 	private $logger;
+
 	public function __construct($url, $post, $timeout = 3000, \Logger $logger){
 		$this->url = $url;
 		$this->post = $post;
@@ -20,6 +21,7 @@ class PostTask extends AsyncTask{
 		$logger->debug("Created post task to \"$url\", posting \"$post\" with timeout of $timeout seconds.");
 		$this->logger = $logger;
 	}
+
 	public function onRun(){
 		$res = curl_init($this->url);
 		curl_setopt($res, CURLOPT_POST, true);
@@ -30,6 +32,7 @@ class PostTask extends AsyncTask{
 		curl_setopt($res, CURLOPT_TIMEOUT_MS, $this->timeout);
 		$this->setResult(curl_exec($res));
 	}
+
 	public function onCompletion(Server $server){
 		/** @var Main $main */
 		$main = $server->getPluginManager()->getPlugin("PastebinPoster");

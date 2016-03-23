@@ -2,14 +2,15 @@
 
 namespace pemapmodder\worldeditart\utils\provider\clip;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\clip\Clip;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
 class MysqliClipboardProvider extends CachedClipboardProvider{
 	/** @var \mysqli */
 	private $db;
+
 	public function __construct(WorldEditArt $main, \mysqli $db){
 		parent::__construct($main);
 		$db->query("CREATE TABLE IF NOT EXISTS clipboard_blocks (
@@ -22,6 +23,7 @@ class MysqliClipboardProvider extends CachedClipboardProvider{
 				);");
 		$this->db = $db;
 	}
+
 	public function getClip($name){
 		$result = $this->db->query("SELECT * FROM clipboard_blocks WHERE name = '{$this->db->escape_string($name)}';");
 		$blocks = [];
@@ -37,6 +39,7 @@ class MysqliClipboardProvider extends CachedClipboardProvider{
 		$clip = new Clip($blocks, null, $rname);
 		return $clip;
 	}
+
 	public function setClip($name, Clip $clip){
 		if(strlen($name) >= 64){
 			throw new \InvalidArgumentException("Clip names must not exceed 64 characters!"); // This exception will be caught at SubcommandMap.php
@@ -55,15 +58,19 @@ class MysqliClipboardProvider extends CachedClipboardProvider{
 					);");
 		}
 	}
+
 	public function deleteClip($name){
 		$this->db->query("DELETE FROM clipboard_blocks WHERE name = '{$this->db->escape_string($name)}';");
 	}
+
 	public function isAvailable(){
 		return $this->db->ping();
 	}
+
 	public function close(){
 		$this->db->close();
 	}
+
 	public function getName(){
 		return "MySQLi Clipboard Provider";
 	}

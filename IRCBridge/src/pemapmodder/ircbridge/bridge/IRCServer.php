@@ -17,6 +17,7 @@ class IRCServer extends Thread{
 
 	/** @var string */
 	public $init_error;
+
 	public function __construct(Buffer $buffer, $ip, $port){
 		$this->buffer = $buffer;
 		$this->serverSocket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -35,6 +36,7 @@ class IRCServer extends Thread{
 		socket_set_nonblock($this->serverSocket);
 		$this->start();
 	}
+
 	public function run(){
 		while($this->running){
 			while($this->buffer->hasMoreWrite()){
@@ -66,6 +68,7 @@ class IRCServer extends Thread{
 		}
 		socket_close($this->serverSocket);
 	}
+
 	private function readLine(&$identifier){
 		foreach($this->sockets as $identifier => $sk){
 			$line = socket_read($sk, 512, PHP_NORMAL_READ);
@@ -79,6 +82,7 @@ class IRCServer extends Thread{
 		}
 		return false;
 	}
+
 	public function stop(){
 		$this->running = false;
 		$this->join();

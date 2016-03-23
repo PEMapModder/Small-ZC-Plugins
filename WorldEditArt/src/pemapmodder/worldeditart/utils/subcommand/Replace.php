@@ -16,6 +16,7 @@ class Replace extends Subcommand{
 	private $twoNo, $twoYes;
 	/** @var bool */
 	private $mulNo, $mulYes;
+
 	public function __construct(WorldEditArt $main, $twoNo, $twoYes, $mulNo, $mulYes){
 		parent::__construct($main);
 		$this->twoNo = $twoNo;
@@ -23,15 +24,19 @@ class Replace extends Subcommand{
 		$this->mulNo = $mulNo;
 		$this->mulYes = $mulYes;
 	}
+
 	public function getName(){
 		return "replace";
 	}
+
 	public function getDescription(){
 		return "Replace specified type(s) of blocks into other type(s)";
 	}
+
 	public function getUsage(){
 		return "<from> <to> [nu|no-update] [h|hollow]";
 	}
+
 	public function checkPermission(Space $space, Player $player){
 		if($space instanceof CuboidSpace){
 			return $player->hasPermission("wea.set.cuboid");
@@ -44,6 +49,7 @@ class Replace extends Subcommand{
 		}
 		return $player->hasPermission("wea.set.*");
 	}
+
 	public function onRun(array $args, Space $space){
 		if(!isset($args[1])){
 			return self::WRONG_USE;
@@ -60,8 +66,7 @@ class Replace extends Subcommand{
 				if(!$this->twoYes and $perc){
 					return "Replacing blocks into two block types with percentage is disabled on this server.";
 				}
-			}
-			else{
+			}else{
 				if(!$this->mulNo and !$perc){
 					return "Replacing blocks into multiple block types without percentage is disabled on this server.";
 				}
@@ -70,8 +75,7 @@ class Replace extends Subcommand{
 				}
 			}
 			$to = new BlockList($targets);
-		}
-		else{
+		}else{
 			$to = new SingleList(BlockList::getBlockFronString($targets));
 		}
 		$hollow = false;
@@ -90,12 +94,12 @@ class Replace extends Subcommand{
 		}
 		if($hollow){
 			$cnt = $space->randomHollowReplace($from, $to, $update);
-		}
-		else{
+		}else{
 			$cnt = $space->randomReplaces($from, $to, $update);
 		}
 		return "$cnt block(s) have been changed.";
 	}
+
 	public function getAliases(){
 		return ["rpl"];
 	}

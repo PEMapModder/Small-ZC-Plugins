@@ -2,9 +2,9 @@
 
 namespace pemapmodder\worldeditart\utils\provider\macro;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\macro\MacroOperation;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
@@ -13,19 +13,23 @@ use pocketmine\nbt\tag;
 class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 	/** @var string */
 	private $path;
+
 	public function __construct(WorldEditArt $main, $path){
 		parent::__construct($main);
 		$this->path = $path;
 	}
+
 	public function isAvailable(){
 		return true;
 	}
-	public function close(){
 
+	public function close(){
 	}
+
 	public function getName(){
 		return "Local NBT Macro Data Provider";
 	}
+
 	public function readMacro($name){
 		if(!is_file($path = $this->getFile($name))){
 			return null;
@@ -36,8 +40,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 		$string = substr($string, 1);
 		if($type === 0){
 			$nbt->read($string);
-		}
-		else{
+		}else{
 			$nbt->readCompressed($string, $type);
 		}
 		$tag = $nbt->getData();
@@ -51,8 +54,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 			$type = $tag["type"];
 			if($type === 1){
 				$ops[] = new MacroOperation($t["delta"]);
-			}
-			else{
+			}else{
 				$vectors = $t["vectors"];
 				/** @noinspection PhpParamsInspection */
 				$ops[] = new MacroOperation(new Vector3($vectors[0], $vectors[1], $vectors[2]), Block::get($t["blockID"], $t["blockDamage"]));
@@ -60,6 +62,7 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 		}
 		return new Macro(false, $ops, $author, $description);
 	}
+
 	public function saveMacro($name, Macro $macro){
 		$tag = new tag\Compound;
 		$tag["author"] = new tag\String("author", $macro->getAuthor());
@@ -79,18 +82,19 @@ class LocalNBTMacroDataProvider extends CachedMacroDataProvider{
 		$compression = $this->getMain()->getConfig()->getAll()["data providers"]["macro"]["mcr"]["compression"];
 		if($compression === 0){
 			$data = $nbt->write();
-		}
-		else{
+		}else{
 			$data = $nbt->writeCompressed($compression);
 		}
-		fwrite($stream, chr($compression).$data);
+		fwrite($stream, chr($compression) . $data);
 		fclose($stream);
 	}
+
 	public function deleteMacro($name){
 		unlink($this->getFile($name));
 	}
+
 	public function getFile($name){
-		$file = $this->getMain()->getDataFolder().str_replace("<name>", $name, $this->path);
+		$file = $this->getMain()->getDataFolder() . str_replace("<name>", $name, $this->path);
 		@mkdir(dirname($file), 0777, true);
 		return $file;
 	}

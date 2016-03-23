@@ -32,6 +32,7 @@ class DeFactoGui extends PluginBase{
 	private $registeredButtons = [];
 	/** @var Chest */
 	private $fakeTile;
+
 	public function onEnable(){
 		$lv = $this->getServer()->getDefaultLevel();
 		$spawn = $lv->getSpawnLocation()->floor();
@@ -45,9 +46,11 @@ class DeFactoGui extends PluginBase{
 		$nbt->z = new Int("z", $spawn->z);
 		$this->fakeTile = new Chest($chunk, $nbt);
 	}
+
 	public function registerButton(Button $button){
 		$this->registeredButtons[get_class($button)] = $button;
 	}
+
 	/**
 	 * @return Chest
 	 */

@@ -26,6 +26,7 @@ class Main extends PluginBase implements Listener{
 	private $dbs = [];
 	private $signTouchSessions = [];
 	private $ids;
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		foreach($this->getServer()->getLevels() as $level){
@@ -33,8 +34,9 @@ class Main extends PluginBase implements Listener{
 		}
 		$this->getServer()->getScheduler()->scheduleDelayedRepeatingTask(new TickUpdater($this), 1, 1);
 		$this->saveResource("ids.json");
-		$this->ids = json_decode(file_get_contents($this->getDataFolder()."ids.json"));
+		$this->ids = json_decode(file_get_contents($this->getDataFolder() . "ids.json"));
 	}
+
 	public function onDisable(){
 		$this->getLogger()->info("Disabling: restoring signs...");
 		foreach($this->getServer()->getLevels() as $lv){
@@ -52,29 +54,32 @@ class Main extends PluginBase implements Listener{
 						$texts[] = TickUpdater::getHalfByteValue($lengths, $i);
 					}
 					$sign->setText($texts[0], $texts[1], $texts[2], $texts[3]);
-				}
-				else{
-					$db->query("DELETE FROM signs WHERE id = ".$data["id"].";");
+				}else{
+					$db->query("DELETE FROM signs WHERE id = " . $data["id"] . ";");
 				}
 			}
 			$this->closeLevelDb($lv);
 		}
-		file_put_contents($this->getDataFolder()."ids.json", json_encode($this->ids, JSON_BIGINT_AS_STRING));
+		file_put_contents($this->getDataFolder() . "ids.json", json_encode($this->ids, JSON_BIGINT_AS_STRING));
 	}
+
 	public function onLvLoad(LevelLoadEvent $event){
 		$this->openLevelDb($event->getLevel());
 	}
+
 	public function onLvUnlaod(LevelUnloadEvent $event){
 		$this->closeLevelDb($event->getLevel());
 	}
+
 	private function openLevelDb(Level $level){
 		if(isset($this->dbs[$name = $level->getName()])){
 			return;
 		}
-		$this->dbs[$name] = new \SQLite3($this->getDataFolder()."levels/".$level->getName().".sq3");
-		$this->dbs[$name]->exec("CREATE TABLE IF NOT EXISTS signs (id INT, x INT, y INT, z INT, ".
+		$this->dbs[$name] = new \SQLite3($this->getDataFolder() . "levels/" . $level->getName() . ".sq3");
+		$this->dbs[$name]->exec("CREATE TABLE IF NOT EXISTS signs (id INT, x INT, y INT, z INT, " .
 			"lengths INT, texts TEXT, intv INT, scroller INT);");
 	}
+
 	private function closeLevelDb(Level $level){
 		$name = $level->getName();
 		if(!isset($this->dbs[$name])){
@@ -84,6 +89,7 @@ class Main extends PluginBase implements Listener{
 		$this->dbs[$name]->close();
 		unset($this->dbs[$name]);
 	}
+
 	public function onInteract(PlayerInteractEvent $event){
 		$b = $event->getBlock();
 		if(isset($this->signTouchSessions[$id = $event->getPlayer()->getID()]) and ($b instanceof SignPost)){
@@ -95,6 +101,7 @@ class Main extends PluginBase implements Listener{
 			}
 		}
 	}
+
 	public function onCommand(CommandSender $issuer, Command $command, $label, array $args){
 		switch($command->getName()){
 			case "sign":
@@ -116,19 +123,20 @@ class Main extends PluginBase implements Listener{
 		}
 		return false;
 	}
+
 	public function signSign(SignPost $block, IPlayer $player, $interval = 20, $scroll = 2){
 		$tile = $block->getLevel()->getTile($block);
 		if($tile instanceof Sign){
 			$lines = $tile->getText();
-			$text = "[DST] This sign was signed by {$player->getName()} at ".date("G:i:s")." on ".date("M j, Y");
+			$text = "[DST] This sign was signed by {$player->getName()} at " . date("G:i:s") . " on " . date("M j, Y");
 			$lines = array_merge($lines, explode("\n", wordwrap($text, 15, "\n")));
 			$this->addDS($tile, $lines, $interval, $scroll);
 			return true;
-		}
-		else{
+		}else{
 			return false;
 		}
 	}
+
 	public function addDS(Sign $sign, $lines, $interval = 20, $scroll = 1){
 		$lengths = "";
 		$clone = $lines;
@@ -152,7 +160,8 @@ class Main extends PluginBase implements Listener{
 		$op->bindValue(":scroller", $scroll);
 		$op->execute();
 	}
+
 	public function getDb(Level $level){
-		return isset($this->dbs[$name = $level->getName()]) ? $this->dbs[$name]:false;
+		return isset($this->dbs[$name = $level->getName()]) ? $this->dbs[$name] : false;
 	}
 }

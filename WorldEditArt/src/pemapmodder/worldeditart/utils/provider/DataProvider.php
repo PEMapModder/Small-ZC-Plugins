@@ -7,9 +7,11 @@ interface DataProvider extends \ArrayAccess{
 	 * @return string
 	 */
 	public function getName();
+
 	/**
 	 * @return bool
 	 */
 	public function isAvailable();
+
 	public function close();
 }

@@ -9,6 +9,7 @@ use pocketmine\math\Vector3;
 class SphereSpace extends Space{
 	private $centre;
 	private $radius;
+
 	public function __construct(Position $centre, $radius){
 		$this->centre = $centre;
 		$this->radius = $radius;
@@ -25,6 +26,7 @@ class SphereSpace extends Space{
 		}
 		parent::__construct();
 	}
+
 	public function getPosList(){
 		$out = [];
 		for($x = $this->centre->getX() - $this->radius; $x <= $this->centre->getX() + $this->radius; $x++){
@@ -39,6 +41,7 @@ class SphereSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function getBlockList(){
 		$out = [];
 		foreach($this->getPosList() as $pos){
@@ -46,6 +49,7 @@ class SphereSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function isInside(Vector3 $v){
 		$out = true;
 		$out = ($out and $v->distance($this->centre) <= $this->radius);
@@ -54,18 +58,22 @@ class SphereSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function getLevel(){
 		return $this->centre->getLevel();
 	}
+
 	public function __toString(){
-		return "a sphere centered at ".WorldEditArt::posToStr($this->centre)." of radius {$this->radius}";
+		return "a sphere centered at " . WorldEditArt::posToStr($this->centre) . " of radius {$this->radius}";
 	}
+
 	/**
 	 * @return Position
 	 */
 	public function getCentre(){
 		return $this->centre;
 	}
+
 	/**
 	 * @return number
 	 */

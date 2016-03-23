@@ -12,16 +12,19 @@ class ClientManager{
 	private $buffer;
 	/** @var IRCSession[] */
 	private $sessions = [];
+
 	public function __construct(IRCBridge $main){
 		$this->main = $main;
 		$this->buffer = new Buffer;
 	}
+
 	/**
 	 * @return Buffer
 	 */
 	public function getBuffer(){
 		return $this->buffer;
 	}
+
 	public function tick(){
 		while($this->buffer->hasMoreRead()){
 			$line = IRCLine::parseInternalLine($this->buffer->nextRead(), $signal, $client);

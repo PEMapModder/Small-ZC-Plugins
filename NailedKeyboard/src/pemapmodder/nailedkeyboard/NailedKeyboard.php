@@ -14,14 +14,17 @@ use pocketmine\tile\Sign;
 class NailedKeyboard extends PluginBase implements Listener{
 	/** @var Line[] */
 	private $lines = [];
+
 	public function onEnable(){
 		if(!extension_loaded("multibyte")){
 			$this->getLogger()->warning("Multibyte extension is not loaded! Moving the text pointer left or right might have some issues!");
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
+
 	/**
 	 * @param PlayerInteractEvent $event
+	 *
 	 * @priority LOWEST
 	 */
 	public function onInteract(PlayerInteractEvent $event){
@@ -41,6 +44,7 @@ class NailedKeyboard extends PluginBase implements Listener{
 			}
 		}
 	}
+
 	private function handleSignTouch(Player $player, array $texts){
 		$fx = strtoupper($texts[2]);
 		$line = $this->get($player);
@@ -53,47 +57,41 @@ class NailedKeyboard extends PluginBase implements Listener{
 			case "DESEL":
 				try{
 					$this->lines[$this->offset($player)]->deselect();
-				}
-				catch(\UnexpectedValueException $e){
+				}catch(\UnexpectedValueException $e){
 					return "You don't have a selection to select.";
 				}
 			case "COPY":
 				try{
 					$this->lines[$this->offset($player)]->copy();
-				}
-				catch(\UnexpectedValueException $e){
+				}catch(\UnexpectedValueException $e){
 					return "You are not selecting text! Select a text to copy.";
 				}
 				break;
 			case "CUT":
 				try{
 					$this->lines[$this->offset($player)]->cut();
-				}
-				catch(\UnexpectedValueException $e){
+				}catch(\UnexpectedValueException $e){
 					return "You are not selecting text! Select a text to cut.";
 				}
 				break;
 			case "PASTE":
 				try{
 					$this->lines[$this->offset($player)]->paste();
-				}
-				catch(\UnexpectedValueException $e){
+				}catch(\UnexpectedValueException $e){
 					return "You don't have a copied text!";
 				}
 				break;
 			case "LEFT":
 				try{
 					$line->left();
-				}
-				catch(\OutOfBoundsException $e){
+				}catch(\OutOfBoundsException $e){
 					return "The pointer is already at the leftmost of the text!";
 				}
 				break;
 			case "RIGHT":
 				try{
 					$line->right();
-				}
-				catch(\OutOfBoundsException $e){
+				}catch(\OutOfBoundsException $e){
 					return "The pointer is already at the rightmost of the text!";
 				}
 				break;
@@ -103,16 +101,14 @@ class NailedKeyboard extends PluginBase implements Listener{
 			case "BACKSPACE":
 				try{
 					$line->backspace();
-				}
-				catch(\OutOfBoundsException $e){
+				}catch(\OutOfBoundsException $e){
 					return "Nothing to delete at the left side!";
 				}
 				break;
 			case "DELETE":
 				try{
 					$line->delete();
-				}
-				catch(\OutOfBoundsException $e){
+				}catch(\OutOfBoundsException $e){
 					return "Nothing to delete at the right side!";
 				}
 				break;
@@ -150,11 +146,13 @@ class NailedKeyboard extends PluginBase implements Listener{
 				break;
 		}
 		return "Text: {$line->getText()}\nPointer at \"|\": {$line->getLeftText()}|{$line->getRightText()}" .
-			(($selected = $line->getSelectedText()) === null ? "":"\nSelected text: $selected") .
-			(($clip = $line->getClipboard()) === null ? "":"\nCopied text: $clip");
+		(($selected = $line->getSelectedText()) === null ? "" : "\nSelected text: $selected") .
+		(($clip = $line->getClipboard()) === null ? "" : "\nCopied text: $clip");
 	}
+
 	/**
 	 * @param Player $player
+	 *
 	 * @return int the offset of the keyboard in the array
 	 */
 	public function touch(Player $player){
@@ -163,13 +161,16 @@ class NailedKeyboard extends PluginBase implements Listener{
 		}
 		return $offset;
 	}
+
 	/**
 	 * @param Player $player
+	 *
 	 * @return Line
 	 */
 	public function get(Player $player){
 		return $this->lines[$this->touch($player)];
 	}
+
 	private function offset(Player $player){
 		return $player->getID();
 	}

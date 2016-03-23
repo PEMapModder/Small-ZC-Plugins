@@ -30,11 +30,12 @@ use pocketmine\Server;
 class InteractiveInventory extends CustomInventory{
 	private $main;
 	private $buttons;
+
 	/**
-	 * @param DeFactoGui $main
-	 * @param Button[] $buttons - list of buttons to display in the chest.
-	 * @param int $size default 127 - size of the inventory.
-	 * @param string|null $title - unused.
+	 * @param DeFactoGui  $main
+	 * @param Button[]    $buttons - list of buttons to display in the chest.
+	 * @param int         $size    default 127 - size of the inventory.
+	 * @param string|null $title   - unused.
 	 */
 	public function __construct(DeFactoGui $main, $buttons = [], $size = 127, $title = null){
 		$this->main = $main;
@@ -43,7 +44,7 @@ class InteractiveInventory extends CustomInventory{
 			throw new \InvalidArgumentException("InteractiveInventory size is less than count of buttons passed");
 		}
 		/** @var Item[] $items */
-		$items = array_map(function(Button $button){
+		$items = array_map(function (Button $button){
 			return $button->onLoad($this);
 		}, $buttons);
 		parent::__construct($main->getFakeTile(), InventoryType::get(InventoryType::CHEST), $items, $size, $title);
@@ -63,6 +64,7 @@ class InteractiveInventory extends CustomInventory{
 			}
 		}
 	}
+
 	public function onClose(Player $who){
 		if(count($this->getViewers()) === 1){
 			$pk = new TileEventPacket();

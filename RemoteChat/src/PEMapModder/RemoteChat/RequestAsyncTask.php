@@ -9,15 +9,16 @@ class RequestAsyncTask extends AsyncTask{
 	private $replyTo, $recipient, $message, $ip, $myHostName;
 	/** @var int */
 	private $queryPort, $listenerPort, $myListenerPort;
+
 	/**
 	 * @param string $myHostName
-	 * @param int $myListenerPort
+	 * @param int    $myListenerPort
 	 * @param string $replyTo
 	 * @param string $recipient
 	 * @param string $message
 	 * @param string $ip
-	 * @param int $queryPort
-	 * @param int $listenerPort
+	 * @param int    $queryPort
+	 * @param int    $listenerPort
 	 */
 	public function __construct($myHostName, $myListenerPort, $replyTo, $recipient, $message, $ip, $queryPort = 19132, $listenerPort = 0){
 		$this->myHostName = $myHostName;
@@ -29,6 +30,7 @@ class RequestAsyncTask extends AsyncTask{
 		$this->queryPort = $queryPort;
 		$this->listenerPort = $listenerPort;
 	}
+
 	/**
 	 * Some code is partially copied from https://github.com/99leonchang/PocketMine-Banners
 	 */
@@ -46,7 +48,7 @@ class RequestAsyncTask extends AsyncTask{
 				return;
 			}
 			$challenge = @fread($sock, 1400);
-			if (!$challenge){
+			if(!$challenge){
 				$this->setResult("Error querying target server: unknown error");
 				return;
 			}
@@ -90,6 +92,7 @@ class RequestAsyncTask extends AsyncTask{
 		}
 		socket_write($sock, "REMOTECHAT 1 PRIVMSG $this->myHostName $this->myListenerPort\r\n");
 	}
+
 	/**
 	 * @param string $result
 	 */

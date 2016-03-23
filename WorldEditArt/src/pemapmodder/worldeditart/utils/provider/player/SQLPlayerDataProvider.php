@@ -6,14 +6,19 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 	const TRUE = 1;
 	const FALSE = 0;
 	const INT = 2;
+
 	/**
 	 * @param string $name
 	 */
 	protected abstract function deletePlayerName($name);
+
 	protected abstract function insertTool($name, $id, $it, $iv, $dt, $dv);
+
 	protected abstract function fetchPlayer($name);
+
 	/**
 	 * @param string $name
+	 *
 	 * @return array[]
 	 */
 	public function offsetGet($name){
@@ -39,6 +44,7 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 		}
 		return new PlayerData($this->getMain(), $name, $wand, $jump);
 	}
+
 	public function offsetSet($name, $data){
 		if(!($data instanceof PlayerData)){
 			throw new \InvalidArgumentException("Trying to set a player data provider element to non-PlayerData");
@@ -47,6 +53,7 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 		$this->insert($name, PlayerData::WAND, $data->getWand());
 		$this->insert($name, PlayerData::JUMP, $data->getJump());
 	}
+
 	private function insert($name, $id, SelectedTool $tool){
 		$typed = self::mixedToTyped($tool->getRawID());
 		$it = $typed[0];
@@ -56,22 +63,27 @@ abstract class SQLPlayerDataProvider extends PlayerDataProvider{
 		$dv = $typed[1];
 		$this->insertTool($name, $id, $it, $iv, $dt, $dv);
 	}
+
 	public function offsetUnset($name){
 		$this->deletePlayerName($name);
 	}
+
 	public function getName(){
 		return "SQLite3 Player Data Provider";
 	}
+
 	public function isAvailable(){
 		return true;
 	}
+
 	public static function mixedToTyped($mixed){
 		return [
-			is_bool($mixed) ? ($mixed ? self::TRUE:self::FALSE):self::INT,
-			(int) $mixed
+			is_bool($mixed) ? ($mixed ? self::TRUE : self::FALSE) : self::INT,
+			(int) $mixed,
 		];
 	}
+
 	public static function typedToMixed(array $typed){
-		return $typed[0] === self::INT ? $typed[1]:($typed[0] === self::TRUE);
+		return $typed[0] === self::INT ? $typed[1] : ($typed[0] === self::TRUE);
 	}
 }

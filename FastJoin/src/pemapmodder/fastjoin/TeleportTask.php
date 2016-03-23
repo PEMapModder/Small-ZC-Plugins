@@ -11,11 +11,13 @@ class TeleportTask extends PluginTask{
 	private $player;
 	/** @var Position */
 	private $pos;
+
 	public function __construct(FastJoin $owner, Player $player, Position $pos){
 		parent::__construct($owner);
 		$this->player = $player;
 		$this->pos = $pos;
 	}
+
 	public function onRun($t){
 		$this->player->teleport($this->pos);
 	}

@@ -10,17 +10,21 @@ class Copy extends Subcommand{
 	public function getName(){
 		return "copy";
 	}
+
 	public function getDescription(){
 		return "Copy your selection";
 	}
+
 	public function getUsage(){
 		return "[-a|-anchor] [name = default] [g|global]";
 	}
+
 	public function checkPermission(
 		/** @noinspection PhpUnusedParameterInspection */
 		Space $space, Player $player){
 		return true; // TODO
 	}
+
 	public function onRun(array $args, Space $space, Player $player){
 		$anchor = $player->getPosition();
 		if(isset($args[0]) and ($args[0] === "-a" or $args[0] === "-anchor")){
@@ -33,10 +37,9 @@ class Copy extends Subcommand{
 		if(isset($args[0]) and ($args[0] === "g" or $args[0] === "global")){
 			$clipboard = $this->getMain()->getClipboardProvider();
 			$clipboard[$clip->getName()] = $clip;
-		}
-		else{
+		}else{
 			$this->getMain()->setClip($player, $clip, $clip->getName());
 		}
-		return "Clip ".$clip->getName()." copied.";
+		return "Clip " . $clip->getName() . " copied.";
 	}
 }

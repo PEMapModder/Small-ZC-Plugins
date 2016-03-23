@@ -19,16 +19,17 @@ class IRCSession{
 	private $username, $realname;
 	private $away, $invisible = false, $wallops = false, $restricted = false, $oper = false, $OperLocal = false, $serverNoticeRecepient = false;
 	private $ready = false;
+
 	public function __construct($identifier, IRCBridge $main){
 		$this->identifier = $identifier;
 		$this->host = strstr($identifier, ":", true);
 		$this->main = $main;
 	}
+
 	public function handleLine(IRCLine $line){
 		try{
 			$cmd = $line->getCommand();
-		}
-		catch(\Exception $e){
+		}catch(\Exception $e){
 			if(stripos(get_class($e), "outofboundsexception") !== false){
 				$this->send("461 {$line->getCmdName()} :Not enough parameters");
 			}
@@ -58,6 +59,7 @@ class IRCSession{
 				return;
 		}
 	}
+
 	public function ready(){
 		$this->send("001 :Welcome to Internet Relay Network $this->username!$this->username@$this->host");
 		$name = $this->main->getConfig()->getNested("server.name", "PocketMine IRCBridge Network");
@@ -66,15 +68,18 @@ class IRCSession{
 		$this->send("003 :This server was created {$this->main->getCreationTime()}");
 		$this->send("004 :$name $version umode cmode"); // TODO
 	}
+
 	public function finalize(){
 		// TODO
 	}
+
 	/**
 	 * @return boolean
 	 */
 	public function isReady(){
 		return $this->ready;
 	}
+
 	public function send($line){
 		$this->main->getManager()->getBuffer()->addWrite(chr(IRCLine::SIGNAL_STD_LINE) . $this->identifier . " $line");
 	}

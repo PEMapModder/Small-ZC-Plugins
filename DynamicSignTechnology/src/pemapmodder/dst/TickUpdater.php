@@ -39,8 +39,7 @@ class TickUpdater extends PluginTask{
 					$curPage = $ticks % ($data["intv"] * $pages);
 					$cur = array_slice($texts, $curPage * $scroll, 4);
 					$tile->setText($cur[0], $cur[1], $cur[2], $cur[3]);
-				}
-				else{
+				}else{
 					$op = $db->prepare("DELETE FROM signs WHERE id = :id;");
 					$op->bindValue(":id", $data["id"]);
 					$op->execute();
@@ -49,9 +48,10 @@ class TickUpdater extends PluginTask{
 			}
 		}
 		if($dels){
-			$main->getLogger()->notice(($dels === 1 ? "A dynamic sign has":"$dels dynamic signs have")." been unregistered due to being removed.");
+			$main->getLogger()->notice(($dels === 1 ? "A dynamic sign has" : "$dels dynamic signs have") . " been unregistered due to being removed.");
 		}
 	}
+
 	public static function getHalfByteValue($string, $offset){
 		$back = (bool) ($offset % 2);
 		$char = substr($string, $offset >> 1, 1);

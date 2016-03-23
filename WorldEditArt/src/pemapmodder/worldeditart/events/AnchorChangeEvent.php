@@ -12,23 +12,27 @@ class AnchorChangeEvent extends CancellableWorldEditArtEvent{
 	private $player;
 	/** @var Position */
 	private $anchor;
+
 	public function __construct(WorldEditArt $main, Player $player, Position $anchor){
 		parent::__construct($main);
 		$this->player = $player;
 		$this->anchor = clone $anchor;
 	}
+
 	/**
 	 * @return Player
 	 */
 	public function getPlayer(){
 		return $this->player;
 	}
+
 	/**
 	 * @return Position
 	 */
 	public function getAnchor(){
 		return $this->anchor;
 	}
+
 	/**
 	 * @param Position $anchor
 	 */

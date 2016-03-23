@@ -24,9 +24,10 @@ class Channel{
 	private $modes = [];
 	/** @var ChannelSubscriber[] */
 	private $subs = [];
+
 	/**
-	 * @param string $name
-	 * @param Permission $joinPerm
+	 * @param string            $name
+	 * @param Permission        $joinPerm
 	 * @param ChannelSubscriber $founder
 	 */
 	function __construct($name, Permission $joinPerm, ChannelSubscriber $founder){
@@ -34,9 +35,11 @@ class Channel{
 		$this->joinPerm = $joinPerm;
 		$this->modes[$founder->getID()] = [self::MODE_FOUNDER, self::MODE_ADMIN, self::MODE_MOD];
 	}
+
 	public function getJoinPermission(){
 		return $this->joinPerm;
 	}
+
 	public function join(ChannelSubscriber $sub){
 		if(isset($this->subs[$hash = spl_object_hash($sub)])){
 			return "already joined"; // already joined
@@ -48,6 +51,7 @@ class Channel{
 		$this->subs[$hash] = $sub;
 		return true;
 	}
+
 	public function quit(ChannelSubscriber $sub){
 		if(!isset($this->subs[$hash = spl_object_hash($sub)])){
 			return false; // is not on this channel
@@ -55,6 +59,7 @@ class Channel{
 		unset($this->subs[$hash]);
 		return true;
 	}
+
 	public function send($message, ChannelSubscriber $source){
 		if($source->isMuted()){
 			$source->sendMessage("You are muted!", $this);
@@ -64,6 +69,7 @@ class Channel{
 		}
 		$this->broadcast(sprintf("%s<%s> %s", $this->plugin->getPrefixAPI()->getPrefixes($source, $this), $source->getDisplayName(), $message), self::LEVEL_CHAT);
 	}
+
 	public function broadcast($message, $level){
 		foreach($this->subs as $sub){
 			if($sub->getSubscribingLevel() <= $level){
@@ -71,12 +77,15 @@ class Channel{
 			}
 		}
 	}
+
 	public function getFlags($id){
-		return isset($this->modes[$id]) ? $this->modes[$id]:[];
+		return isset($this->modes[$id]) ? $this->modes[$id] : [];
 	}
+
 	public function setFlags($id, array $flags){
 		$this->modes[$id] = $flags;
 	}
+
 	public function __toString(){
 		return $this->name;
 	}

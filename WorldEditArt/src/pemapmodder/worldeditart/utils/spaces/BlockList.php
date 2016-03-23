@@ -7,6 +7,7 @@ use pocketmine\block\Block;
 class BlockList{
 	protected $blocks = [];
 	protected $safeMode;
+
 	public function __construct($pattern, $safeMode = true){
 		$this->safeMode = $safeMode;
 		if($safeMode){
@@ -34,8 +35,7 @@ class BlockList{
 				unset($block); // again!
 				if(isset($percent)){
 					$hasPctg[] = [$percent, $blockObj];
-				}
-				else{
+				}else{
 					$noPctg[] = $blockObj;
 				}
 			}
@@ -64,8 +64,7 @@ class BlockList{
 				}
 			}
 			$this->blocks = $map;
-		}
-		else{
+		}else{
 			$tokens = explode(",", $pattern);
 			$withPercentage = [];
 			$withoutPercentage = [];
@@ -83,8 +82,7 @@ class BlockList{
 						throw new BlockPatternParseException($pattern, "Block \"$block\"not found");
 					}
 					$withPercentage[] = [$block, $percentage];
-				}
-				else{
+				}else{
 					$ts = explode(":", $token);
 					$damage = 0;
 					if(isset($ts[1])){
@@ -107,14 +105,15 @@ class BlockList{
 				foreach($withoutPercentage as $block){
 					$this->blocks[] = [$block, $each];
 				}
+			}elseif($left !== 0){
+				throw new BlockPatternParseException($pattern, "Sum is not 100%");
 			}
-			elseif($left !== 0){
-			throw new BlockPatternParseException($pattern, "Sum is not 100%");
-		}
 		}
 	}
+
 	/**
 	 * @param $blockString
+	 *
 	 * @return int|null
 	 */
 	public static function parseBlock($blockString){
@@ -124,7 +123,7 @@ class BlockList{
 		if(is_numeric($blockString)){
 			return (int) $blockString;
 		}
-		if(defined($const = "pocketmine\\block\\Block::".strtoupper($blockString))){
+		if(defined($const = "pocketmine\\block\\Block::" . strtoupper($blockString))){
 			return constant($const);
 		}
 		try{
@@ -134,13 +133,14 @@ class BlockList{
 					return $class->newInstance()->getID();
 				}
 			}
-		}
-		catch(\Exception $e){
+		}catch(\Exception $e){
 		}
 		return null;
 	}
+
 	/**
 	 * @param $string
+	 *
 	 * @return null|Block
 	 */
 	public static function getBlockFronString($string){
@@ -149,11 +149,13 @@ class BlockList{
 		if($block === null){
 			return null;
 		}
-		$meta = isset($tokens[1]) ? intval($tokens[1]):0;
+		$meta = isset($tokens[1]) ? intval($tokens[1]) : 0;
 		return Block::get($block, $meta);
 	}
+
 	/**
 	 * @param $string
+	 *
 	 * @return Block[]|null
 	 */
 	public static function getBlockArrayFromString($string){
@@ -178,13 +180,16 @@ class BlockList{
 		}
 		return $out;
 	}
+
 	public static function keyBlock(Block $block){
 		return "{$block->getID()}:{$block->getDamage()}";
 	}
+
 	public static function unkeyBlock($key){
 		$tokens = explode(":", $key);
 		return Block::get($tokens[0], $tokens[1]);
 	}
+
 	public function getRandom(){
 		if($this->safeMode){
 			$rand = mt_rand();
@@ -196,8 +201,7 @@ class BlockList{
 				}
 			}
 			return self::unkeyBlock(array_slice(array_keys($this->blocks), -1)[0]); // redundant return operation, but just in case
-		}
-		else{
+		}else{
 			$rand = mt_rand();
 			$value = 0;
 			foreach($this->blocks as $arr){

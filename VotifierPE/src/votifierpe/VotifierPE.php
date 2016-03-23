@@ -14,12 +14,14 @@ class VotifierPE extends PluginBase{
 	private $tcp;
 	/** @var VoteListener[] */
 	private $listeners = [];
+
 	public function onLoad(){
 		try{
 			class_exists("phpseclib\\Crypt\\RSA", true);
+		}catch(\RuntimeException $e){
 		}
-		catch(\RuntimeException $e){}
 	}
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$keyFile = $this->getDataFolder() . "key.json";
@@ -31,8 +33,7 @@ class VotifierPE extends PluginBase{
 			$rsa = new RSA;
 			$keys = $rsa->createKey(2048);
 			file_put_contents($keyFile, json_encode($keys, JSON_PRETTY_PRINT | JSON_BIGINT_AS_STRING));
-		}
-		else{
+		}else{
 			$keys = json_decode(file_get_contents($keyFile), true);
 		}
 		$listenerDir = $this->getDataFolder() . "listeners/";
@@ -56,8 +57,7 @@ class VotifierPE extends PluginBase{
 							continue;
 						}
 						$this->listeners[] = $reflection->newInstance($this);
-					}
-					catch(\ReflectionException $e){
+					}catch(\ReflectionException $e){
 						$this->getLogger()->error("Unable to load vote listener $file: unable to find specified listener class $class");
 						continue;
 					}
@@ -66,18 +66,24 @@ class VotifierPE extends PluginBase{
 		}
 		$this->tcp = new TCPListener($this, $this->getConfig()->get("port"), serialize($keys));
 	}
+
 	public function queue(callable $runnable){
 		$this->acquire();
 		$this->queue[] = $runnable;
 		$this->release();
 	}
+
 	public function acquire(){
-		while($this->lock);
+		while($this->lock){
+			;
+		}
 		$this->lock = true;
 	}
+
 	public function release(){
 		$this->lock = false;
 	}
+
 	public function onVoteReceived(array $vote){
 		foreach($this->listeners as $listener){
 			if($listener->listen($vote) === false){

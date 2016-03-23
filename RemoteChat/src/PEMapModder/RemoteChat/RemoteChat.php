@@ -10,6 +10,7 @@ class RemoteChat extends PluginBase implements Listener{
 	const NOREPLY = "RemoteChat Plugin";
 	/** @var ListenerThread */
 	private $thread = null;
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$this->saveResource("Documentation.md", true); // update it every time
@@ -19,6 +20,7 @@ class RemoteChat extends PluginBase implements Listener{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getServer()->getScheduler()->scheduleDelayedRepeatingTask(new PullSyncTask($this), 40, 5);
 	}
+
 	public function onQueryRegen(QueryRegenerateEvent $event){
 		if($this->thread === null){
 			return;
@@ -30,6 +32,7 @@ class RemoteChat extends PluginBase implements Listener{
 		$extraData["pm_remotechat"] = $this->getConfig()->getNested("listener.port", 44746);
 		$event->setExtraData($extraData);
 	}
+
 	public function tick(){
 		$data = $this->thread->pullData();
 		/** @var int $c */
@@ -49,6 +52,7 @@ class RemoteChat extends PluginBase implements Listener{
 			}
 		}
 	}
+
 	private function PRIVMSG($ip, $port, $params){
 		list($replyTo, $recipient, $message) = $params;
 		// TODO send to $recipient
@@ -56,13 +60,14 @@ class RemoteChat extends PluginBase implements Listener{
 			$this->sendPRIVMSG2(self::NOREPLY, $replyTo, "Message received", $ip, 0, $port);
 		}
 	}
+
 	/**
 	 * @param string $replyTo
 	 * @param string $recipient
 	 * @param string $message
 	 * @param string $ip
-	 * @param int $queryPort - if $listenerPort is given, this value will be ignored.
-	 * @param int $listenerPort
+	 * @param int    $queryPort - if $listenerPort is given, this value will be ignored.
+	 * @param int    $listenerPort
 	 */
 	public function sendPRIVMSG2($replyTo, $recipient, $message, $ip, $queryPort = 19132, $listenerPort = 0){
 		$this->getServer()->getScheduler()->scheduleAsyncTask(new RequestAsyncTask($this->getConfig()->getNested("listener.display-ip", ""), $this->getConfig()->getNested("listener.port", 44746), $replyTo, $recipient, $message, $ip, $queryPort, $listenerPort));

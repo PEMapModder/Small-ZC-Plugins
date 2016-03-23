@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
 */
 
-$opts = getopt("", array("relative:", "entry:"));
+$opts = getopt("", ["relative:", "entry:"]);
 
 if(ini_get("phar.readonly") == 1){
 	echo "Set phar.readonly to 0 with -dphar.readonly=0\n";
@@ -24,17 +24,17 @@ if(ini_get("phar.readonly") == 1){
 
 $opts["make"] = "..\\..\\";
 
-$plugin_yml = realpath($opts["make"]."plugin.yml");
+$plugin_yml = realpath($opts["make"] . "plugin.yml");
 $ymlData = yaml_parse_file($plugin_yml);
 $version = $ymlData["version"];
 $v = ltrim(substr($version, -3), "0");
 $v = intval($v) + 1;
 $v = "$v";
 while(strlen($v) < 3){
-	$v = "0".$v;
+	$v = "0" . $v;
 }
-$ymlData["version"] = substr($version, 0, -3).$v;
-echo "New version! ".$ymlData["version"].PHP_EOL;
+$ymlData["version"] = substr($version, 0, -3) . $v;
+echo "New version! " . $ymlData["version"] . PHP_EOL;
 yaml_emit_file($plugin_yml, $ymlData);
 exec("git add $plugin_yml");
 $folderPath = rtrim(str_replace("\\", "/", realpath($opts["make"])), "/") . "/";
@@ -45,16 +45,16 @@ if(is_file($pharName)){
 }
 
 if(!is_dir($folderPath)){
-	echo $folderPath ." is not a folder\n";
+	echo $folderPath . " is not a folder\n";
 	exit(1);
 }
 
-echo "\nCreating ".$pharName."...\n";
+echo "\nCreating " . $pharName . "...\n";
 $phar = new \Phar($pharName);
 if(isset($opts["entry"]) and $opts["entry"] != null){
 	$entry = addslashes(str_replace("\\", "/", $opts["entry"]));
-	echo "Setting entry point to ".$entry."\n";
-	$phar->setStub('<?php require("phar://". __FILE__ ."/'.$entry.'"); __HALT_COMPILER();');
+	echo "Setting entry point to " . $entry . "\n";
+	$phar->setStub('<?php require("phar://". __FILE__ ."/' . $entry . '"); __HALT_COMPILER();');
 }else{
 	$phar->setStub('<?php __HALT_COMPILER();');
 }
@@ -65,7 +65,7 @@ echo "Adding files...\n";
 $maxLen = 0;
 $count = 0;
 foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPath)) as $file){
-	$path = rtrim(str_replace(array("\\", $relativePath), array("/", ""), $file), "/");
+	$path = rtrim(str_replace(["\\", $relativePath], ["/", ""], $file), "/");
 	if($path{0} === "." or strpos($path, "/.") !== false){
 		continue;
 	}
@@ -85,7 +85,7 @@ foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPa
 	if(strlen($path) > $maxLen){
 		$maxLen = strlen($path);
 	}
-	echo "\r[".(++$count)."] ".str_pad($path, $maxLen, " ");
+	echo "\r[" . (++$count) . "] " . str_pad($path, $maxLen, " ");
 }
 echo "\nCompressing...\n";
 $phar->compressFiles(\Phar::GZ);
@@ -93,7 +93,7 @@ $phar->stopBuffering();
 
 $pharName = realpath($pharName);
 echo "\x1b[36;1mDone! Phar created at \x1b[33;1m$pharName\x1b[36;1m.\n";
-exec("git add ".$pharName);
+exec("git add " . $pharName);
 if(is_file("copy.php")){
 	include "copy.php";
 }

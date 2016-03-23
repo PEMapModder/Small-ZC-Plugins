@@ -9,6 +9,7 @@ class IRCLine{
 	private $args;
 	/** @var bool */
 	public static $init = false;
+
 	public function __construct($line){
 		if(preg_match("/(:([^ ]+) )?([A-Z0-9]+) (.*)\$/i", trim($line), $matches)){
 			list(, , $this->prefix, $this->cmd, $args) = $matches;
@@ -22,12 +23,15 @@ class IRCLine{
 			throw new \UnexpectedValueException("Incorrect IRC syntax");
 		}
 	}
+
 	public function getPrefix(){
 		return $this->prefix;
 	}
+
 	public function getCmdName(){
 		return $this->cmd;
 	}
+
 	public function getCommand(){
 		if(!self::$init){
 			self::init();
@@ -40,12 +44,15 @@ class IRCLine{
 		$instance = new $class($this);
 		return $instance;
 	}
+
 	public function getArguments(){
 		return $this->args;
 	}
+
 	const SIGNAL_OPEN_SESSION = 0;
 	const SIGNAL_STD_LINE = 1;
 	const SIGNAL_CLOSE_SESSION = 2;
+
 	public static function parseInternalLine($line, &$signal, &$client = false){
 		if($line === false){
 			return false;
@@ -57,6 +64,7 @@ class IRCLine{
 		}
 		return substr($line, 1);
 	}
+
 	public static function init(){
 		self::$init = true;
 		Command::$cmds = [

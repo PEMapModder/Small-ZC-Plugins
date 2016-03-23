@@ -13,11 +13,13 @@ class SelectedTool{
 	private $defaultID;
 	/** @var bool|int */
 	private $defaultDamage;
+
 	/**
 	 * @param int|bool $id
 	 * @param int|bool $damage
-	 * @param int $defaultID
+	 * @param int      $defaultID
 	 * @param int|bool $defaultDamage
+	 *
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct($id, $damage, $defaultID, $defaultDamage){
@@ -34,9 +36,11 @@ class SelectedTool{
 		$this->defaultID = $defaultID;
 		$this->defaultDamage = $defaultDamage;
 	}
+
 	public function match(Item $item){
 		return $this->matchRaw($this->id, $item->getID(), $this->defaultID) and $this->matchRaw($this->damage, $item->getDamage(), $this->defaultDamage);
 	}
+
 	public function matchRaw($comparator, $subject, $default){
 		if($comparator === PlayerData::USE_DEFAULT){
 			$comparator = $default;
@@ -46,9 +50,11 @@ class SelectedTool{
 		}
 		return $comparator === $subject;
 	}
+
 	public function getRawID(){
 		return $this->id;
 	}
+
 	public function getRawDamage(){
 		return $this->damage;
 	}

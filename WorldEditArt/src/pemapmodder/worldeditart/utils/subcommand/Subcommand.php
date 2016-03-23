@@ -2,8 +2,8 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\level\Position;
@@ -26,10 +26,11 @@ abstract class Subcommand{
 	private $main;
 	private $callable, $permCheck;
 	private $issuer = self::ALL;
+
 	/**
 	 * @param WorldEditArt $main
-	 * @param string $callable
-	 * @param string $permCheck
+	 * @param string       $callable
+	 * @param string       $permCheck
 	 */
 	public function __construct(WorldEditArt $main, $callable = "onRun", $permCheck = "checkPermission"){
 		$this->main = $main;
@@ -58,12 +59,12 @@ abstract class Subcommand{
 					}
 				}
 			}
-		}
-		catch(\ReflectionException $ex){
+		}catch(\ReflectionException $ex){
 			trigger_error(get_class($this) . " passed constructor to parent constructor with invalid argument 4 callable \"$callable\"", E_USER_ERROR);
 			return;
 		}
 	}
+
 	// I made these functions final to avoid accidental override
 	public final function run(SubcommandMap $owner, array $args, CommandSender $sender){
 		if($this->issuer === self::CONSOLE and !($sender instanceof ConsoleCommandSender)){
@@ -77,23 +78,19 @@ abstract class Subcommand{
 		if($this->issuer === self::SELECTED){
 			$p = $this->main->getAnchor($sender);
 			if($p instanceof Position){
-				$result = call_user_func(array($this, $this->callable), $args, $p, $sender);
-			}
-			else{
+				$result = call_user_func([$this, $this->callable], $args, $p, $sender);
+			}else{
 				$result = self::NO_SELECTED_POINT;
 			}
-		}
-		elseif($this->issuer === self::SEL_SPACE){
+		}elseif($this->issuer === self::SEL_SPACE){
 			$space = $this->main->getSelection($sender);
 			if($space instanceof Space){
-				$result = call_user_func(array($this, $this->callable), $args, $space, $sender);
-			}
-			else{
+				$result = call_user_func([$this, $this->callable], $args, $space, $sender);
+			}else{
 				$result = self::NO_SELECTION;
 			}
-		}
-		else{
-			$result = call_user_func(array($this, $this->callable), $args, $sender);
+		}else{
+			$result = call_user_func([$this, $this->callable], $args, $sender);
 		}
 		if(is_string($result)){
 			$sender->sendMessage($result);
@@ -126,21 +123,28 @@ abstract class Subcommand{
 				break;
 		}
 	}
+
 	public final function getMain(){
 		return $this->main;
 	}
+
 	public abstract function getName();
+
 	public abstract function getDescription();
+
 	public abstract function getUsage();
+
 	public function getAliases(){
 		return [];
 	}
+
 	/**
 	 * @param CommandSender $sender
+	 *
 	 * @return bool
 	 */
 	public final function hasPermission(CommandSender $sender){
-		$callable = array($this, $this->permCheck);
+		$callable = [$this, $this->permCheck];
 		if($this->issuer === self::CONSOLE and !($sender instanceof ConsoleCommandSender) or $this->issuer === self::PLAYER and !($sender instanceof Player)){
 			return false; // wrong command sender
 		}

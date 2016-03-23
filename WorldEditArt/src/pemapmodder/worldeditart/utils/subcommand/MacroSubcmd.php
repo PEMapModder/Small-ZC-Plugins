@@ -10,15 +10,19 @@ class MacroSubcmd extends Subcommand{
 	public function getName(){
 		return "macro";
 	}
+
 	public function getDescription(){
 		return "Manage macros";
 	}
+
 	public function getUsage(){
 		return "<start [a|anchor]|ng|save <name>|wait <ticks>|pause|resume>";
 	}
+
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.macro.*");
 	}
+
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
 			return self::WRONG_USE;
@@ -94,9 +98,8 @@ class MacroSubcmd extends Subcommand{
 				try{
 					$macroProvider[$name] = $macro;
 					return "Macro $name has been saved.";
-				}
-				catch(\Exception $e){
-					return "An error occurred. Type: ".(new \ReflectionClass($e))->getShortName()."; Message: ".$e->getMessage();
+				}catch(\Exception $e){
+					return "An error occurred. Type: " . (new \ReflectionClass($e))->getShortName() . "; Message: " . $e->getMessage();
 				}
 			case "wait":
 				$ticks = (int) round(floatval(array_shift($args)) * 20);

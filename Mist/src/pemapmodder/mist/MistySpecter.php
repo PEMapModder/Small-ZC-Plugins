@@ -15,10 +15,8 @@
 
 namespace pemapmodder\mist;
 
-use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\network\protocol\AddPlayerPacket;
-use pocketmine\network\protocol\MobEffectPacket;
 use pocketmine\network\protocol\SetEntityDataPacket;
 use pocketmine\Player;
 use pocketmine\utils\Random;
@@ -31,6 +29,7 @@ class MistySpecter{
 	private $random;
 	private $skin;
 	private $slim;
+
 	public function __construct(Player $player, $username, $skin, $slim){
 		$this->player = $player;
 		$this->username = $username;
@@ -41,6 +40,7 @@ class MistySpecter{
 		$this->spawn();
 		$this->invis();
 	}
+
 	private function spawn(){
 		$pk = new AddPlayerPacket;
 		$pk->clientID = $this->eid;
@@ -68,6 +68,7 @@ class MistySpecter{
 		$pk->skin = $this->skin;
 		$this->player->dataPacket($pk);
 	}
+
 	private function invis(){
 		$pk = new SetEntityDataPacket;
 		$pk->eid = $this->eid;

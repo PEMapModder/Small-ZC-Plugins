@@ -19,6 +19,5 @@ use pocketmine\plugin\PluginBase;
 
 class MistPlugin extends PluginBase{
 	public function enableForPlayer(){
-
 	}
 }

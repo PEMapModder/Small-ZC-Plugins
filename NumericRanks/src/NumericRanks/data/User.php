@@ -3,7 +3,6 @@
 namespace NumericRanks\data;
 
 use NumericRanks\NumericRanks;
-
 use pocketmine\IPlayer;
 
 /*
@@ -20,50 +19,44 @@ use pocketmine\IPlayer;
 
 */
 
-class User
-{
-    /**
-     * @param NumericRanks $plugin
-     * @param IPlayer $player
-     */
-	public function __construct(NumericRanks $plugin, IPlayer $player)
-	{
-        $this->player = $player;
-        $this->plugin = $plugin;
+class User{
+	/**
+	 * @param NumericRanks $plugin
+	 * @param IPlayer      $player
+	 */
+	public function __construct(NumericRanks $plugin, IPlayer $player){
+		$this->player = $player;
+		$this->plugin = $plugin;
 	}
 
-    /**
-     * @return mixed
-     */
-    public function getConfig()
-    {
-        return $this->plugin->getProvider()->getPlayerConfig($this->player);
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getConfig(){
+		return $this->plugin->getProvider()->getPlayerConfig($this->player);
+	}
 
-    /**
-     * @return array
-     */
-    public function getPermissions()
-    {
-        return $this->getRank()->getPermissions();
-    }
+	/**
+	 * @return array
+	 */
+	public function getPermissions(){
+		return $this->getRank()->getPermissions();
+	}
 
-    /**
-     * @return IPlayer
-     */
-    public function getPlayer()
-    {
-        return $this->player;
-    }
+	/**
+	 * @return IPlayer
+	 */
+	public function getPlayer(){
+		return $this->player;
+	}
 
-    /**
-     * @return Rank
-     */
-    public function getRank()
-    {
-        $rankName = $this->getConfig()->getNested("rank");
-        $rank = $this->plugin->getRank($rankName);
-        
-        return $rank;
-    }
+	/**
+	 * @return Rank
+	 */
+	public function getRank(){
+		$rankName = $this->getConfig()->getNested("rank");
+		$rank = $this->plugin->getRank($rankName);
+
+		return $rank;
+	}
 }

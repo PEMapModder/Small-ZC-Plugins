@@ -22,24 +22,28 @@ class Mist{
 	private $count;
 	/** @var MistySpecter[] */
 	private $specters = [];
+
 	public function __construct(Player $player, $count){
 		$this->player = $player;
 		$this->count = $count;
 	}
+
 	public function init(){
 		for($i = 0; $i < $this->count; $i++){
 			$this->specters[$i] = new MistySpecter($this->player);
 		}
 	}
-	public function tick(){
 
+	public function tick(){
 	}
+
 	/**
 	 * @return Player
 	 */
 	public function getPlayer(){
 		return $this->player;
 	}
+
 	/**
 	 * @return mixed
 	 */

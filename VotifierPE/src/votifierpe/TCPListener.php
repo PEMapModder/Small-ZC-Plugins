@@ -16,12 +16,14 @@ class TCPListener extends Thread{
 	private $socketClosed = false;
 	private $port;
 	private $keys;
+
 	public function __construct(VotifierPE $plugin, $port, $keys){
 		$this->plugin = $plugin;
 		$this->port = $port;
 		$this->keys = $keys;
 		$this->start();
 	}
+
 	public function run(){
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if(!$this->socket){
@@ -55,7 +57,7 @@ class TCPListener extends Thread{
 				"timestamp" => $timestamp,
 			];
 			$serialized = serialize($array);
-			$this->plugin->queue(function(VotifierPE $plugin) use($serialized){
+			$this->plugin->queue(function (VotifierPE $plugin) use ($serialized){
 				$plugin->onVoteReceived(unserialize($serialized));
 			});
 			socket_close($con);
@@ -63,9 +65,11 @@ class TCPListener extends Thread{
 		socket_close($this->socket);
 		$this->socketClosed = true;
 	}
+
 	public function stop(){
 		$this->running = false;
 	}
+
 	public function __destruct(){
 		if(!$this->socketClosed){
 			socket_close($this->socket);

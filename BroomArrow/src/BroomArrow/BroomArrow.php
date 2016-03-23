@@ -22,6 +22,7 @@ use pocketmine\plugin\PluginBase;
 
 class BroomArrow extends PluginBase implements Listener{
 	private $sessions = [];
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		foreach($this->getServer()->getOnlinePlayers() as $player){

@@ -10,19 +10,23 @@ class Paste extends Subcommand{
 	public function getName(){
 		return "paste";
 	}
+
 	public function getDescription(){
 		return "Paste your current clip or a global clip";
 	}
+
 	public function getUsage(){
 		return "[clip name = default] [g] [a|anchor]";
 	}
+
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.paste");
 	}
+
 	public function onRun(array $args, Player $player){
 		$global = false;
 		$anchor = $player->getPosition();
-		$name = isset($args[0]) ? array_shift($args):"default";
+		$name = isset($args[0]) ? array_shift($args) : "default";
 		while(isset($args[0])){
 			$arg = array_shift($args);
 			switch($arg){
@@ -37,19 +41,17 @@ class Paste extends Subcommand{
 		}
 		if($global instanceof ClipboardProvider){
 			$clip = $global[$name];
-		}
-		else{
+		}else{
 			$clip = $this->getMain()->getClip($player, $name);
 		}
 		if(!($clip instanceof Clip)){
 			if($global instanceof ClipboardProvider){
 				return "There isn't a global clip called $name!";
-			}
-			else{
+			}else{
 				return "You don't have a clip called $name!";
 			}
 		}
 		$clip->paste($anchor);
-		return count($clip->getBlocks())." block(s) have been pasted.";
+		return count($clip->getBlocks()) . " block(s) have been pasted.";
 	}
 }

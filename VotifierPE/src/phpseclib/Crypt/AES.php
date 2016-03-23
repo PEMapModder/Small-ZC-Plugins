@@ -63,11 +63,11 @@
 
 namespace phpseclib\Crypt;
 
-/**#@+
- * @access public
- * @see AES::encrypt()
- * @see AES::decrypt()
- */
+	/**#@+
+	 * @access public
+	 * @see    AES::encrypt()
+	 * @see    AES::decrypt()
+	 */
 /**
  * Encrypt / decrypt using the Counter mode.
  *
@@ -104,7 +104,7 @@ namespace phpseclib\Crypt;
 
 /**#@+
  * @access private
- * @see AES::AES()
+ * @see    AES::AES()
  */
 /**
  * Toggles the internal implementation
@@ -124,57 +124,57 @@ namespace phpseclib\Crypt;
  * @version 0.1.0
  * @access  public
  */
-class AES extends Rijndael
-{
-    /**
-     * The namespace used by the cipher for its constants.
-     *
-     * @see Base::const_namespace
-     * @var String
-     * @access private
-     */
-    var $const_namespace = 'AES';
+class AES extends Rijndael{
+	/**
+	 * The namespace used by the cipher for its constants.
+	 *
+	 * @see    Base::const_namespace
+	 * @var String
+	 * @access private
+	 */
+	var $const_namespace = 'AES';
 
-    /**
-     * Default Constructor.
-     *
-     * Determines whether or not the mcrypt extension should be used.
-     *
-     * $mode could be:
-     *
-     * - CRYPT_AES_MODE_ECB
-     *
-     * - CRYPT_AES_MODE_CBC
-     *
-     * - CRYPT_AES_MODE_CTR
-     *
-     * - CRYPT_AES_MODE_CFB
-     *
-     * - CRYPT_AES_MODE_OFB
-     *
-     * If not explictly set, CRYPT_AES_MODE_CBC will be used.
-     *
-     * @see Rijndael::Rijndael()
-     * @see Base::Base()
-     * @param optional Integer $mode
-     * @access public
-     */
-    function __construct($mode = CRYPT_AES_MODE_CBC)
-    {
-        parent::__construct($mode);
-    }
+	/**
+	 * Default Constructor.
+	 *
+	 * Determines whether or not the mcrypt extension should be used.
+	 *
+	 * $mode could be:
+	 *
+	 * - CRYPT_AES_MODE_ECB
+	 *
+	 * - CRYPT_AES_MODE_CBC
+	 *
+	 * - CRYPT_AES_MODE_CTR
+	 *
+	 * - CRYPT_AES_MODE_CFB
+	 *
+	 * - CRYPT_AES_MODE_OFB
+	 *
+	 * If not explictly set, CRYPT_AES_MODE_CBC will be used.
+	 *
+	 * @see    Rijndael::Rijndael()
+	 * @see    Base::Base()
+	 *
+	 * @param optional Integer $mode
+	 *
+	 * @access public
+	 */
+	function __construct($mode = CRYPT_AES_MODE_CBC){
+		parent::__construct($mode);
+	}
 
-    /**
-     * Dummy function
-     *
-     * Since AES extends Rijndael, this function is, technically, available, but it doesn't do anything.
-     *
-     * @see Rijndael::setBlockLength()
-     * @access public
-     * @param Integer $length
-     */
-    function setBlockLength($length)
-    {
-        return;
-    }
+	/**
+	 * Dummy function
+	 *
+	 * Since AES extends Rijndael, this function is, technically, available, but it doesn't do anything.
+	 *
+	 * @see    Rijndael::setBlockLength()
+	 * @access public
+	 *
+	 * @param Integer $length
+	 */
+	function setBlockLength($length){
+		return;
+	}
 }

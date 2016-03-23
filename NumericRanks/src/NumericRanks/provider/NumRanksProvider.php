@@ -18,16 +18,16 @@ use pocketmine\IPlayer;
 
 */
 
-interface NumRanksProvider
-{
-    public function init();
+interface NumRanksProvider{
+	public function init();
 
-    public function getPlayerConfig(IPlayer $player);
-    /**
-     * @param IPlayer $player
-     * @param string $rank
-     */
-    public function setPlayer(IPlayer $player, $rank);
+	public function getPlayerConfig(IPlayer $player);
 
-    public function close();
+	/**
+	 * @param IPlayer $player
+	 * @param string  $rank
+	 */
+	public function setPlayer(IPlayer $player, $rank);
+
+	public function close();
 }

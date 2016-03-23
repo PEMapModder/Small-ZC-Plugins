@@ -11,16 +11,20 @@ class Anchor extends Subcommand{
 	public function getName(){
 		return "anchor";
 	}
+
 	public function getDescription(){
 		return "Set/view your anchor";
 	}
+
 	public function getUsage(){
 		return "[v|view|c|crosshair]";
 	}
+
 	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
 		Player $player){
 		return true; // TODO
 	}
+
 	public function onRun(array $args, Player $player){
 		$mode = 0;
 		$target = $player->getPosition();
@@ -43,17 +47,18 @@ class Anchor extends Subcommand{
 		switch($mode){
 			case 0:
 				$this->getMain()->setAnchor($player, $target);
-				return "Your anchor has been set to ".WorldEditArt::posToStr($target).".";
+				return "Your anchor has been set to " . WorldEditArt::posToStr($target) . ".";
 			case 1:
 				$anchor = $this->getMain()->getAnchor($player);
 				if(!($anchor instanceof Position)){
 					return "You don't have an anchor selected!";
 				}
-				return "Your anchor is at ".WorldEditArt::posToStr($anchor).".";
+				return "Your anchor is at " . WorldEditArt::posToStr($anchor) . ".";
 			default:
 				return null;
 		}
 	}
+
 	public function getAliases(){
 		return ["anc"];
 	}

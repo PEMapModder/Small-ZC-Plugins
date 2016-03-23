@@ -2,8 +2,8 @@
 
 namespace pemapmodder\worldeditart\utils\macro;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\Cache;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Block;
 use pocketmine\level\Position;
 use pocketmine\scheduler\ServerScheduler;
@@ -28,11 +28,12 @@ class Macro implements Cache{
 	/** @var int */
 	private $compression = ZLIB_ENCODING_GZIP;
 	private $objCreationTime;
+
 	/**
-	 * @param bool $isAppendable
+	 * @param bool                      $isAppendable
 	 * @param Position|MacroOperation[] $mainArg
-	 * @param string $author
-	 * @param string $description
+	 * @param string                    $author
+	 * @param string                    $description
 	 */
 	public function __construct($isAppendable, $mainArg, $author, $description = ""){
 		$this->objCreationTime = microtime(true);
@@ -42,13 +43,14 @@ class Macro implements Cache{
 		if($isAppendable){
 			$this->ops = [];
 			$this->anchor = $mainArg;
-		}
-		else{
+		}else{
 			$this->ops = $mainArg;
 		}
 	}
+
 	/**
 	 * @param MacroOperation $operation
+	 *
 	 * @throws \BadMethodCallException
 	 */
 	public function append(MacroOperation $operation){
@@ -57,8 +59,10 @@ class Macro implements Cache{
 		}
 		$this->ops[] = $operation;
 	}
+
 	/**
 	 * @param bool $hibernating
+	 *
 	 * @throws \BadMethodCallException
 	 */
 	public function setHibernating($hibernating){
@@ -67,6 +71,7 @@ class Macro implements Cache{
 		}
 		$this->hibernating = $hibernating;
 	}
+
 	/**
 	 * @return bool
 	 * @throws \BadMethodCallException
@@ -77,6 +82,7 @@ class Macro implements Cache{
 		}
 		return $this->hibernating;
 	}
+
 	/**
 	 * @return bool
 	 * @throws \BadMethodCallException
@@ -87,12 +93,14 @@ class Macro implements Cache{
 		}
 		return $this->hibernating;
 	}
+
 	public function getAnchor(){
 		if(!$this->isAppendable()){
 			throw new \BadMethodCallException("Trying to get anchor of non-appendable macro");
 		}
 		return $this->anchor;
 	}
+
 	public function execute(ServerScheduler $scheduler, Position $anchor, WorldEditArt $main){
 		$ticks = 0;
 		foreach($this->ops as $op){
@@ -103,48 +111,57 @@ class Macro implements Cache{
 			$scheduler->scheduleDelayedTask(new MacroOperationTask($main, $op, $anchor), $ticks);
 		}
 	}
+
 	/**
 	 * @return string
 	 */
 	public function getAuthor(){
 		return $this->author;
 	}
+
 	/**
 	 * @return string
 	 */
 	public function getDescription(){
 		return $this->description;
 	}
+
 	/**
 	 * @return bool
 	 */
 	public function isAppendable(){
 		return $this->appendable;
 	}
+
 	/**
 	 * @return MacroOperation[]
 	 */
 	public function getOperations(){
 		return $this->ops;
 	}
+
 	public function addBlock(Block $block){
 		$this->append(new MacroOperation($block->subtract($this->getAnchor()), $block));
 	}
+
 	public function wait($ticks){
 		$this->append(new MacroOperation($ticks));
 	}
+
 	/**
 	 * @return bool|int
 	 */
 	public function getCompression(){
 		return $this->compression;
 	}
+
 	/**
 	 * @param bool|int $compression
 	 */
 	public function setCompression($compression){
 		$this->compression = $compression;
 	}
+
 	/**
 	 * @return mixed
 	 */

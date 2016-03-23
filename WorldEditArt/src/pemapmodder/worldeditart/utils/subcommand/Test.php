@@ -14,12 +14,15 @@ class Test extends Subcommand{
 	public function getName(){
 		return "test";
 	}
+
 	public function getDescription(){
 		return "Test your selection";
 	}
+
 	public function getUsage(){
 		return "<to> [from] [duration = 15]";
 	}
+
 	public function checkPermission(Space $space, Player $player){
 		if($space instanceof CuboidSpace){
 			return $player->hasPermission("wea.test.cuboid");
@@ -32,6 +35,7 @@ class Test extends Subcommand{
 		}
 		return $player->hasPermission("wea.test.*");
 	}
+
 	public function onRun(array $args, Space $space, Player $player){
 		if(!isset($args[0])){
 			return self::WRONG_USE;
@@ -46,19 +50,17 @@ class Test extends Subcommand{
 			$arg = array_shift($args);
 			if(is_numeric($arg)){
 				$duration = intval($arg) * 20;
-			}
-			else{
+			}else{
 				$replaces = BlockList::getBlockArrayFromString($arg);
 			}
 		}
 		if(isset($replaces)){
 			$space->replaceBlocks($replaces, $block, true, $player);
-		}
-		else{
+		}else{
 			$space->setBlocks($block, $player);
 		}
 		$this->getMain()->getServer()->getScheduler()->scheduleDelayedTask(new UndoTestTask($this->getMain(), $space), $duration);
-		return "Previewing the selection for ".($duration / 20)." seconds.";
+		return "Previewing the selection for " . ($duration / 20) . " seconds.";
 	}
 }
 // TODO ISSUE timeout reset doesn't work

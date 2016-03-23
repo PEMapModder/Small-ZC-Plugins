@@ -21,43 +21,38 @@ use pocketmine\event\player\PlayerQuitEvent;
 
 */
 
-class PlayerListener implements Listener
-{
-    /**
-     * @param NumericRanks $plugin
-     */
-    public function __construct(NumericRanks $plugin)
-    {
-        $this->plugin = $plugin;
-    }
+class PlayerListener implements Listener{
+	/**
+	 * @param NumericRanks $plugin
+	 */
+	public function __construct(NumericRanks $plugin){
+		$this->plugin = $plugin;
+	}
 
-    /**
-     * @param PlayerJoinEvent $event
-     */
-    public function onJoin(PlayerJoinEvent $event)
-    {
-        $player = $event->getPlayer();
-        
-        $this->plugin->setPermissions($player);
-    }
+	/**
+	 * @param PlayerJoinEvent $event
+	 */
+	public function onJoin(PlayerJoinEvent $event){
+		$player = $event->getPlayer();
 
-    /**
-     * @param PlayerKickEvent $event
-     */
-    public function onKick(PlayerKickEvent $event)
-    {
-        $player = $event->getPlayer();
+		$this->plugin->setPermissions($player);
+	}
 
-        $this->plugin->removeAttachment($player);
-    }
+	/**
+	 * @param PlayerKickEvent $event
+	 */
+	public function onKick(PlayerKickEvent $event){
+		$player = $event->getPlayer();
 
-    /**
-     * @param PlayerQuitEvent $event
-     */
-    public function onQuit(PlayerQuitEvent $event)
-    {
-        $player = $event->getPlayer();
-        
-        $this->plugin->removeAttachment($player);
-    }
+		$this->plugin->removeAttachment($player);
+	}
+
+	/**
+	 * @param PlayerQuitEvent $event
+	 */
+	public function onQuit(PlayerQuitEvent $event){
+		$player = $event->getPlayer();
+
+		$this->plugin->removeAttachment($player);
+	}
 }

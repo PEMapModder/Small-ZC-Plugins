@@ -10,33 +10,42 @@ abstract class Database{
 	 * @param mixed|null $args
 	 */
 	public abstract function init($args);
+
 	/**
 	 * @return void
 	 */
 	public abstract function close();
+
 	/**
 	 * @return string
 	 */
 	public abstract function getName();
+
 	/**
 	 * @param Area $area
 	 */
 	public abstract function addArea(Area $area);
+
 	/**
 	 * @param Area $area
 	 */
 	public abstract function rmArea(Area $area);
+
 	/**
 	 * @param string $name
+	 *
 	 * @return Area
 	 */
 	public abstract function getArea($name);
+
 	/**
 	 * @return Area[]
 	 */
 	public abstract function getAreas();
+
 	/**
 	 * @param Position $pos
+	 *
 	 * @return Area|null
 	 */
 	public function searchAreaByPosition(Position $pos){

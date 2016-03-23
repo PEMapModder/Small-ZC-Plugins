@@ -2,9 +2,9 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\provider\player\PlayerData;
 use pemapmodder\worldeditart\utils\provider\player\SelectedTool;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Air;
 use pocketmine\Player;
 
@@ -15,11 +15,12 @@ class SelectedToolSetterSubcommand extends Subcommand{
 	private $id;
 	/** @var string */
 	private $defaultPrefix;
+
 	/**
 	 * @param WorldEditArt $main
-	 * @param string $name
-	 * @param int $id
-	 * @param string $defaultPrefix
+	 * @param string       $name
+	 * @param int          $id
+	 * @param string       $defaultPrefix
 	 */
 	public function __construct(WorldEditArt $main, $name, $id, $defaultPrefix){
 		parent::__construct($main);
@@ -27,18 +28,23 @@ class SelectedToolSetterSubcommand extends Subcommand{
 		$this->id = $id;
 		$this->defaultPrefix = $defaultPrefix;
 	}
+
 	public function getName(){
 		return $this->name;
 	}
+
 	public function getUsage(){
 		return "[cd|check-damage|v|view|rm|remove|del|delete]";
 	}
+
 	public function getDescription(){
 		return "Set/view own's {$this->name} tool";
 	}
+
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.tool.{$this->getName()}");
 	}
+
 	public function onRun(array $args, Player $player){
 		$cd = false;
 		$mode = 0; // 0 for set hand, 1 for view, 2 for removal
@@ -71,17 +77,17 @@ class SelectedToolSetterSubcommand extends Subcommand{
 				/** @var PlayerData $data */
 				$data = $provider[strtolower($player->getName())];
 				$id = $item->getID();
-				$damage = $cd ? $item->getDamage():PlayerData::ALLOW_ANY;
+				$damage = $cd ? $item->getDamage() : PlayerData::ALLOW_ANY;
 				$data->setTool($this->id, new SelectedTool(
-						$id, $damage, $this->getDefaultID(), $this->getDefaultDamage()));
-				return "Your {$this->name} item is now $id".(is_int($damage) ? ":$damage":" (no damage value specified").".";
+					$id, $damage, $this->getDefaultID(), $this->getDefaultDamage()));
+				return "Your {$this->name} item is now $id" . (is_int($damage) ? ":$damage" : " (no damage value specified") . ".";
 			case 1:
 				/** @var PlayerData $data */
 				$data = $this->getMain()->getPlayerDataProvider()[strtolower($player->getName())];
 				$tool = $data->getTool($this->id);
 				$id = $tool->getRawID();
 				$damage = $tool->getRawDamage();
-				return "Your {$this->name} item is $id".(is_int($damage) ? ":$damage":" (no damage value specified").".";
+				return "Your {$this->name} item is $id" . (is_int($damage) ? ":$damage" : " (no damage value specified") . ".";
 			default:
 				/** @var PlayerData $data */
 				$data = $this->getMain()->getPlayerDataProvider()[strtolower($player->getName())];
@@ -89,10 +95,12 @@ class SelectedToolSetterSubcommand extends Subcommand{
 				return "Your {$this->name} item has been removed.";
 		}
 	}
+
 	private function getDefaultID(){
-		return $this->getMain()->getConfig()->get($this->defaultPrefix."-id");
+		return $this->getMain()->getConfig()->get($this->defaultPrefix . "-id");
 	}
+
 	private function getDefaultDamage(){
-		return $this->getMain()->getConfig()->get($this->defaultPrefix."-id");
+		return $this->getMain()->getConfig()->get($this->defaultPrefix . "-id");
 	}
 }

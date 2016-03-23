@@ -3,7 +3,8 @@
 namespace pemapmodder\clb;
 
 class Lang implements \ArrayAccess{
-	public $data = array();
+	public $data = [];
+
 	public function __construct($path){
 		$this->path = $path;
 		$this->default = [
@@ -27,38 +28,43 @@ class Lang implements \ArrayAccess{
 		if(is_file($this->path)){
 			$this->data = $this->default;
 			$this->load();
-		}
-		else{
+		}else{
 			$this->data = $this->default;
 			$this->save();
 		}
 	}
+
 	public function offsetGet($k){
 		if(isset($this->data[$k])){
 			return $this->data[$k];
 		}
 		return $this->data[$k];
 	}
+
 	public function offsetSet($k, $v){
 		$this->data[$k] = $v;
 	}
+
 	public function offsetUnset($k){
 		unset($this->data[$k]);
 	}
+
 	public function offsetExists($k){
 		return isset($this->data[$k]) or isset($this->default[$k]);
 	}
+
 	public function save(){
 		$output = "";
-		foreach($this->data as $key=>$value){
+		foreach($this->data as $key => $value){
 			$k = strpos($key, "=") === false ? $key : (strpos($key, "'=") === false ? "'$key'" : "\"$key\"");
 			$output .= "$k=$value";
 			$output .= PHP_EOL;
 		}
 		file_put_contents($this->path, $output);
 	}
+
 	public function load(){
-		foreach(explode(PHP_EOL, file_get_contents($this->path)) as $key=>$line){
+		foreach(explode(PHP_EOL, file_get_contents($this->path)) as $key => $line){
 			if(substr($line, 0, 1) === "#" or $line === ""){
 				continue;
 			}
@@ -87,6 +93,7 @@ class Lang implements \ArrayAccess{
 			$this->data[strstr($line, "=", true)] = substr(strstr($line, "="), 1);
 		}
 	}
+
 	protected function error($line){
 		trigger_error("Syntax error on line $line at {$this->path} lang file", E_USER_WARNING);
 	}

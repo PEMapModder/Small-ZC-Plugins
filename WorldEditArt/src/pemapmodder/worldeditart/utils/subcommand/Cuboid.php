@@ -2,8 +2,8 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CuboidSpace;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -12,27 +12,34 @@ use pocketmine\utils\TextFormat;
 class Cuboid extends Subcommand{
 	private $shootEnabled;
 	private $growEnabled;
+
 	public function __construct(WorldEditArt $main, $shoot, $grow){
 		parent::__construct($main);
 		$this->shootEnabled = $shoot;
 		$this->growEnabled = $grow;
 	}
+
 	public function getName(){
 		return "cuboid";
 	}
+
 	public function getDescription(){
 		return "Make a cuboid selection using your crosshair";
 	}
+
 	public function getUsage(){
-		return "<s|shoot> <diagonal length> [a|adverse]  ".TextFormat::RED."OR".TextFormat::GREEN."  <g|grow> <x+> <y+> <z+> [x- = x+] [y- = y+] [z- = z+]";
+		return "<s|shoot> <diagonal length> [a|adverse]  " . TextFormat::RED . "OR" . TextFormat::GREEN . "  <g|grow> <x+> <y+> <z+> [x- = x+] [y- = y+] [z- = z+]";
 	}
+
 	public function getAliases(){
 		return ["cub"];
 	}
+
 	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
 		Player $player){
 		return true; // TODO
 	}
+
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
 			return self::WRONG_USE;
@@ -49,6 +56,7 @@ class Cuboid extends Subcommand{
 				return self::WRONG_USE;
 		}
 	}
+
 	public function onShootRun(array $args, Player $player){
 		if(!isset($args[0]) or !is_numeric($args[0])){
 			return self::WRONG_USE;
@@ -56,10 +64,9 @@ class Cuboid extends Subcommand{
 		$length = floatval(array_shift($args));
 		$p1 = $player->getPosition()->floor();
 		$p2 = $player->add($player->getDirectionVector()->multiply($length))->floor();
-		if($p1->y < 0 or $p1->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path):127)){
+		if($p1->y < 0 or $p1->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path) : 127)){
 			return "You must be inside the building height!";
-		}
-		elseif($p2->y < 0 or $p2->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path):127)){
+		}elseif($p2->y < 0 or $p2->y > (defined($path = "pemapmodder\\worldeditart\\MAX_WORLD_HEIGHT") ? constant($path) : 127)){
 			return "The selected area exceeded the world height limit!";
 		}
 		$player->getLevel()->loadChunk($p2->x >> 4, $p2->z >> 4);
@@ -77,8 +84,9 @@ class Cuboid extends Subcommand{
 		$level = $player->getLevel();
 		$this->getMain()->setSelection($player,
 			$sel = new CuboidSpace($p1 = Position::fromObject($p1, $level), $p2 = Position::fromObject($p2, $level)));
-		return "Cuboid selection set: $sel (".count($sel->getPosList())." blocks)";
+		return "Cuboid selection set: $sel (" . count($sel->getPosList()) . " blocks)";
 	}
+
 	public function onGrowRun(array $args, Player $player){
 		if(!isset($args[2])){
 			return self::WRONG_USE;
@@ -113,8 +121,7 @@ class Cuboid extends Subcommand{
 		$level = $player->getLevel();
 		if($reverse){
 			$space = new CuboidSpace(Position::fromObject($to, $level), $from);
-		}
-		else{
+		}else{
 			$space = new CuboidSpace(Position::fromObject($from, $level), $to);
 		}
 		$this->getMain()->setSelection($player, $space);

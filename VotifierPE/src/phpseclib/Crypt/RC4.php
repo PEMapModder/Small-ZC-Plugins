@@ -62,10 +62,10 @@
 
 namespace phpseclib\Crypt;
 
-/**#@+
- * @access private
- * @see RC4::RC4()
- */
+    /**#@+
+     * @access private
+     * @see    RC4::RC4()
+     */
 /**
  * Toggles the internal implementation
  */
@@ -78,7 +78,7 @@ namespace phpseclib\Crypt;
 
 /**#@+
  * @access private
- * @see RC4::_crypt()
+ * @see    RC4::_crypt()
  */
 @define('CRYPT_RC4_ENCRYPT', 0);
 @define('CRYPT_RC4_DECRYPT', 1);
@@ -92,15 +92,14 @@ namespace phpseclib\Crypt;
  * @version 0.1.0
  * @access  public
  */
-class RC4 extends Base
-{
+class RC4 extends Base{
     /**
      * Block Length of the cipher
      *
      * RC4 is a stream cipher
      * so we the block_size to 0
      *
-     * @see Base::block_size
+     * @see    Base::block_size
      * @var Integer
      * @access private
      */
@@ -109,8 +108,8 @@ class RC4 extends Base
     /**
      * The default password key_size used by setPassword()
      *
-     * @see Base::password_key_size
-     * @see Base::setPassword()
+     * @see    Base::password_key_size
+     * @see    Base::setPassword()
      * @var Integer
      * @access private
      */
@@ -119,7 +118,7 @@ class RC4 extends Base
     /**
      * The namespace used by the cipher for its constants.
      *
-     * @see Base::const_namespace
+     * @see    Base::const_namespace
      * @var String
      * @access private
      */
@@ -128,7 +127,7 @@ class RC4 extends Base
     /**
      * The mcrypt specific name of the cipher
      *
-     * @see Base::cipher_name_mcrypt
+     * @see    Base::cipher_name_mcrypt
      * @var String
      * @access private
      */
@@ -137,7 +136,7 @@ class RC4 extends Base
     /**
      * Holds whether performance-optimized $inline_crypt() can/should be used.
      *
-     * @see Base::inline_crypt
+     * @see    Base::inline_crypt
      * @var mixed
      * @access private
      */
@@ -146,7 +145,7 @@ class RC4 extends Base
     /**
      * The Key
      *
-     * @see RC4::setKey()
+     * @see    RC4::setKey()
      * @var String
      * @access private
      */
@@ -155,7 +154,7 @@ class RC4 extends Base
     /**
      * The Key Stream for decryption and encryption
      *
-     * @see RC4::setKey()
+     * @see    RC4::setKey()
      * @var Array
      * @access private
      */
@@ -166,12 +165,11 @@ class RC4 extends Base
      *
      * Determines whether or not the mcrypt extension should be used.
      *
-     * @see Base::Base()
+     * @see    Base::Base()
      * @return RC4
      * @access public
      */
-    function RC4()
-    {
+    function RC4(){
         parent::Base(CRYPT_MODE_STREAM);
     }
 
@@ -191,11 +189,11 @@ class RC4 extends Base
      * {@link http://en.wikipedia.org/wiki/Related_key_attack http://en.wikipedia.org/wiki/Related_key_attack}
      *
      * @param String $iv
-     * @see RC4::setKey()
+     *
+     * @see    RC4::setKey()
      * @access public
      */
-    function setIV($iv)
-    {
+    function setIV($iv){
     }
 
     /**
@@ -205,26 +203,27 @@ class RC4 extends Base
      * be used.  If no key is explicitly set, it'll be assumed to be a single null byte.
      *
      * @access public
-     * @see Base::setKey()
+     * @see    Base::setKey()
+     *
      * @param String $key
      */
-    function setKey($key)
-    {
+    function setKey($key){
         parent::setKey(substr($key, 0, 256));
     }
 
     /**
      * Encrypts a message.
      *
-     * @see Base::decrypt()
-     * @see RC4::_crypt()
+     * @see    Base::decrypt()
+     * @see    RC4::_crypt()
      * @access public
+     *
      * @param String $plaintext
+     *
      * @return String $ciphertext
      */
-    function encrypt($plaintext)
-    {
-        if ($this->engine == CRYPT_MODE_MCRYPT) {
+    function encrypt($plaintext){
+        if($this->engine == CRYPT_MODE_MCRYPT){
             return parent::encrypt($plaintext);
         }
         return $this->_crypt($plaintext, CRYPT_RC4_ENCRYPT);
@@ -236,81 +235,81 @@ class RC4 extends Base
      * $this->decrypt($this->encrypt($plaintext)) == $this->encrypt($this->encrypt($plaintext)).
      * Atleast if the continuous buffer is disabled.
      *
-     * @see Base::encrypt()
-     * @see RC4::_crypt()
+     * @see    Base::encrypt()
+     * @see    RC4::_crypt()
      * @access public
+     *
      * @param String $ciphertext
+     *
      * @return String $plaintext
      */
-    function decrypt($ciphertext)
-    {
-        if ($this->engine == CRYPT_MODE_MCRYPT) {
+    function decrypt($ciphertext){
+        if($this->engine == CRYPT_MODE_MCRYPT){
             return parent::decrypt($ciphertext);
         }
         return $this->_crypt($ciphertext, CRYPT_RC4_DECRYPT);
     }
 
-
     /**
      * Setup the key (expansion)
      *
-     * @see Base::_setupKey()
+     * @see    Base::_setupKey()
      * @access private
      */
-    function _setupKey()
-    {
+    function _setupKey(){
         $key = $this->key;
         $keyLength = strlen($key);
-        $keyStream = array();
-        for ($i = 0; $i < 256; $i++) {
+        $keyStream = [];
+        for($i = 0; $i < 256; $i++){
             $keyStream[$i] = $i;
         }
         $j = 0;
-        for ($i = 0; $i < 256; $i++) {
+        for($i = 0; $i < 256; $i++){
             $j = ($j + $keyStream[$i] + ord($key[$i % $keyLength])) & 255;
             $temp = $keyStream[$i];
             $keyStream[$i] = $keyStream[$j];
             $keyStream[$j] = $temp;
         }
 
-        $this->stream = array();
-        $this->stream[CRYPT_RC4_DECRYPT] = $this->stream[CRYPT_RC4_ENCRYPT] = array(
+        $this->stream = [];
+        $this->stream[CRYPT_RC4_DECRYPT] = $this->stream[CRYPT_RC4_ENCRYPT] = [
             0, // index $i
             0, // index $j
-            $keyStream
-        );
+            $keyStream,
+        ];
     }
 
     /**
      * Encrypts or decrypts a message.
      *
-     * @see RC4::encrypt()
-     * @see RC4::decrypt()
+     * @see    RC4::encrypt()
+     * @see    RC4::decrypt()
      * @access private
-     * @param String $text
+     *
+     * @param String  $text
      * @param Integer $mode
+     *
      * @return String $text
      */
-    function _crypt($text, $mode)
-    {
-        if ($this->changed) {
+    function _crypt($text, $mode){
+        if($this->changed){
             $this->_setup();
             $this->changed = false;
         }
 
         $stream = &$this->stream[$mode];
-        if ($this->continuousBuffer) {
+        if($this->continuousBuffer){
             $i = &$stream[0];
             $j = &$stream[1];
             $keyStream = &$stream[2];
-        } else {
+        }else{
             $i = $stream[0];
             $j = $stream[1];
             $keyStream = $stream[2];
         }
 
         $len = strlen($text);
-        for ($k = 0; $k < $len; ++$k) {
+        for($k = 0; $k < $len; ++$k){
             $i = ($i + 1) & 255;
             $ksi = $keyStream[$i];
             $j = ($j + $ksi) & 255;

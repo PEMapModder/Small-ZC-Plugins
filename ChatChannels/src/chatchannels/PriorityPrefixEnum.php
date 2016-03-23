@@ -7,9 +7,11 @@ use pocketmine\plugin\Plugin;
 class PriorityPrefixEnum{
 	/** @var array[] */
 	private $registries = [];
+
 	public function add(Prefix $prefix, Plugin $context){
 		$this->registries[] = ["prefix" => $prefix, "plugin" => $context];
 	}
+
 	public function recalculate(){
 		foreach($this->registries as $k => $reg){
 			/** @var Plugin $plugin */
@@ -20,6 +22,7 @@ class PriorityPrefixEnum{
 		}
 		$this->registries = array_values($this->registries);
 	}
+
 	public function getPrefixes(ChannelSubscriber $sender, Channel $channel, $recalculate = false){
 		if($recalculate){
 			$this->recalculate();

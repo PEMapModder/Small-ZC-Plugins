@@ -15,11 +15,12 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 	private $main;
 	/** @var \WeakRef[] */
 	private $subcmds = [];
+
 	/**
-	 * @param string $name
-	 * @param WorldEditArt $main
-	 * @param string $desc
-	 * @param string $mainPerm
+	 * @param string          $name
+	 * @param WorldEditArt    $main
+	 * @param string          $desc
+	 * @param string          $mainPerm
 	 * @param string[]|string $aliases
 	 */
 	public function __construct($name, WorldEditArt $main, $desc, $mainPerm, $aliases = []){
@@ -27,6 +28,7 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		parent::__construct($name, $desc, null, (array) $aliases);
 		$this->setPermission($mainPerm);
 	}
+
 	public function registerSubcommand(Subcommand $subcmd){
 		$this->subcmds[strtolower(trim($subcmd->getName()))] = new \WeakRef($subcmd);
 		$this->subcmds[strtolower(trim($subcmd->getName()))]->acquire();
@@ -34,17 +36,18 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 			$this->subcmds[$alias] = new \WeakRef($subcmd);
 		}
 	}
+
 	public function getPlugin(){
 		return $this->main;
 	}
+
 	public function execute(CommandSender $issuer, $lbl, array $args){
 		if(count($args) === 0){
 			$args = ["help"];
 		}
 		if(is_string($lbl) and substr($lbl, 0, 1) === "/" and strlen($lbl) > 1){
 			$cmd = substr($lbl, 1);
-		}
-		else{
+		}else{
 			$cmd = array_shift($args);
 		}
 		if(isset($this->subcmds[$cmd = strtolower(trim($cmd))]) and $this->subcmds[$cmd]->valid() and $cmd !== "help"){
@@ -52,24 +55,20 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				if(!IS_DEBUGGING){
 					try{
 						$this->subcmds[$cmd]->get()->run($this, $args, $issuer);
-					}
-					catch(\Exception $exception){
+					}catch(\Exception $exception){
 						$issuer->sendMessage("Uh-oh. Something went wrong! An exception has been caught during executing your command.");
-						$issuer->sendMessage("Error caught: ".($class = array_slice(explode("\\", get_class($exception)), -1)[0]));
-						$issuer->sendMessage("Error message: ".$exception->getMessage());
+						$issuer->sendMessage("Error caught: " . ($class = array_slice(explode("\\", get_class($exception)), -1)[0]));
+						$issuer->sendMessage("Error message: " . $exception->getMessage());
 						$issuer->sendMessage("The error has been reported to console.");
-						$this->main->getLogger()->notice("An exception has been caught. Exception name: '$class'. Exception message: ".$exception->getMessage());
+						$this->main->getLogger()->notice("An exception has been caught. Exception name: '$class'. Exception message: " . $exception->getMessage());
 					}
-				}
-				else{
+				}else{
 					$this->subcmds[$cmd]->get()->run($this, $args, $issuer); // let the error fly
 				}
-			}
-			else{
+			}else{
 				$issuer->sendMessage("You either have to select an anchor / make a selection first, don't have permission to do this, or you have to run this command in-game/on-console.");
 			}
-		}
-		else{
+		}else{
 			$help = $this->getFullHelp($issuer);
 			$page = 1;
 			$max = (int) ceil(count($help) / 5);
@@ -85,8 +84,10 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		}
 		return true;
 	}
+
 	/**
 	 * @param CommandSender $sender
+	 *
 	 * @return array
 	 */
 	public function getFullHelp(CommandSender $sender){
@@ -99,14 +100,15 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 				continue;
 			}
 			$output = "";
-			$output .= TextFormat::RESET."/{$this->getName()} ";
-			$output .= TextFormat::LIGHT_PURPLE.$cmd->get()->getName()." ";
-			$output .= TextFormat::GREEN.$cmd->get()->getUsage()." ";
-			$output .= TextFormat::AQUA.$cmd->get()->getDescription();
+			$output .= TextFormat::RESET . "/{$this->getName()} ";
+			$output .= TextFormat::LIGHT_PURPLE . $cmd->get()->getName() . " ";
+			$output .= TextFormat::GREEN . $cmd->get()->getUsage() . " ";
+			$output .= TextFormat::AQUA . $cmd->get()->getDescription();
 			$out[] = $output;
 		}
 		return $out;
 	}
+
 	/**
 	 * @param Subcommand[] $subcmds
 	 */
@@ -121,8 +123,8 @@ class SubcommandMap extends Command implements PluginIdentifiableCommand{
 		$aliases = array_merge($aliases, $this->getAliases());
 		ksort($aliases, SORT_FLAG_CASE | SORT_NATURAL);
 		$this->setAliases($aliases);
-
 	}
+
 	public function __destruct(){
 		foreach($this->subcmds as $ref){
 			$ref->release();

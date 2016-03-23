@@ -21,6 +21,7 @@ class Main extends PluginBase{
 	private $MEMBER_CODE = false;
 	private $timeout;
 	private $callbacks = [];
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$key = $this->getConfig()->get("api key");
@@ -54,26 +55,25 @@ class Main extends PluginBase{
 				$bad = "bad api request";
 				if(strtolower(substr($response, 0, strlen($bad))) === $bad){
 					$this->getLogger()->critical("Member code request from http://pastebin.com. " .
-						"Reason: ".substr(strstr($response, ", "), 2).". Pastes will be posted as a guest.");
-				}
-				else{
+						"Reason: " . substr(strstr($response, ", "), 2) . ". Pastes will be posted as a guest.");
+				}else{
 					$this->MEMBER_CODE = $response;
 				}
-			}
-			else{
+			}else{
 				$this->getLogger()->notice("Invalid username/password with no member code " .
 					"provided in config.yml. Pastes will be posted as a guest.");
 			}
-		}
-		else{
+		}else{
 			$this->MEMBER_CODE = $memberCode;
 		}
 		$this->timeout = $timeout;
 		$this->getLogger()->info("Successfully initialized.");
 	}
+
 	public function onDisable(){
 		$this->getLogger()->debug("disabled");
 	}
+
 	public function onCommand(CommandSender $issuer, Command $command, $alias, array $args){
 		switch($command->getName()){
 			case "post":
@@ -81,13 +81,14 @@ class Main extends PluginBase{
 				break;
 		}
 	}
+
 	public function postPaste($content, $name = false, $expiry = self::EXPIRY_WEEK, $format = "text", $privacy = self::PRIVACY_UNLISTED, $timeout = false){
 		if($timeout === false){
 			$timeout = $this->timeout;
 		}
 		$post = "api_option=paste";
 		if(is_string($this->MEMBER_CODE)){
-			$post .= "&api_user_key=".$this->MEMBER_CODE;
+			$post .= "&api_user_key=" . $this->MEMBER_CODE;
 		}
 		$post .= "&api_paste_private=$privacy";
 		if(is_string($name)){
@@ -95,11 +96,12 @@ class Main extends PluginBase{
 		}
 		$post .= "&api_paste_expiry_date=$expiry";
 		$post .= "&api_paste_format=$format";
-		$post .= "&api_dev_key=".$this->API_KEY;
+		$post .= "&api_dev_key=" . $this->API_KEY;
 		$post .= "&api_paste_code=$content";
 		$this->getServer()->getScheduler()->scheduleAsyncTask($task = new PostTask("http://pastebin.com/api/api_post.php", $post, $timeout, $this->getLogger()));
 		return spl_object_hash($task);
 	}
+
 	public function onCompletion($taskHash, $result){
 		if(isset($this->callbacks[$taskHash])){
 			call_user_func($this->callbacks[$taskHash], $result);

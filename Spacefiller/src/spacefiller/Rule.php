@@ -25,11 +25,13 @@ class Rule{
 	private $to;
 	/** @var int */
 	private $limit;
+
 	public function __construct($from, $to, $limit){
 		$this->from = $from;
 		$this->to = $to;
 		$this->limit = $limit;
 	}
+
 	public function process(&$string){
 		$string = preg_replace($this->from, $this->to, $string, $this->limit);
 	}

@@ -18,6 +18,7 @@ class ChatChannels extends PluginBase{
 	private $prefixes;
 	/** @var SessionControl */
 	private $sessions;
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$this->configuration = new Configuration($this->getConfig());
@@ -31,23 +32,30 @@ class ChatChannels extends PluginBase{
 			new ForceRankCommand($this, "admin", Channel::MODE_ADMIN, "fa"),
 		]);
 	}
+
 	public function getPrefixAPI(){
 		return $this->prefixes;
 	}
+
 	public function getChannelManager(){
 		return $this->chanMgr;
 	}
+
 	public function getConsole(){
 		return $this->console;
 	}
+
 	public function getPlayerSub(Player $sender){
 		return $this->sessions->getSession($sender);
 	}
+
 	public function getDefaultChannel(){
 		return $this->chanMgr->getChannel($this->configuration->getDefaultChannel());
 	}
+
 	/**
 	 * @param Server $server
+	 *
 	 * @return self
 	 */
 	public static function getInstance(Server $server){

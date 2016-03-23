@@ -2,15 +2,16 @@
 
 namespace pemapmodder\worldeditart\utils\provider\macro;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\macro\Macro;
 use pemapmodder\worldeditart\utils\macro\MacroOperation;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\block\Block;
 use pocketmine\math\Vector3;
 
 class MysqliMacroDataProvider extends CachedMacroDataProvider{
 	/** @var \mysqli */
 	private $db;
+
 	public function __construct(WorldEditArt $main, \mysqli $db){
 		parent::__construct($main);
 		$this->db = $db;
@@ -34,15 +35,18 @@ class MysqliMacroDataProvider extends CachedMacroDataProvider{
 				damage TINYINT
 				)");
 	}
+
 	/**
 	 * @return \mysqli
 	 */
 	public function getDb(){
 		return $this->db;
 	}
+
 	public function getName(){
 		return "MySQLi Macro Data Provider";
 	}
+
 	public function readMacro($name){
 		$result = $this->getMacroRaw($name);
 		$array = $result->fetch_assoc();
@@ -59,8 +63,7 @@ class MysqliMacroDataProvider extends CachedMacroDataProvider{
 		foreach($ops as $op){
 			if(isset($op["delta"])){
 				$opers[$op["offset"]] = new MacroOperation($op["delta"]);
-			}
-			else{
+			}else{
 				$opers[$op["offset"]] = new MacroOperation(new Vector3($op["x"], $op["y"], $op["z"]), Block::get($op["id"], $op["damage"]));
 			}
 		}
@@ -68,6 +71,7 @@ class MysqliMacroDataProvider extends CachedMacroDataProvider{
 		$macro = new Macro(false, array_values($opers), $array["author"], $array["description"]);
 		return $macro;
 	}
+
 	public function saveMacro($name, Macro $macro){
 		$this->db->query("INSERT INTO macros (name, author, description) VALUES (
 				'{$this->db->escape_string($name)}',
@@ -81,8 +85,7 @@ class MysqliMacroDataProvider extends CachedMacroDataProvider{
 						$offset,
 						{$op->getLength()}
 						);");
-			}
-			else{
+			}else{
 				$delta = $op->getDelta();
 				$block = $op->getBlock();
 				$this->db->query("INSERT INTO macros_ops (owner, offset, x, y, z, id, damage) VALUES (
@@ -97,26 +100,31 @@ class MysqliMacroDataProvider extends CachedMacroDataProvider{
 			}
 		}
 	}
+
 	public function deleteMacro($name){
 		$escaped = $this->db->escape_string($name);
 		$this->db->query("DELETE FROM macros WHERE name = '$escaped';");
 		$this->db->query("DELETE FROM macros_deltas WHERE owner = '$escaped';");
 		$this->db->query("DELETE FROM macros_ops WHERE owner = '$escaped';");
 	}
+
 	/**
 	 * Note: remember to close the result
 	 *
 	 * @param string $table
 	 * @param string $column
 	 * @param string $name
+	 *
 	 * @return \mysqli_result
 	 */
 	public function getMacroRaw($table = "macros", $column = "name", $name){
 		return $this->db->query("SELECT * FROM $table WHERE $column = '{$this->db->escape_string($name)}';");
 	}
+
 	public function isAvailable(){
 		return $this->db->ping();
 	}
+
 	public function close(){
 		$this->db->close();
 	}

@@ -24,49 +24,59 @@ class ListenerThread extends Thread{
 	public $stopCmd = false;
 	public $terminated = false;
 	public $terminateReason = "";
+
 	public function __construct($port, $blacklist, $whitelist, $whitelistOn){
 		$this->port = $port;
 		$this->blacklist = $blacklist;
 		$this->whitelist = $whitelist;
 		$this->whitelistOn = $whitelistOn;
 	}
+
 	public function pushDatum($datum){
-		$this->synchronized(function($datum){
+		$this->synchronized(function ($datum){
 			$data = unserialize($this->buffer);
 			$data[] = $datum;
 			$this->buffer = serialize($data);
 		}, $datum);
 	}
+
 	private function pushLog($msg, $logLevel = LogLevel::INFO){
 		$this->pushDatum([
 			"c" => self::CLASS_LOG,
 			"lm" => $msg,
-			"ll" => $logLevel
+			"ll" => $logLevel,
 		]);
 	}
+
 	private function pushRequest($action, $params, $ip, $port){
 		$this->pushDatum([
 			"c" => self::CLASS_REQUEST,
 			"ra" => $action,
 			"rp" => $params,
 			"_ip" => $ip,
-			"_port" => $port
+			"_port" => $port,
 		]);
 	}
+
 	public function pullData(){
-		return $this->synchronized(function(){
+		return $this->synchronized(function (){
 			$r = unserialize($this->buffer);
 			$this->buffer = "a:0:{}";
 			return $r;
 		});
 	}
+
 	public function acquire(){
-		while($this->lock);
+		while($this->lock){
+			;
+		}
 		$this->lock = true;
 	}
+
 	public function release(){
 		$this->lock = false;
 	}
+
 	public function run(){
 		if($this->whitelistOn){
 			foreach($this->whitelist as &$white){
@@ -92,10 +102,12 @@ class ListenerThread extends Thread{
 		socket_set_block($this->sock);
 		$this->onRun();
 	}
+
 	private function terminate($msg){
 		$this->terminated = true;
 		$this->terminateReason = $msg;
 	}
+
 	private function onRun(){
 		while(!$this->stopCmd){
 			$request = socket_accept($this->sock);
@@ -105,6 +117,7 @@ class ListenerThread extends Thread{
 			$this->processRequest($request);
 		}
 	}
+
 	private function processRequest($req){
 		socket_getpeername($req, $ip, $port);
 		if(!$this->allowConnect($ip)){
@@ -173,6 +186,7 @@ class ListenerThread extends Thread{
 				return;
 		}
 	}
+
 	private function resolveAddress($address, $force = false){
 		if(!$force and isset($this->hostNameCache[$address])){
 			return $this->hostNameCache[$address];
@@ -180,6 +194,7 @@ class ListenerThread extends Thread{
 		$ip = gethostbyname($address);
 		return $this->hostNameCache[$address] = $ip;
 	}
+
 	private function allowConnect($ip){
 		return !in_array($ip, $this->blacklist) and (!$this->whitelistOn or in_array($ip, $this->whitelist));
 	}

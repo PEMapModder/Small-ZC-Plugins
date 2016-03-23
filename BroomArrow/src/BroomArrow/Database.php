@@ -17,6 +17,5 @@ namespace BroomArrow;
 
 class Database{
 	public function __construct($folder){
-
 	}
 }

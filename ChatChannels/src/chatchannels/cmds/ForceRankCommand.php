@@ -10,12 +10,14 @@ use pocketmine\command\CommandSender;
 class ForceRankCommand extends ChatChannelsCommand{
 	/** @var string */
 	private $rankName, $flag;
+
 	public function __construct(ChatChannels $plugin, $name, $flag, ...$aliases){
 		parent::__construct($plugin, true, "force$name", "Make yourself a channel $name", "/force$name <channel>", ...$aliases);
 		$this->setPermission("chatchannels.force$name");
 		$this->rankName = $name;
 		$this->flag = $flag;
 	}
+
 	public function onRun(array $args, CommandSender $sender, ChannelSubscriber $sub){
 		if(!isset($args[0])){
 			return false;

@@ -9,14 +9,17 @@ class ChannelManager{
 	private $parentPerm;
 	/** @var Channel[] */
 	private $channels = [];
+
 	public function __construct(ChatChannels $main){
 		$this->main = $main;
 		$this->parentPerm = $this->main->getServer()->getPluginManager()->getPermission("chatchannels.channel");
 	}
+
 	/**
-	 * @param string $name
+	 * @param string            $name
 	 * @param ChannelSubscriber $founder
-	 * @param bool $freeJoin
+	 * @param bool              $freeJoin
+	 *
 	 * @return bool|Channel
 	 */
 	public function addChannel($name, ChannelSubscriber $founder, $freeJoin = false){
@@ -27,26 +30,31 @@ class ChannelManager{
 		$this->channels[$name] = new Channel($name, $this->addChannelPermission($name, $freeJoin), $founder);
 		return $this->getChannel($name);
 	}
+
 	/**
 	 * @param string $name
-	 * @param bool $default
+	 * @param bool   $default
+	 *
 	 * @return Permission
 	 */
 	private function addChannelPermission($name, $default){
 		$name = $this->normalize($name);
-		$perm = new Permission("chatchannels.channel.$name", "Allow joining channel '$name'", ($default === true or $default === Permission::DEFAULT_TRUE) ? Permission::DEFAULT_TRUE:Permission::DEFAULT_FALSE);
+		$perm = new Permission("chatchannels.channel.$name", "Allow joining channel '$name'", ($default === true or $default === Permission::DEFAULT_TRUE) ? Permission::DEFAULT_TRUE : Permission::DEFAULT_FALSE);
 		$this->parentPerm->getChildren()[$perm->getName()] = $perm;
 		$this->main->getServer()->getPluginManager()->getPermission($perm);
 		return $perm;
 	}
+
 	/**
 	 * @return Channel[]
 	 */
 	public function getChannels(){
 		return $this->channels;
 	}
+
 	/**
 	 * @param string $name
+	 *
 	 * @return bool|Channel
 	 */
 	public function getChannel($name){
@@ -55,8 +63,10 @@ class ChannelManager{
 		}
 		return true;
 	}
+
 	/**
 	 * @param string $name
+	 *
 	 * @return string
 	 */
 	public function normalize($name){

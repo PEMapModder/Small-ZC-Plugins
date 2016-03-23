@@ -89,6 +89,7 @@ class WorldEditArt extends PluginBase implements Listener{
 			define($path, $maxHeight);
 		}
 	}
+
 	public function onEnable(){
 		$this->onPreEnable();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -110,8 +111,7 @@ class WorldEditArt extends PluginBase implements Listener{
 			case "mysqli":
 				if($players["mysqli"]["use common"]){
 					$db = $this->getCommonMysqli();
-				}
-				else{
+				}else{
 					$args = $players["mysqli"];
 					$db = new \mysqli($args["host"], $args["username"], $args["password"], $args["database"], $args["port"]);
 					if($db->connect_error){
@@ -137,8 +137,7 @@ class WorldEditArt extends PluginBase implements Listener{
 				$args = $clipboard["mysqli"];
 				if($args["use common"]){
 					$db = $this->getCommonMysqli();
-				}
-				else{
+				}else{
 					$db = new \mysqli($args["host"], $args["username"], $args["password"], $args["database"], $args["port"]);
 					if($db->connect_error){
 						$this->getLogger()->critical("Cannot connect to MySQLi remote database. The database will be assumed blank and read-only.");
@@ -149,7 +148,7 @@ class WorldEditArt extends PluginBase implements Listener{
 				$this->clipboardProvider = new MysqliClipboardProvider($this, $db);
 				break;
 			default:
-				$this->getLogger()->critical("Unknown clipboard provider type ".$clipboard["type"].". A temporary-memory clipboard provider will be used.");
+				$this->getLogger()->critical("Unknown clipboard provider type " . $clipboard["type"] . ". A temporary-memory clipboard provider will be used.");
 				$this->clipboardProvider = new DummyClipboardProvider($this);
 				break;
 		}
@@ -169,8 +168,7 @@ class WorldEditArt extends PluginBase implements Listener{
 						$this->macroDataProvider = new DummyMacroDataProvider($this);
 						break;
 					}
-				}
-				else{
+				}else{
 					$db = new \mysqli($mysqli["host"], $mysqli["username"], $mysqli["password"], $mysqli["database"], $mysqli["port"]);
 					if($db->connect_error){
 						$this->getLogger()->critical("Unable to connect to the MySQLi database of macros. A RAM database will be used.");
@@ -179,6 +177,7 @@ class WorldEditArt extends PluginBase implements Listener{
 				$this->macroDataProvider = new MysqliMacroDataProvider($this, $db);
 		}
 	}
+
 	private function registerCommands(){
 		$wea = new SubcommandMap("worldeditart", $this, "WorldEditArt main command", "wea.cmd", ["wea", "we", "/"]);
 		$cmds = [];
@@ -253,6 +252,7 @@ class WorldEditArt extends PluginBase implements Listener{
 		$this->doWand = $misc["wand"];
 		$this->getServer()->getCommandMap()->register("wea", $wea);
 	}
+
 	public function onDisable(){
 		if($this->macroDataProvider){
 			$this->macroDataProvider->close();
@@ -280,10 +280,12 @@ class WorldEditArt extends PluginBase implements Listener{
 			unset($this->macros[$i]);
 		}
 	}
+
 	/**
 	 * Recognizes a wand operation if item in hand matches wand
 	 *
 	 * @param PlayerInteractEvent $event
+	 *
 	 * @priority HIGH
 	 */
 	public function onInteract(PlayerInteractEvent $event){
@@ -298,32 +300,38 @@ class WorldEditArt extends PluginBase implements Listener{
 			$event->setCancelled();
 		}
 	}
+
 	/**
 	 * @param BlockPlaceEvent $event
-	 * @priority MONITOR
+	 *
+	 * @priority        MONITOR
 	 * @ignoreCancelled true
 	 */
 	public function onBlockPlace(BlockPlaceEvent $event){
 		$this->onBlockTouched($event->getPlayer(), $event->getBlock(), false);
 	}
+
 	/**
 	 * @param BlockBreakEvent $event
-	 * @priority MONITOR
+	 *
+	 * @priority        MONITOR
 	 * @ignoreCancelled true
 	 */
 	public function onBlockBreak(BlockBreakEvent $event){
 		$this->onBlockTouched($event->getPlayer(), $event->getBlock(), true);
 	}
+
 	/**
 	 * @param Player $player
-	 * @param Block $block
-	 * @param bool $isBreak
+	 * @param Block  $block
+	 * @param bool   $isBreak
 	 */
 	public function onBlockTouched(Player $player, Block $block, $isBreak){
 		if(($macro = $this->getRecordingMacro($player)) instanceof Macro){
-			$macro->addBlock($isBreak ? new Air:$block);
+			$macro->addBlock($isBreak ? new Air : $block);
 		}
 	}
+
 	public function onPacketReceived(DataPacketReceiveEvent $event){
 		$pk = $event->getPacket();
 		$player = $event->getPlayer();
@@ -375,15 +383,17 @@ class WorldEditArt extends PluginBase implements Listener{
 	/**
 	 * @param Player $player
 	 * @param string $name
+	 *
 	 * @return Clip|bool
 	 */
 	public function getClip(Player $player, $name = "default"){
 		return isset($this->clips[$player->getID()]) and isset($this->clips[$player->getID()][$name]) ?
-			$this->clips[$player->getID()][$name]:false;
+			$this->clips[$player->getID()][$name] : false;
 	}
+
 	/**
-	 * @param Player $player
-	 * @param Clip $clip
+	 * @param Player      $player
+	 * @param Clip        $clip
 	 * @param string|bool $name
 	 */
 	public function setClip(Player $player, Clip $clip, $name = false){
@@ -398,18 +408,21 @@ class WorldEditArt extends PluginBase implements Listener{
 // MACROS
 	/**
 	 * @param Player $player
+	 *
 	 * @return Macro|bool
 	 */
 	public function getRecordingMacro(Player $player){
-		return isset($this->macros[$player->getID()]) ? $this->macros[$player->getID()]:false;
+		return isset($this->macros[$player->getID()]) ? $this->macros[$player->getID()] : false;
 	}
+
 	/**
 	 * @param Player $player
-	 * @param Macro $macro
+	 * @param Macro  $macro
 	 */
 	public function setRecordingMacro(Player $player, Macro $macro){
 		$this->macros[$player->getID()] = $macro;
 	}
+
 	/**
 	 * @param Player $player
 	 */
@@ -419,7 +432,7 @@ class WorldEditArt extends PluginBase implements Listener{
 // SELECTIONS
 	/**
 	 * @param Player $player
-	 * @param Space $space
+	 * @param Space  $space
 	 */
 	public function setSelection(Player $player, Space $space){
 		$this->getServer()->getPluginManager()->callEvent($ev = new SelectionChangeEvent($this, $player, $space));
@@ -432,15 +445,19 @@ class WorldEditArt extends PluginBase implements Listener{
 			unset($this->selections[$id]);
 		}
 	}
+
 	/**
 	 * @param Player $player
+	 *
 	 * @return bool|Space
 	 */
 	public function getSelection(Player $player){
-		return isset($this->selections[$player->getID()]) ? $this->selections[$player->getID()]:false;
+		return isset($this->selections[$player->getID()]) ? $this->selections[$player->getID()] : false;
 	}
+
 	/**
 	 * @param Player $player
+	 *
 	 * @return bool
 	 */
 	public function unsetSelection(Player $player){
@@ -453,15 +470,17 @@ class WorldEditArt extends PluginBase implements Listener{
 	// Cuboid Selections
 	/**
 	 * @param Player $player
+	 *
 	 * @return array|bool
 	 */
 	public function getTempPos(Player $player){
-		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()]:false;
+		return isset($this->tempPos[$player->getID()]) ? $this->tempPos[$player->getID()] : false;
 	}
+
 	/**
-	 * @param Player $player
+	 * @param Player   $player
 	 * @param Position $pos
-	 * @param bool $isTwo
+	 * @param bool     $isTwo
 	 */
 	public function setTempPos(Player $player, Position $pos, $isTwo){
 		$this->tempPos[$player->getID()] = ["position" => clone $pos, "#" => $isTwo];
@@ -469,13 +488,15 @@ class WorldEditArt extends PluginBase implements Listener{
 // ANCHORS
 	/**
 	 * @param Player $player
+	 *
 	 * @return bool|Position
 	 */
 	public function getAnchor(Player $player){
-		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()]:false;
+		return isset($this->anchors[$player->getID()]) ? $this->anchors[$player->getID()] : false;
 	}
+
 	/**
-	 * @param Player $player
+	 * @param Player   $player
 	 * @param Position $anchor
 	 */
 	public function setAnchor(Player $player, Position $anchor){
@@ -497,14 +518,16 @@ class WorldEditArt extends PluginBase implements Listener{
 			$data = $this->getConfig()->get("data providers")["common mysqli database"];
 			$this->commonMysqli = new \mysqli($data["host"], $data["username"], $data["password"], $data["database"]);
 			if($this->commonMysqli->connect_error){
-				$this->getLogger()->critical("Error trying to connect to common MySQLi database: ".$this->commonMysqli->connect_error);
+				$this->getLogger()->critical("Error trying to connect to common MySQLi database: " . $this->commonMysqli->connect_error);
 				return null;
 			}
 		}
 		return $this->commonMysqli;
 	}
+
 	/**
 	 * @param $name
+	 *
 	 * @return PlayerData
 	 */
 	public function getPlayerData($name){
@@ -514,16 +537,20 @@ class WorldEditArt extends PluginBase implements Listener{
 // STATIC UTILS
 	/**
 	 * @param Position $pos
+	 *
 	 * @return string
 	 */
 	public static function posToStr(Position $pos){
-		return self::v3ToStr($pos)." in world \"{$pos->getLevel()->getName()}\"";
+		return self::v3ToStr($pos) . " in world \"{$pos->getLevel()->getName()}\"";
 	}
+
 	public static function v3ToStr(Vector3 $v3){
 		return "({$v3->x}, {$v3->y}, {$v3->z})";
 	}
+
 	/**
 	 * @param string $block
+	 *
 	 * @return bool|Block
 	 */
 	public static function parseBlock($block){
@@ -536,24 +563,23 @@ class WorldEditArt extends PluginBase implements Listener{
 		$path = "pocketmine\\block\\$block";
 		if(defined("pocketmine\\block\\Block::$block")){
 			$id = constant("pocketmine\\block\\Block::$block");
-		}
-		elseif(class_exists($path) and is_subclass_of($path, "pocketmine\\block\\Block")){
+		}elseif(class_exists($path) and is_subclass_of($path, "pocketmine\\block\\Block")){
 			/** @var Block $instance */
 			$instance = new $block;
 			$id = $instance->getID();
-		}
-		elseif(is_numeric($block)){
+		}elseif(is_numeric($block)){
 			$id = (int) $block;
-		}
-		else{
+		}else{
 			return false;
 		}
 		return Block::get($id, $damage);
 	}
+
 	/**
 	 * @param Block[] $blocks
-	 * @param int $from
-	 * @param int $to
+	 * @param int     $from
+	 * @param int     $to
+	 *
 	 * @return Block[]
 	 */
 	public static function rotateBlocks(array $blocks, $from, $to){
@@ -567,8 +593,10 @@ class WorldEditArt extends PluginBase implements Listener{
 		}
 		return $blocks;
 	}
+
 	/**
 	 * @param Block[] $blocks
+	 *
 	 * @return Block[]
 	 */
 	private static function rotateBlocksByOne(array $blocks){
@@ -578,9 +606,11 @@ class WorldEditArt extends PluginBase implements Listener{
 		}
 		return $out;
 	}
+
 	private static function rotateBlockByOne(Block $block){
 		return Block::get($block->getID(), $block->getDamage(), new Position($block->getZ(), $block->getY(), -$block->getX(), $block->getLevel()));
 	}
+
 	public static function getCrosshairTarget(Entity $entity, $accuracy = 0.5, $max = PHP_INT_MAX){
 		$found = null;
 		$direction = $entity->getDirectionVector()->multiply($accuracy);
@@ -613,8 +643,10 @@ class WorldEditArt extends PluginBase implements Listener{
 		}
 		return $found;
 	}
+
 	/**
 	 * @param $direction
+	 *
 	 * @return array
 	 */
 	public static function directionNumber2Array($direction){
@@ -635,6 +667,7 @@ class WorldEditArt extends PluginBase implements Listener{
 		}
 		return [CylinderSpace::X, CylinderSpace::PLUS];
 	}
+
 	public static function rotateDirectionNumberClockwise($number, $quarters = 1){
 		if($quarters > 1){
 			for($i = 0; $i < $quarters; $i++){
@@ -655,18 +688,21 @@ class WorldEditArt extends PluginBase implements Listener{
 				return $number;
 		}
 	}
+
 	/**
 	 * @return \pemapmodder\worldeditart\utils\provider\player\PlayerDataProvider
 	 */
 	public function getPlayerDataProvider(){
 		return $this->playerDataProvider;
 	}
+
 	/**
 	 * @return \pemapmodder\worldeditart\utils\provider\macro\MacroDataProvider
 	 */
 	public function getMacroDataProvider(){
 		return $this->macroDataProvider;
 	}
+
 	/**
 	 * @return \pemapmodder\worldeditart\utils\provider\clip\ClipboardProvider
 	 */

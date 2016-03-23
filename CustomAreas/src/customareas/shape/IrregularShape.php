@@ -13,12 +13,14 @@ class IrregularShape implements Shape, Cached{
 	private $levelName;
 	/** @var string[] */
 	private $cache = [];
+
 	/**
 	 * @return \pocketmine\math\Vector2[]
 	 */
 	public function getPoints(){
 		return $this->points;
 	}
+
 	/**
 	 * @param Vector2[] $points
 	 */
@@ -29,27 +31,32 @@ class IrregularShape implements Shape, Cached{
 		$this->points = array_values($points);
 		$this->recalculateLines();
 	}
+
 	private function recalculateLines(){
 		$this->lines = [];
 		foreach($this->points as $i => $pt){
 			$this->lines[$i] = new Line($pt, isset($this->points[$i + 1]) ? $this->points[$i + 1] : $this->points[0]);
 		}
 	}
+
 	public function serialize(){
-		return ["p" => serialize(array_map(function(Vector2 $c){
+		return ["p" => serialize(array_map(function (Vector2 $c){
 			return "$c->x:$c->y";
 		}, $this->points)), "v" => 0];
 	}
+
 	public function unserialize($serialized){
 		$d = unserialize($serialized)["p"];
-		$this->setPoints(array_map(function($str){
+		$this->setPoints(array_map(function ($str){
 			list($x, $y) = explode(":", $str);
 			return new Vector2($x, $y);
 		}, $d));
 	}
+
 	public static function getName(){
 		return "ireg";
 	}
+
 	public function isInside(Vector3 $p){
 		$v2 = new Vector2($p->x, $p->z);
 		$hash = $this->hash($v2);
@@ -63,9 +70,11 @@ class IrregularShape implements Shape, Cached{
 		$this->cache[$hash] = $result = (bool) ($intersects & 1);
 		return $result;
 	}
+
 	public function getLevelName(){
 		return $this->levelName;
 	}
+
 	public function hash($x, $z = null){
 		if($x instanceof Vector2){
 			return $this->hash($x->x, $x->y);
@@ -74,6 +83,7 @@ class IrregularShape implements Shape, Cached{
 		$z = round($z, 1);
 		return "$x:$z";
 	}
+
 	public function cleanCache(){
 		$this->cache = [];
 	}

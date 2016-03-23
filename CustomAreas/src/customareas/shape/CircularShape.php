@@ -14,15 +14,17 @@ class CircularShape implements Shape{
 	public $centerx, $centerz;
 	/** @var string */
 	public $levelName;
+
 	public function serialize(){
 		return serialize([
 			"rad" => $this->radius,
 			"x" => $this->centerx,
 			"z" => $this->centerz,
 			"lv" => $this->levelName,
-			"v" => 0
+			"v" => 0,
 		]);
 	}
+
 	public function unserialize($serialized){
 		$d = unserialize($serialized);
 		$this->radius = $d["rad"];
@@ -30,18 +32,22 @@ class CircularShape implements Shape{
 		$this->centerz = $d["z"];
 		$this->levelName = $d["lv"];
 	}
+
 	public static function getName(){
 		return "circ";
 	}
+
 	public function isInside(Vector3 $p){
 		return (new Vector2($this->centerx, $this->centerz))->distanceSquared(new Vector2($p->x, $p->z)) <= $this->radiusSquared;
 	}
+
 	/**
 	 * @return number
 	 */
 	public function getRadius(){
 		return $this->radius;
 	}
+
 	/**
 	 * @param number $radius
 	 */
@@ -49,6 +55,7 @@ class CircularShape implements Shape{
 		$this->radius = $radius;
 		$this->radiusSquared = $radius ** 2;
 	}
+
 	public function getLevelName(){
 		return $this->levelName;
 	}

@@ -34,6 +34,7 @@ class NameCorrector extends PluginBase implements Listener{
 	private $min, $max;
 	/** @var bool */
 	private $multibyte;
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		/** @var string[]|string[][] $special */
@@ -72,8 +73,10 @@ class NameCorrector extends PluginBase implements Listener{
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
+
 	/**
 	 * @param DataPacketReceiveEvent $event
+	 *
 	 * @priority LOW
 	 */
 	public function onReceivePacket(DataPacketReceiveEvent $event){
@@ -84,6 +87,7 @@ class NameCorrector extends PluginBase implements Listener{
 //			var_dump($pk->username);
 		}
 	}
+
 	public function correctName($name){
 		foreach($this->specials as $special){
 			$name = str_replace($special->from, $special->to, $name);
@@ -109,9 +113,11 @@ class NameCorrector extends PluginBase implements Listener{
 		}
 		return $name;
 	}
+
 	public static function num_addOrdinal($num){
 		return $num . self::num_getOrdinal($num);
 	}
+
 	public static function num_getOrdinal($num){
 		$rounded = $num % 100;
 		if(3 < $rounded and $rounded < 21){
@@ -124,6 +130,6 @@ class NameCorrector extends PluginBase implements Listener{
 		if($unit === 2){
 			return "nd";
 		}
-		return $unit === 3 ? "rd":"th";
+		return $unit === 3 ? "rd" : "th";
 	}
 }

@@ -40,5 +40,4 @@ class BroomSession{
 		return $this->player;
 	}
 
-
 }

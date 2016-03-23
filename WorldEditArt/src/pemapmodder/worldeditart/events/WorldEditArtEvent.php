@@ -7,9 +7,11 @@ use pocketmine\event\Event;
 
 abstract class WorldEditArtEvent extends Event{
 	private $main;
+
 	protected function __construct(WorldEditArt $main){
 		$this->main = $main;
 	}
+
 	public function getPlugin(){
 		return $this->main;
 	}

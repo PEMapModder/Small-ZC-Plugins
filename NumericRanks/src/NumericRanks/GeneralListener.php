@@ -19,17 +19,15 @@ use pocketmine\event\plugin\PluginEnableEvent;
 
 */
 
-class GeneralListener implements Listener
-{
-    /** @var NumericRanks */
-    private $main;
-    public function __construct(NumericRanks $main)
-    {
-        $this->main = $main;
-    }
+class GeneralListener implements Listener{
+	/** @var NumericRanks */
+	private $main;
 
-    public function onEnable(PluginEnableEvent $event)
-    {
-        $this->main->updatePerms($event->getPlugin());
-    }
+	public function __construct(NumericRanks $main){
+		$this->main = $main;
+	}
+
+	public function onEnable(PluginEnableEvent $event){
+		$this->main->updatePerms($event->getPlugin());
+	}
 }

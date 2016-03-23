@@ -2,8 +2,8 @@
 
 namespace pemapmodder\worldeditart\utils\subcommand;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\CylinderSpace;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
@@ -11,16 +11,20 @@ class Cylinder extends Subcommand{
 	public function getName(){
 		return "cylinder";
 	}
+
 	public function getDescription(){
 		return "Make a cylinder selection";
 	}
+
 	public function getUsage(){
 		return "<radius> <height> [d <m|me|u|up|d|down|l|left|r|right|b|back>] [a|anchor]";
 	}
+
 	public function checkPermission(/** @noinspection PhpUnusedParameterInspection */
 		Player $player){
 		return true; // TODO
 	}
+
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
 			return self::WRONG_USE;
@@ -67,7 +71,6 @@ class Cylinder extends Subcommand{
 						case "back":
 							$axis = WorldEditArt::directionNumber2Array(WorldEditArt::rotateDirectionNumberClockwise($player->getDirection(), 2));
 							break;
-
 					}
 					break;
 			}
@@ -77,6 +80,7 @@ class Cylinder extends Subcommand{
 		$this->getMain()->setSelection($player, $space);
 		return "Your selection is now $space.";
 	}
+
 	public function getAliases(){
 		return ["cyl"];
 	}

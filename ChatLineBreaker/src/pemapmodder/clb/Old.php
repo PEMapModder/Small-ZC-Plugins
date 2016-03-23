@@ -19,27 +19,29 @@ class ChatLineBreaker extends PluginBase implements Listener{
 	const CURRENT_VERSION = "\x01";
 	const INITIAL_RELEASE = "";
 	const DB_LANG_UPDATE = "\x01";
-	public $database = array();
-	public $testing = array();
+	public $database = [];
+	public $testing = [];
 	public $config; // made them public to thank the public Player::$data :)
 	public $path, $cfgPath, $langPath;
 	/** @var Lang */
 	public $lang;
+
 	public function onEnable(){
 		$time = microtime(true);
 		echo ".";
-		$this->path = $this->getDataFolder()."players.dat";
-		$this->cfgPath = $this->getDataFolder()."config.";
+		$this->path = $this->getDataFolder() . "players.dat";
+		$this->cfgPath = $this->getDataFolder() . "config.";
 		$this->saveDefaultConfig();
-		$this->langPath = $this->getDataFolder()."texts.lang";
+		$this->langPath = $this->getDataFolder() . "texts.lang";
 		$this->lang = new Lang($this->langPath);
 		echo ".";
 		$this->load();
 		$time *= -1;
 		$time += microtime(true);
 		$time *= 1000;
-		echo " Done! ($time ms)".PHP_EOL;
+		echo " Done! ($time ms)" . PHP_EOL;
 	}
+
 	public function eventSetLength($data){
 		if(!isset($data["cid"]) or !isset($data["length"])){
 			return false;
@@ -47,6 +49,7 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		$this->setLength($data["cid"], $data["length"]);
 		return true;
 	}
+
 	public function eventSetEnabled($data){
 		if(!isset($data["cid"]) or !isset($data["bool"])){
 			return false;
@@ -54,6 +57,7 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		$this->setEnabled($data["cid"], $data["bool"]);
 		return true;
 	}
+
 	public function onChat(PlayerCommandPreprocessEvent $event){
 		$p = $event->getPlayer();
 		if(!in_array($p->getID(), $this->testing)){
@@ -84,11 +88,13 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		$event->setCancelled();
 		return;
 	}
+
 	public function onQuit($p){
 		if(in_array($p->CID, $this->testing)){
 			unset($this->testing[array_search($p->CID, $this->testing)]);
 		}
 	}
+
 	public function onSend(DataPacketSendEvent $evt){
 		if(!(($pk = $evt->getPacket()) instanceof MessagePacket)){
 			return;
@@ -98,8 +104,9 @@ class ChatLineBreaker extends PluginBase implements Listener{
 			return;
 		}
 		$packets = $this->processMessage($evt->getPlayer()->data->get("lastID"), $pk->message, $evt->getPlayer()); // thanks for making it public property, shoghicp!
-		if($packets === false)
+		if($packets === false){
 			return;
+		}
 		// I made it use client ID because the line break length should depend on the device not the player or IP
 		$evt->setCancelled(true);
 		foreach($packets as $pk){
@@ -109,6 +116,7 @@ class ChatLineBreaker extends PluginBase implements Listener{
 			// var_export($pk);
 		}
 	}
+
 	public function onCmd($cmd, $args, $issuer){
 		if($issuer === "console"){
 			return $this->lang["cmd.console.reject"]; // lol
@@ -124,19 +132,19 @@ class ChatLineBreaker extends PluginBase implements Listener{
 			case "calibrate":
 				$msgs = $this->getTesterMessage();
 				$output .= array_shift($msgs);
-				foreach($msgs as $key=>$value){
-					$this->api->schedule(40 * ($key + 1), array($issuer, "sendChat"), $value, false, "ChatLineBreaker"); // why did you add this 5th arg...
+				foreach($msgs as $key => $value){
+					$this->api->schedule(40 * ($key + 1), [$issuer, "sendChat"], $value, false, "ChatLineBreaker"); // why did you add this 5th arg...
 				}
 				$this->testing[] = $issuer->CID;
 				break;
 			case "set":
 				$l = (int) array_shift($args);
 				if($l <= 5){
-					$output .= $this->lang["calibrate.response.not.numeric"]."\n";
+					$output .= $this->lang["calibrate.response.not.numeric"] . "\n";
 					break;
 				}
 				if($l >= 0b10000000){
-					$output .= str_replace("@char", "$l", $this->lang["calibrate.response.too.low"])."\n";
+					$output .= str_replace("@char", "$l", $this->lang["calibrate.response.too.low"]) . "\n";
 					break;
 				}
 				$this->setLength($cid, $l);
@@ -145,13 +153,13 @@ class ChatLineBreaker extends PluginBase implements Listener{
 			case "check":
 			case "view":
 				$l = $this->getLength($cid);
-				$output .= $this->lang["view.".($this->isEnabled($cid) ? "on":"off")];
+				$output .= $this->lang["view." . ($this->isEnabled($cid) ? "on" : "off")];
 				$output .= str_replace("@length", "$l", $this->lang["view.length"]);
 				break;
 			case "tog":
 			case "toggle":
 				$this->setEnabled($cid, ($b = !$this->isEnabled($cid)));
-				$output .= $this->lang["toggle.".($b ? "on":"off")];
+				$output .= $this->lang["toggle." . ($b ? "on" : "off")];
 				break;
 			case "help":
 				$output .= "Showing help for /clb\n";
@@ -168,42 +176,49 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		}
 		return $output;
 	}
+
 	public function getLength($cid){
 		if(isset($this->database[$cid])){
 			return $this->database[$cid][1];
 		}
 		return $this->config->get("default-length");
 	}
+
 	public function setLength($cid, $length){
-		$this->database[$cid] = array($this->isEnabled($cid), $length);
+		$this->database[$cid] = [$this->isEnabled($cid), $length];
 	}
+
 	public function isEnabled($cid){
 		if(isset($this->database[$cid])){
 			return $this->database[$cid][0];
 		}
 		return $this->config->get("default-enable");
 	}
+
 	public function setEnabled($cid, $bool){
-		$this->database[$cid] = array($bool, $this->getLength($cid));
+		$this->database[$cid] = [$bool, $this->getLength($cid)];
 	}
+
 	public function getTesterMessage(){
 		$numbers = "";
 		for($i = 1; $i < 10; $i++){
 			$numbers .= "$i";
 		}
-		for($i = 11; $i < 100; $i+= 3){
+		for($i = 11; $i < 100; $i += 3){
 			$numbers .= "$i,";
 		}
-		return array($this->lang["calibrate.instruction.close.screen"],
+		return [$this->lang["calibrate.instruction.close.screen"],
 			$this->lang["calibrate.instruction.next.message"],
 			$numbers,
 			$this->lang["calibrate.instruction.hyphens.separator"],
 			$this->lang["calibrate.instruction.ask.number"],
-			$this->lang["calibrate.instruction.require.type.chat"]);
+			$this->lang["calibrate.instruction.require.type.chat"]];
 	}
+
 	public function getData($cid){
 		return $this->database[$cid];
 	}
+
 	public function processMessage($clientID, $message, Player $p){
 		if(!$this->isEnabled($clientID)){
 			return false;
@@ -212,7 +227,7 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		if(count($wrapped) === 1){
 			return false;
 		}
-		$packets = array();
+		$packets = [];
 		foreach($wrapped as $wrap){
 			$pk = new MessagePacket;
 			$pk->source = "clb.followup.linebreak";
@@ -221,12 +236,13 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		}
 		return $packets;
 	}
+
 	public function save(){
 		$this->getLogger()->debug("Saving CLB database...");
 		$time = microtime(true);
 		$buffer = self::MAGIC_PREFIX;
 		$buffer .= self::CURRENT_VERSION;
-		foreach($this->database as $cid=>$data){
+		foreach($this->database as $cid => $data){
 			$buffer .= Binary::writeLong($cid);
 			$ascii = $data[1];
 			if($data[0]){
@@ -238,6 +254,7 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		file_put_contents($this->path, $buffer, LOCK_EX);
 		$this->getLogger()->debug("Done!", true, true, 2);
 	}
+
 	public function load(){
 		$this->getLogger()->debug("Loading CLB database...");
 		$time = 0 - microtime(true);
@@ -250,39 +267,40 @@ class ChatLineBreaker extends PluginBase implements Listener{
 		if(!$isOld){
 			if(substr($str, 0, strlen(self::MAGIC_PREFIX)) !== self::MAGIC_PREFIX){
 				// TODO handle missing prefix database corruption
-				$this->database = array();
+				$this->database = [];
 				$this->save();
-				trigger_error("CLB database corrupted. Component corrupted: ".self::CORRUPTION_PREFIX, E_USER_WARNING);
+				trigger_error("CLB database corrupted. Component corrupted: " . self::CORRUPTION_PREFIX, E_USER_WARNING);
 			}
 			if(substr($str, -1 * strlen(self::MAGIC_SUFFIX)) !== self::MAGIC_SUFFIX){
 				// TODO handle missing suffix database corruption
-				$this->database = array();
+				$this->database = [];
 				$this->save();
-				trigger_error("CLB database corrupted. Component corrupted: ".self::CORRUPTION_SUFFIX, E_USER_WARNING);
+				trigger_error("CLB database corrupted. Component corrupted: " . self::CORRUPTION_SUFFIX, E_USER_WARNING);
 			}
 			$str = substr($str, strlen(self::MAGIC_PREFIX), -1 * strlen(self::MAGIC_SUFFIX));
 			$api = substr($str, 0, 1);
 			if($api > self::CURRENT_VERSION){
 				// TODO handle incorrect API database corruption
-				$this->database = array();
+				$this->database = [];
 				$this->save();
-				trigger_error("CLB database corrupted. Component corrupted: ".self::CORRUPTION_API, E_USER_WARNING);
+				trigger_error("CLB database corrupted. Component corrupted: " . self::CORRUPTION_API, E_USER_WARNING);
 			}
 			$str = substr($str, 1);
 		}
-		for($i = 0; $i < strlen($str); $i+= 9){
+		for($i = 0; $i < strlen($str); $i += 9){
 			$cur = substr($str, $i, 9);
 			$key = Binary::readLong(substr($cur, 0, 8));
 			$number = ord(substr($str, 8));
 			$bool = ($number & 0b10000000) !== 0;
 			$length = $number & 0b01111111;
-			$this->database[$key] = array($bool, $length);
+			$this->database[$key] = [$bool, $length];
 		}
 		$time += microtime(true);
 		$time *= 1000;
 		$this->getLogger()->debug("Done! ($time ms)", true, true, 2);
 		return false;
 	}
+
 	public function onDisable(){
 		$this->save();
 	}

@@ -25,7 +25,7 @@ $input/bin
 This directory stores a .phar build of the latest built version, but not necessarily the latest commit.
 
 EOF
-);
+	);
 }
 if($hasRes = is_dir($resDir = $dir . "resources/")){
 	console("Resources directory detected.");
@@ -101,18 +101,23 @@ fail("Everything finished! Press enter to close this window \x1b[32;1m\x1b[4m:)\
 
 function readLine($prompt = ""){
 	echo $prompt;
-	while(!($line = trim(fgets(fopen("php://stdin", "rt")))));
+	while(!($line = trim(fgets(fopen("php://stdin", "rt"))))){
+		;
+	}
 	return $line;
 }
+
 function fail($reason, $code = 2){
 	echo $reason . PHP_EOL;
 	exit($code);
 }
+
 function console($msg){
 //	clearLine();
 	echo $msg;
 	echo PHP_EOL;
 }
+
 function status($msg){
 	if(true){
 		console(trim($msg));
@@ -124,6 +129,7 @@ function status($msg){
 	echo "\r";
 	$statusPadding = strlen($msg);
 }
+
 function clearLine(){
 	global $statusPadding, $MAX_LENGTH;
 	echo str_repeat(" ", $MAX_LENGTH);

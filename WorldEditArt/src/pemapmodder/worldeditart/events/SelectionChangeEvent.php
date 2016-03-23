@@ -2,8 +2,8 @@
 
 namespace pemapmodder\worldeditart\events;
 
-use pemapmodder\worldeditart\WorldEditArt;
 use pemapmodder\worldeditart\utils\spaces\Space;
+use pemapmodder\worldeditart\WorldEditArt;
 use pocketmine\Player;
 
 class SelectionChangeEvent extends CancellableWorldEditArtEvent{
@@ -12,27 +12,31 @@ class SelectionChangeEvent extends CancellableWorldEditArtEvent{
 	private $selection;
 	/** @var Player */
 	private $player;
+
 	/**
 	 * @param WorldEditArt $main
-	 * @param Player $player
-	 * @param Space|null $space
+	 * @param Player       $player
+	 * @param Space|null   $space
 	 */
 	public function __construct(WorldEditArt $main, Player $player, $space){
 		$this->selection = clone $space;
 		$this->player = $player;
 	}
+
 	/**
 	 * @return Space|null
 	 */
 	public function getSelection(){
 		return $this->selection;
 	}
+
 	/**
 	 * @param Space|null $space
 	 */
 	public function setSelection($space){
 		$this->selection = $space;
 	}
+
 	/**
 	 * @return Player
 	 */

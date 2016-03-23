@@ -9,12 +9,13 @@ use pocketmine\math\Vector3;
 class CylinderSpace extends Space{
 	const X = 0, Y = 1, Z = 2;
 	const PLUS = 1, MINUS = -1;
-	/** @var Position*/
+	/** @var Position */
 	private $base;
 	/** @var int positive integers */
 	private $height, $radius;
 	/** @var int */
 	private $axis;
+
 	public function __construct($axis, $radius, Position $base, $height){
 		$this->base = Position::fromObject($base->floor(), $base->getLevel());
 		$this->height = $height;
@@ -24,8 +25,7 @@ class CylinderSpace extends Space{
 			$y = [$this->base->getY(), $this->base->getY() + $height];
 			$maxY = max($y);
 			$minY = min($y);
-		}
-		else{
+		}else{
 			$y = [$this->base->getY() + $radius, $this->base->getY() - $radius];
 			$maxY = max($y);
 			$minY = min($y);
@@ -39,6 +39,7 @@ class CylinderSpace extends Space{
 		}
 		parent::__construct();
 	}
+
 	public function getPosList(){
 		$out = [];
 		switch($this->axis){
@@ -87,6 +88,7 @@ class CylinderSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function getBlockList(){
 		$out = [];
 		foreach($this->getPosList() as $pos){
@@ -94,6 +96,7 @@ class CylinderSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function isInside(Vector3 $v){
 		$out = true;
 		switch($this->axis){
@@ -115,9 +118,11 @@ class CylinderSpace extends Space{
 		}
 		return $out;
 	}
+
 	public function __toString(){
-		return "a cylinder of axis ".self::axisToStr($this->axis)." based at ".WorldEditArt::posToStr($this->base)." with {$this->height} blocks long, with a total of ".count($this->getPosList())." blocks.";
+		return "a cylinder of axis " . self::axisToStr($this->axis) . " based at " . WorldEditArt::posToStr($this->base) . " with {$this->height} blocks long, with a total of " . count($this->getPosList()) . " blocks.";
 	}
+
 	public static function axisToStr($axis){
 		if($axis === self::X){
 			return "X";
@@ -127,6 +132,7 @@ class CylinderSpace extends Space{
 		}
 		return "Z";
 	}
+
 	public function getLevel(){
 		return $this->base->getLevel();
 	}

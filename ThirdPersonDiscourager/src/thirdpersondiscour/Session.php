@@ -14,7 +14,7 @@ class Session{
 		0 => 1,
 		1 => 2,
 		2 => 1,
-		3 => 2
+		3 => 2,
 	];
 	/** @var ThirdPersonDiscour */
 	private $main;
@@ -25,12 +25,14 @@ class Session{
 	private $overridenBlocks = [];
 	private $block;
 	private $meta;
+
 	public function __construct(ThirdPersonDiscour $main, Player $player){
 		$this->main = $main;
 		$this->player = $player;
 		$this->block = $this->main->getBlockType()->getId();
 		$this->meta = $this->main->getBlockType()->getDamage();
 	}
+
 	public function update(){
 		if(!$this->enabled){
 			return;
@@ -38,6 +40,7 @@ class Session{
 		$this->resetOverriden();
 		$this->spawnDiscourager();
 	}
+
 	public function resetOverriden(){
 		foreach($this->overridenBlocks as $b){
 			$pk = new UpdateBlockPacket;
@@ -50,6 +53,7 @@ class Session{
 		}
 		$this->overridenBlocks = [];
 	}
+
 	public function spawnDiscourager(){
 		$dir = $this->player->getDirectionVector();
 		if($this->player->pitch > 45 or $this->player->pitch < -45){
@@ -106,12 +110,14 @@ class Session{
 			$this->player->dataPacket($pk);
 		}
 	}
+
 	/**
 	 * @return boolean
 	 */
 	public function isEnabled(){
 		return $this->enabled;
 	}
+
 	public function enable(){
 		if($this->enabled){
 			return;
@@ -119,6 +125,7 @@ class Session{
 		$this->enabled = true;
 		$this->spawnDiscourager();
 	}
+
 	public function disable(){
 		if(!$this->enabled){
 			return;
@@ -126,6 +133,7 @@ class Session{
 		$this->enabled = false;
 		$this->resetOverriden();
 	}
+
 	public function __toString(){
 		return $this->player->getName();
 	}

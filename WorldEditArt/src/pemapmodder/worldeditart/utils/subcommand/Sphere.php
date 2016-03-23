@@ -10,15 +10,19 @@ class Sphere extends Subcommand{
 	public function getName(){
 		return "sphere";
 	}
+
 	public function getDescription(){
 		return "Select a sphere";
 	}
+
 	public function getUsage(){
 		return "<radius> [a|anchor]";
 	}
+
 	public function checkPermission(Player $player){
 		return $player->hasPermission("wea.sphere");
 	}
+
 	public function onRun(array $args, Player $player){
 		if(!isset($args[0])){
 			return false;
@@ -41,6 +45,7 @@ class Sphere extends Subcommand{
 		$this->getMain()->setSelection($player, $sel);
 		return "You have selected $sel.";
 	}
+
 	public function getAliases(){
 		return ["sph"];
 	}

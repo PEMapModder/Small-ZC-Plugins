@@ -14,34 +14,42 @@ use pocketmine\plugin\PluginBase;
 class BulkCommands extends PluginBase implements Listener{
 	/** @var BulkCommandSession[] */
 	private $sessions = [];
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		foreach($this->getServer()->getOnlinePlayers() as $p){
 			$this->startSession($p);
 		}
 	}
+
 	public function onPlayerJoin(PlayerJoinEvent $event){
 		$this->startSession($event->getPlayer());
 	}
+
 	public function onPlayerQuit(PlayerQuitEvent $event){
 		$this->endSession($event->getPlayer());
 	}
+
 	public function onDisable(){
 		foreach($this->getServer()->getOnlinePlayers() as $p){
 			$this->endSession($p);
 		}
 	}
+
 	public function startSession(Player $player){
 		$this->sessions[$player->getId()] = new BulkCommandSession;
 	}
+
 	public function endSession(Player $player){
 		if(isset($this->sessions[$player->getId()])){
 			unset($this->sessions[$player->getId()]);
 		}
 	}
+
 	public function getSession(Player $player){
 		return $this->sessions[$player->getId()];
 	}
+
 	public function onCommand(CommandSender $sender, Command $cmd, $l, array $args){
 		if($cmd->getName() !== "bulkcmd"){
 			return false;
@@ -89,6 +97,7 @@ class BulkCommands extends PluginBase implements Listener{
 		}
 		return true;
 	}
+
 	public function onPlayerCmdPreprocess(PlayerCommandPreprocessEvent $event){
 		$session = $this->getSession($event->getPlayer());
 		if($session->format !== null and substr($event->getMessage(), 0, 1) !== "/"){

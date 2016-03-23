@@ -23,26 +23,30 @@ use pocketmine\Player;
 
 interface Button{
 	const NONEXIST = -1;
+
 	/**
 	 * @param InteractiveInventory $inventory - of which inventory is the button moved in.
-	 * @param int $from - from which inventory slot,
-	 * or {@link #NONEXIST NONEXIST} if it wasn't in the inventory before.
-	 * @param int $to - to which inventory slot,
-	 * or {@link #NONEXIST NONEXIST} if it is removed.
-	 * @param bool $force default false - if true, the button must not return false
+	 * @param int                  $from      - from which inventory slot,
+	 *                                        or {@link #NONEXIST NONEXIST} if it wasn't in the inventory before.
+	 * @param int                  $to        - to which inventory slot,
+	 *                                        or {@link #NONEXIST NONEXIST} if it is removed.
+	 * @param bool                 $force     default false - if true, the button must not return false
+	 *
 	 * @return bool - allow moving or not
 	 */
 	public function onMove(InteractiveInventory $inventory, $from, $to, $force = false);
 
 	/**
 	 * @param InteractiveInventory $inventory - of which inventory is the button loaded in.
+	 *
 	 * @return Item - the item icon for the button to display as in the chest.
 	 */
 	public function onLoad(InteractiveInventory $inventory);
 
 	/**
 	 * @param InteractiveInventory $inventory - of which inventory is the button clicked in.
-	 * @param Player $player - the player who clicked the button
+	 * @param Player               $player    - the player who clicked the button
+	 *
 	 * @return void
 	 */
 	public function onClick(InteractiveInventory $inventory, Player $player);

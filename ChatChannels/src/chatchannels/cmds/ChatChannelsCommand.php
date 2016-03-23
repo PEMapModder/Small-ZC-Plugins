@@ -15,39 +15,39 @@ abstract class ChatChannelsCommand extends Command implements PluginIdentifiable
 	private $plugin;
 	/** @var bool */
 	private $testPerm;
+
 	/**
 	 * @param ChatChannels $plugin
-	 * @param bool $testPerm
-	 * @param null|string $name
-	 * @param string $desc
-	 * @param null $usage
-	 * @param $aliases
+	 * @param bool         $testPerm
+	 * @param null|string  $name
+	 * @param string       $desc
+	 * @param null         $usage
+	 * @param              $aliases
 	 */
 	public function __construct(ChatChannels $plugin, $testPerm = true, $name, $desc = "", $usage = null, ...$aliases){
 		$this->plugin = $plugin;
 		$this->testPerm = true;
 		parent::__construct($name, $desc, $usage, $aliases);
 	}
+
 	/**
 	 * @return ChatChannels
 	 */
 	public function getPlugin(){
 		return $this->plugin;
 	}
+
 	public function execute(CommandSender $sender, $alias, array $args){
 		/** @var ChannelSubscriber $sub */
 		if($sender instanceof ConsoleCommandSender){
 			$sub = $this->plugin->getConsole();
-		}
-		elseif($sender instanceof Player){
+		}elseif($sender instanceof Player){
 			$sub = $this->plugin->getPlayerSub($sender);
-		}
-		else{
+		}else{
 			$class = new \ReflectionClass($sender);
 			try{
 				$method = $class->getMethod("getChannelSubscriber");
-			}
-			catch(\ReflectionException $e){
+			}catch(\ReflectionException $e){
 				$method = null;
 			}
 			if($method instanceof \ReflectionMethod){
@@ -60,11 +60,11 @@ abstract class ChatChannelsCommand extends Command implements PluginIdentifiable
 		$r = $this->onRun($args, $sender, $sub);
 		if(is_string($r)){
 			$sender->sendMessage($r);
-		}
-		elseif($r === false){
+		}elseif($r === false){
 			$sender->sendMessage($this->getUsage());
 		}
 		return true;
 	}
+
 	protected abstract function onRun(array $args, CommandSender $sender, ChannelSubscriber $sub);
 }

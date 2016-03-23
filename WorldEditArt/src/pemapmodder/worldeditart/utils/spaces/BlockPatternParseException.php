@@ -5,6 +5,7 @@ namespace pemapmodder\worldeditart\utils\spaces;
 class BlockPatternParseException extends \Exception{
 	/** @var string */
 	private $pattern;
+
 	/**
 	 * @param string $pattern
 	 * @param string $message
@@ -13,6 +14,7 @@ class BlockPatternParseException extends \Exception{
 		parent::__construct($message);
 		$this->pattern = $pattern;
 	}
+
 	/**
 	 * @return string
 	 */

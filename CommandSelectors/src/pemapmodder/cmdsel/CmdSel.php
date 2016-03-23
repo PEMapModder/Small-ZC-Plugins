@@ -5,27 +5,22 @@ namespace pemapmodder\cmdsel;
 use pemapmodder\cmdsel\event\PlayerCommandPreprocessEvent_sub;
 use pemapmodder\cmdsel\event\RemoteServerCommandEvent_sub;
 use pemapmodder\cmdsel\event\ServerCommandEvent_sub;
-use pemapmodder\cmdsel\selector\RecursiveSelector;
-use pemapmodder\cmdsel\selector\Selector;
-
 use pemapmodder\cmdsel\selector\AllRecursiveSelector;
-
 use pemapmodder\cmdsel\selector\NearestSelector;
 use pemapmodder\cmdsel\selector\RandomSelector;
+use pemapmodder\cmdsel\selector\RecursiveSelector;
+use pemapmodder\cmdsel\selector\Selector;
 use pemapmodder\cmdsel\selector\UsernameSelector;
 use pemapmodder\cmdsel\selector\WorldSelector;
-
-use pocketmine\Player;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerCommandPreprocessEvent;
-use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\server\RemoteServerCommandEvent;
 use pocketmine\event\server\ServerCommandEvent;
-use pocketmine\level\Position;
-use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
 use pocketmine\event\Timings;
+use pocketmine\level\Position;
+use pocketmine\Player;
+use pocketmine\plugin\PluginBase;
 
 const DEBUGGING = true;
 
@@ -34,6 +29,7 @@ class CmdSel extends PluginBase implements Listener{
 	private $selectors = [];
 	/** @var RecursiveSelector[] */
 	private $recursiveSelectors = [];
+
 	public function onEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->registerRecursiveSelector(new AllRecursiveSelector);
@@ -42,21 +38,25 @@ class CmdSel extends PluginBase implements Listener{
 		$this->registerSelector(new UsernameSelector);
 		$this->registerSelector(new WorldSelector);
 	}
+
 	public function registerSelector(Selector $selector){
 		$this->selectors[$selector->getName()] = $selector;
 		foreach($selector->getAliases() as $alias){
 			$this->selectors[$alias] = $selector;
 		}
 	}
+
 	public function registerRecursiveSelector(RecursiveSelector $selector){
 		$this->recursiveSelectors[$selector->getName()] = $selector;
 		foreach($selector->getAliases() as $alias){
 			$this->recursiveSelectors[$alias] = $selector;
 		}
 	}
+
 	/**
 	 * @param ServerCommandEvent $event
-	 * @priority HIGHEST
+	 *
+	 * @priority        HIGHEST
 	 * @ignoreCancelled true
 	 */
 	public function onConsoleCmd(ServerCommandEvent $event){
@@ -83,17 +83,18 @@ class CmdSel extends PluginBase implements Listener{
 					}
 				}
 			}
-		}
-		else{
+		}else{
 			$event->setCommand($cmd);
 			if(DEBUGGING){
 				echo "Command processed and changed to:\n$cmd\n";
 			}
 		}
 	}
+
 	/**
 	 * @param RemoteServerCommandEvent $event
-	 * @priority HIGHEST
+	 *
+	 * @priority        HIGHEST
 	 * @ignoreCancelled true
 	 */
 	public function onRCONCmd(RemoteServerCommandEvent $event){
@@ -113,11 +114,11 @@ class CmdSel extends PluginBase implements Listener{
 					}
 				}
 			}
-		}
-		else{
+		}else{
 			$event->setCommand($cmd);
 		}
 	}
+
 	public function onPlayerCmd(PlayerCommandPreprocessEvent $event){
 		if($event instanceof PlayerCommandPreprocessEvent_sub){
 			return;
@@ -130,7 +131,7 @@ class CmdSel extends PluginBase implements Listener{
 					$event->setCancelled();
 					//$event->setMessage("/".array_shift($cmd));
 					foreach($cmd as $c){
-						$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($event->getPlayer(), ".".$c));
+						$this->getServer()->getPluginManager()->callEvent($ev = new PlayerCommandPreprocessEvent_sub($event->getPlayer(), "." . $c));
 						if($ev->isCancelled()){
 							continue;
 						}
@@ -138,16 +139,15 @@ class CmdSel extends PluginBase implements Listener{
 						$this->getServer()->dispatchCommand($ev->getPlayer(), substr($ev->getMessage(), 1));
 						Timings::$playerCommandTimer->stopTiming();
 					}
-				}
-				else{
+				}else{
 					$event->setCancelled();
 				}
-			}
-			else{
+			}else{
 				$event->setMessage("/$cmd");
 			}
 		}
 	}
+
 	public function proceedCommand(CommandSender $sender, &$line){
 		$tokens = explode(" ", $line);
 		$first = true;
@@ -169,8 +169,7 @@ class CmdSel extends PluginBase implements Listener{
 						}
 						$args[] = $splited;
 					}
-				}
-				else{
+				}else{
 					$name = $selector;
 				}
 				if(isset($this->selectors[$name])){
@@ -200,8 +199,7 @@ class CmdSel extends PluginBase implements Listener{
 						}
 						$args[] = $splited;
 					}
-				}
-				else{
+				}else{
 					$name = $selector;
 				}
 				if(isset($this->recursiveSelectors[$name])){
@@ -221,6 +219,7 @@ class CmdSel extends PluginBase implements Listener{
 		$line = implode(" ", $tokens);
 		return false;
 	}
+
 	public static function checkSelectors(array $args, CommandSender $sender, Player $player){
 		foreach($args as $name => $value){
 			switch($name){
@@ -301,11 +300,9 @@ class CmdSel extends PluginBase implements Listener{
 			if(isset($args["d" . $v])){
 				if(isset($args[$v])){
 					$from = (int) $args[$v];
-				}
-				elseif($sender instanceof Position){ // lower priority
+				}elseif($sender instanceof Position){ // lower priority
 					$from = $sender->{$v};
-				}
-				else{
+				}else{
 					continue;
 				}
 				$to = (int) $args["d" . $v];
@@ -318,9 +315,11 @@ class CmdSel extends PluginBase implements Listener{
 		}
 		return true;
 	}
+
 	/**
-	 * @param Position $center
+	 * @param Position   $center
 	 * @param callable[] $exceptions
+	 *
 	 * @return array
 	 */
 	public static function getNearestPlayers(Position $center, array $exceptions = []){
@@ -341,8 +340,7 @@ class CmdSel extends PluginBase implements Listener{
 			}
 			if($center->distance($player) === $currentDistance){
 				$nearest[] = $player;
-			}
-			elseif($center->distance($player) < $currentDistance){
+			}elseif($center->distance($player) < $currentDistance){
 				$nearest = [$player];
 			}
 		}

@@ -8,6 +8,7 @@ class MemFullRestarter extends PluginBase{
 	public $mem;
 	/** @var \mysqli|null */
 	public $mysqli = null;
+
 	public function onEnable(){
 		$this->saveDefaultConfig();
 		$this->getServer()->getScheduler()->scheduleDelayedRepeatingTask(new CheckMemoryTask($this), 600, 600);
@@ -21,6 +22,7 @@ class MemFullRestarter extends PluginBase{
 			$this->mysqli->query("INSERT INTO lastping (serverid, pid, timestamp) VALUES ($serverid, '0', 0) ON DUPLICATE KEY UPDATE pid='0',timestamp=0");
 		}
 	}
+
 	public function onDisable(){
 		$mysql = $this->mysqli;
 		if($mysql !== null){
@@ -31,8 +33,10 @@ class MemFullRestarter extends PluginBase{
 			$mysql->query("UPDATE lastping SET pid=$pid,timestamp=unix_timestamp() WHERE serverid=$serverid");
 		}
 	}
+
 	/**
 	 * @param string $val
+	 *
 	 * @return int
 	 */
 	public static function return_bytes($val){
@@ -41,7 +45,7 @@ class MemFullRestarter extends PluginBase{
 		switch(strtolower(substr($val, -1))){
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case "g":
-			$value *= 1024;
+				$value *= 1024;
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case "m":
 				$value *= 1024;
