@@ -6,7 +6,7 @@ use customareas\area\Area;
 use customareas\CustomAreas;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\EnumTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 
@@ -81,7 +81,7 @@ class LocalDatabase extends Database{
 		$data->UserFlags = new IntTag("UserFlags", $area->getUserFlags());
 		$data->NonUserFlags = new IntTag("NonUserFlags", $area->getNonUserFlags());
 		$data->Owner = new StringTag("Owner", $area->getOwner());
-		$data->Users = new EnumTag("Users", array_map(function ($user){
+		$data->Users = new ListTag("Users", array_map(function ($user){
 			return new StringTag("", $user);
 		}, $area->getUsers()));
 		$file = str_replace('$${areaname}', strtolower($area->getName()), $this->areaFile);

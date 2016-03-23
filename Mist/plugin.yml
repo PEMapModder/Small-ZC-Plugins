@@ -1,6 +1,6 @@
 name: Mist
 description: Create "Mist" for players who use anti-invisibility mod by obfuscating their vision with random invisible players
 api: [2.0.0]
-version: 1.0
+version: 1.0.0
 author: PEMapModder
 main: pemapmodder\mist\MistPlugin
