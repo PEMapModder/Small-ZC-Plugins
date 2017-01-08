@@ -1,0 +1,57 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/PEMapModder/Small-ZC-Plugins
+branches:
+- master
+projects:
+  BroomArrow:
+    path: BroomArrow/
+  BulkCommands:
+    path: BulkCommands/
+  ChatChannels:
+    path: ChatChannels/
+  ChatLineBreaker:
+    path: ChatLineBreaker/
+  CommandSelectors:
+    path: CommandSelectors/
+  ConsolePush:
+    path: ConsolePush/
+  CustomAreas:
+    path: CustomAreas/
+  DeFactoGui:
+    path: DeFactoGui/
+  DynamicSignTechnology:
+    path: DynamicSignTechnology/
+  IPLogger:
+    path: IPLogger/
+  IRCBridge:
+    path: IRCBridge/
+  InfoEssentials:
+    path: InfoEssentials/
+  LagFixer:
+    path: LagFixer/
+  MemoryFullRestarter:
+    path: MemoryFullRestarter/
+  Mist:
+    path: Mist/
+  NailedKeyboard:
+    path: NailedKeyboard/
+  NameCorrector:
+    path: NameCorrector/
+  NumericRanks:
+    path: NumericRanks/
+  PastebinPoster:
+    path: PastebinPoster/
+  RARFix:
+    path: RARFix/
+  RemoteChat:
+    path: RemoteChat/
+  SimpleMacros:
+    path: SimpleMacros/
+  Spacefiller:
+    path: Spacefiller/
+  ThirdPersonDiscourager:
+    path: ThirdPersonDiscourager/
+  VotifierPE:
+    path: VotifierPE/
+  WorldEditArt:
+    path: WorldEditArt/
+...
