@@ -1,6 +1,6 @@
 <?php
 
-namespace ConsolePush;
+namespace PEMapModder\ConsolePush;
 
 use pocketmine\event\Listener;
 use pocketmine\event\server\ServerCommandEvent;
