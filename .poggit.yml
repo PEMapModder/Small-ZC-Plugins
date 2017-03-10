@@ -47,6 +47,7 @@ projects:
     path: RemoteChat/
   SimpleMacros:
     path: SimpleMacros/
+    icon: simplemacros.png
 #  Spacefiller:
 #    path: Spacefiller/
 #  ThirdPersonDiscourager:
