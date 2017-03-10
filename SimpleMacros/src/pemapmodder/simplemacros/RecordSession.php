@@ -25,15 +25,18 @@ class RecordSession{
 	public $stack = [];
 	public $paused;
 	public $tee;
+	public $sprintf;
 
 	/**
 	 * RecordSession constructor.
 	 *
 	 * @param bool $tee whether the command should be executed (true) or cancelled (false)
+	 * @param bool $sprintf
 	 */
-	public function __construct(bool $tee){
+	public function __construct(bool $tee, bool $sprintf){
 		$this->paused = false;
 		$this->tee = $tee;
+		$this->sprintf = $sprintf;
 	}
 
 	public function handle(string $line) : bool{
@@ -41,10 +44,15 @@ class RecordSession{
 			return false;
 		}
 		$this->stack[] = $line;
+		// TODO add sprintf testing
 		return !$this->tee;
 	}
 
-	public function save(Main $main, string $name) : bool{
-		return file_put_contents($main->getDataFolder() . "macros/$name.txt", implode("\n", $this->stack)) != false;
+	public function save(Main $main, string $name, string $author) : bool{
+		return file_put_contents($main->getDataFolder() . "macros/$name.txt",
+				"# Created " . date(DATE_ISO8601) . " by $author\n" .
+				($this->sprintf ? "#sprintf enabled\n" : "") .
+				implode("\n", $this->stack)
+			) != false;
 	}
 }
