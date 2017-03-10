@@ -1,5 +1,5 @@
 # PhpStorm configuration files
-.idea/*
+.idea/
 # Hex Editor temporary files
 *.bak
 *.bat
