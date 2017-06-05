@@ -1,0 +1,25 @@
+language: php
+php: ["7.0"]
+sudo: false
+dist: trusty
+
+install:
+- wget -O - https://poggit.pmmp.io/res/travisInstall.sh | bash -s -
+script:
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - BulkCommands
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - ChatLineBreaker
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - CommandSelectors
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - ConsolePush
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - DynamicSignTechnology
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - IPLogger
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - IRCBridge
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - InfoEssentials
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - LagFixer
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - Mist
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - NailedKeyboard
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - NameCorrector
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - NumericRanks
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - PastebinPoster
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - RemoteChat
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - SimpleMacros
+- wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - WorldEditArt
