@@ -4,7 +4,7 @@ sudo: false
 dist: trusty
 
 install:
-- wget -O - https://poggit.pmmp.io/res/travisInstall.sh | bash -s -
+- wget -O - https://poggit.pmmp.io/res/travisInstall.sh | bash -s - https://github.com/pmmp/PocketMine-MP/releases/download/1.6.1dev-87/PocketMine-MP_1.6.1dev-87_e51a2725_API-2.1.0.phar
 script:
 - wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - BulkCommands
 - wget -O - https://poggit.pmmp.io/res/travisScript.sh | bash -s - ChatLineBreaker
